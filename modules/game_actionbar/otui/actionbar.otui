@@ -191,6 +191,8 @@ RightSliders < Panel
 Panel
   id: actionBar
   focusable: false
+  image-source: /images/ui/background_dark
+  image-repeated: true
   padding-top: 2
   padding-bottom: 0
 
