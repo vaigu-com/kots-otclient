@@ -22,8 +22,6 @@ SpellIconContainer < UIWidget
   image-source: /images/game/cooldowns/cooldown-background
   image-size: 22 24
   focusable: false
-  $!first:
-    margin-left: 3
 
 GroupCooldownParticles < UIParticles
   effect: groupcooldown-effect
@@ -67,6 +65,7 @@ Panel
         background-color: #000000
         anchors.top: icon.bottom
         anchors.left: parent.left
+        margin-top: 1
         margin-left: 1
         focusable: false
 
@@ -76,6 +75,7 @@ Panel
         background-color: #FFFFFF
         anchors.top: icon.bottom
         anchors.left: parent.left
+        margin-top: 1
         margin-left: 1
         focusable: false
 
@@ -109,6 +109,7 @@ Panel
         background-color: #000000
         anchors.top: icon.bottom
         anchors.left: parent.left
+        margin-top: 1
         margin-left: 1
         focusable: false
 
@@ -118,6 +119,7 @@ Panel
         background-color: #FFFFFF
         anchors.top: icon.bottom
         anchors.left: parent.left
+        margin-top: 1
         margin-left: 1
         focusable: false
 
@@ -151,6 +153,7 @@ Panel
         background-color: #000000
         anchors.top: icon.bottom
         anchors.left: parent.left
+        margin-top: 1
         margin-left: 1
         focusable: false
 
@@ -160,6 +163,7 @@ Panel
         background-color: #FFFFFF
         anchors.top: icon.bottom
         anchors.left: parent.left
+        margin-top: 1
         margin-left: 1
         focusable: false
 
@@ -193,6 +197,7 @@ Panel
         background-color: #000000
         anchors.top: icon.bottom
         anchors.left: parent.left
+        margin-top: 1
         margin-left: 1
         focusable: false
 
@@ -202,6 +207,7 @@ Panel
         background-color: #FFFFFF
         anchors.top: icon.bottom
         anchors.left: parent.left
+        margin-top: 1
         margin-left: 1
         focusable: false
 
@@ -235,6 +241,7 @@ Panel
         background-color: #000000
         anchors.top: icon.bottom
         anchors.left: parent.left
+        margin-top: 1
         margin-left: 1
         focusable: false
 
@@ -244,6 +251,7 @@ Panel
         background-color: #FFFFFF
         anchors.top: icon.bottom
         anchors.left: parent.left
+        margin-top: 1
         margin-left: 1
         focusable: false
 
@@ -277,6 +285,7 @@ Panel
         background-color: #000000
         anchors.top: icon.bottom
         anchors.left: parent.left
+        margin-top: 1
         margin-left: 1
         focusable: false
 
@@ -286,6 +295,7 @@ Panel
         background-color: #FFFFFF
         anchors.top: icon.bottom
         anchors.left: parent.left
+        margin-top: 1
         margin-left: 1
         focusable: false
 
@@ -319,6 +329,7 @@ Panel
         background-color: #000000
         anchors.top: icon.bottom
         anchors.left: parent.left
+        margin-top: 1
         margin-left: 1
         focusable: false
 
@@ -328,6 +339,7 @@ Panel
         background-color: #FFFFFF
         anchors.top: icon.bottom
         anchors.left: parent.left
+        margin-top: 1
         margin-left: 1
         focusable: false
 
@@ -361,6 +373,7 @@ Panel
         background-color: #000000
         anchors.top: icon.bottom
         anchors.left: parent.left
+        margin-top: 1
         margin-left: 1
         focusable: false
 
@@ -370,6 +383,7 @@ Panel
         background-color: #FFFFFF
         anchors.top: icon.bottom
         anchors.left: parent.left
+        margin-top: 1
         margin-left: 1
         focusable: false
 
@@ -403,6 +417,7 @@ Panel
         background-color: #000000
         anchors.top: icon.bottom
         anchors.left: parent.left
+        margin-top: 1
         margin-left: 1
         focusable: false
 
@@ -412,6 +427,7 @@ Panel
         background-color: #FFFFFF
         anchors.top: icon.bottom
         anchors.left: parent.left
+        margin-top: 1
         margin-left: 1
         focusable: false
 
@@ -445,6 +461,7 @@ Panel
         background-color: #000000
         anchors.top: icon.bottom
         anchors.left: parent.left
+        margin-top: 1
         margin-left: 1
         focusable: false
 
@@ -454,6 +471,7 @@ Panel
         background-color: #FFFFFF
         anchors.top: icon.bottom
         anchors.left: parent.left
+        margin-top: 1
         margin-left: 1
         focusable: false
 
@@ -466,8 +484,8 @@ Panel
       id: separator
       anchors.top: parent.top
       anchors.left: prev.right
-      margin-left: 5
-      margin-top: 2
+      margin-left: 3
+      margin-top: 1
       height: 24
 
     Panel
@@ -479,5 +497,7 @@ Panel
       anchors.bottom: parent.bottom
       anchors.left: prev.right
       anchors.right: parent.right
+      margin-left: 3
       layout:
         type: horizontalBox
+        spacing: 3

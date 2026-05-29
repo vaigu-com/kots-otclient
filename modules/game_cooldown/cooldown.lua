@@ -92,6 +92,7 @@ function loadIcon(iconId)
             barBg:setBackgroundColor('#000000')
             barBg:addAnchor(AnchorTop, 'icon', AnchorBottom)
             barBg:addAnchor(AnchorLeft, 'parent', AnchorLeft)
+            barBg:setMarginTop(1)
             barBg:setMarginLeft(1)
         end
 
@@ -102,6 +103,7 @@ function loadIcon(iconId)
             barFg:setBackgroundColor('#FFFFFF')
             barFg:addAnchor(AnchorTop, 'icon', AnchorBottom)
             barFg:addAnchor(AnchorLeft, 'parent', AnchorLeft)
+            barFg:setMarginTop(1)
             barFg:setMarginLeft(1)
         end
 
