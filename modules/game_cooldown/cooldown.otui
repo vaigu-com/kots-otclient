@@ -491,7 +491,7 @@ Panel
     Panel
       height: 24
       id: cooldownPanel
-      margin-top: 2
+      margin-top: 1
       margin-bottom: 3
       anchors.top: parent.top
       anchors.bottom: parent.bottom
