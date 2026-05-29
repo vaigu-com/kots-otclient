@@ -194,7 +194,7 @@ Panel
   image-source: /images/ui/actionbar/actionbar_background-light
   image-border: 1
   //margin-top: 2
-  padding-top: 3
+  padding-top: 0
   padding-bottom: 1
 
   $on:
@@ -220,7 +220,7 @@ Panel
     anchors.right: nextPanel.left
     //margin-left: 1
     margin-right: 4
-    margin-top: -2
+    margin-top: 0
     horizontal-scrollbar: actionScroll
     layout: horizontalBox
     @onGeometryChange: modules.game_actionbar.updateVisibleWidgets()

@@ -115,15 +115,15 @@ SpeakTypes = {
 SayModes = {
     [1] = {
         speakTypeDesc = 'whisper',
-        image = '/images/ui/console_whisper'
+        image = '/images/game/console/whisper'
     },
     [2] = {
         speakTypeDesc = 'say',
-        image = '/images/ui/console_say'
+        image = '/images/game/console/say'
     },
     [3] = {
         speakTypeDesc = 'yell',
-        image = '/images/ui/console_yell'
+        image = '/images/game/console/yell'
     }
 }
 

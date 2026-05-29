@@ -245,7 +245,7 @@ Panel
     margin-right: 20
     margin-left: 18
     margin-bottom: -7
-    tab-spacing: 2
+    tab-spacing: 0
     movable: true
 
   TabButton
@@ -442,20 +442,13 @@ Panel
     id: sayModeButton
     anchors.left: parent.left
     anchors.bottom: parent.bottom
-    margin-bottom: 4
+    margin-bottom: 3
     margin-left: 5
-    size: 18 18
-    image-source: /images/ui/console_say
-    image-clip: 0 0 18 18
+    size: 16 16
+    image-source: /images/game/console/say
     !tooltip: tr('Set talk type')
     &sayMode: 2
     @onClick: sayModeChange()
-
-    $pressed:
-      image-clip: 18 0 18 18
-
-    $hover !disabled:
-      image-clip: 0 0 18 18
 
   TextEdit
     id: consoleTextEdit
