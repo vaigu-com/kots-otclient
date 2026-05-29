@@ -445,10 +445,14 @@ Panel
     margin-bottom: 3
     margin-left: 5
     size: 16 16
-    image-source: /images/game/console/say
+    image-source: /images/game/console/button-textured-up
+    icon: /images/game/console/icon-speech-say
     !tooltip: tr('Set talk type')
     &sayMode: 2
     @onClick: sayModeChange()
+
+    $pressed:
+      image-source: /images/game/console/button-textured-down
 
   TextEdit
     id: consoleTextEdit

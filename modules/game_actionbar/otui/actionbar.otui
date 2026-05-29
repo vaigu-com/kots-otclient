@@ -191,11 +191,8 @@ RightSliders < Panel
 Panel
   id: actionBar
   focusable: false
-  image-source: /images/ui/actionbar/actionbar_background-light
-  image-border: 1
-  //margin-top: 2
-  padding-top: 0
-  padding-bottom: 1
+  padding-top: 2
+  padding-bottom: 0
 
   $on:
     height: 36
