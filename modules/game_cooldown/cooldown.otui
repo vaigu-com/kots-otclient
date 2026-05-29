@@ -38,7 +38,7 @@ Panel
   Panel
     id: contentsPanel2
     anchors.fill: parent
-    margin-left: 5
+    margin-left: 1
 
     UIWidget
       id: containerAttack
