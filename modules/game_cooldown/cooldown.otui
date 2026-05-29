@@ -35,6 +35,7 @@ Panel
   anchors.right: parent.right
   focusable: false
   phantom: true
+  margin-top: 1
   Panel
     id: contentsPanel2
     anchors.fill: parent

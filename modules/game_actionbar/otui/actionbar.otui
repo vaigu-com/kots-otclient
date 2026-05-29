@@ -191,9 +191,9 @@ RightSliders < Panel
 Panel
   id: actionBar
   focusable: false
-  image-source: /images/ui/background_dark
+  image-source: /images/ui/actionbar/actionbar_background
   image-repeated: true
-  padding-top: 2
+  padding-top: 4
   padding-bottom: 0
 
   $on:
@@ -209,7 +209,7 @@ Panel
     anchors.left: parent.left
     anchors.verticalCenter: parent.verticalCenter
     margin-left: 1
-    margin-top: -1
+    margin-top: 1
 
   ScrollablePanel
     id: tabBar

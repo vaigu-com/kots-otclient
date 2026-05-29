@@ -184,7 +184,7 @@ Panel
     image-source: /images/ui/2pixel_up_frame_borderimage
     image-border: 3
     anchors.fill: parent
-    margin-top: 17
+    margin-top: 18
     focusable: false
   Panel
     id: consoleContentPanel
@@ -194,7 +194,7 @@ Panel
     anchors.bottom: consoleTextEdit.top
     margin-left: 3
     margin-right: 2
-    margin-bottom: 1
+    margin-bottom: 0
     margin-top: 21
     padding: 1
     focusable: false
@@ -207,7 +207,7 @@ Panel
     anchors.bottom: consoleTextEdit.top
     margin-left: 2
     margin-right: 6
-    margin-bottom: 1
+    margin-bottom: 0
     margin-top: 21
     padding: 1
     focusable: false
@@ -244,7 +244,7 @@ Panel
     anchors.right: closeChannelButton.left
     margin-right: 20
     margin-left: 18
-    margin-bottom: -7
+    margin-bottom: -8
     tab-spacing: 0
     movable: true
 
