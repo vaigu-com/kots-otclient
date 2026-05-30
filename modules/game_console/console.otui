@@ -99,8 +99,8 @@ ConsoleLabel < UITextEdit
   height: 16
   color: yellow
   margin-left: 12
-  margin-top: 5
-  margin-bottom: -8
+  margin-top: 2
+  margin-bottom: -3
   text-wrap: true
   text-auto-resize: true
   selection-color: #f4f4f4ff
@@ -137,7 +137,7 @@ ConsoleTabBarPanel < MoveableTabBarPanel
     padding-right: 12
     padding-left: 4
     padding-top: 4
-    padding-bottom: 15
+    padding-bottom: 2
     vertical-scrollbar: consoleScrollBar
     layout:
       type: verticalBox
