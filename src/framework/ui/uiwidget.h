@@ -1093,7 +1093,7 @@ public:
     }
     void setTextOnlyUpperCase(const bool textOnlyUpperCase) { setProp(PropTextOnlyUpperCase, textOnlyUpperCase); setText(m_text); }
     void setTextRTL(const bool rtl) { setProp(PropTextRTL, rtl); }
-    bool isTextRTL() const { return hasProp(PropTextRTL); }
+    bool isTextRTL() { return hasProp(PropTextRTL); }
     void setFont(std::string_view fontName);
     void setTTFFont(std::string_view fontName, int fontSize = 12, int strokeWidth = 0, const Color& strokeColor = Color::black);
     void setStroke(int strokeWidth, const Color& strokeColor = Color::black);
