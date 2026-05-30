@@ -131,6 +131,7 @@ UIWidget
     size: 38 16
     anchors.top: gameRightActionPanel.bottom
     anchors.right: gameRightActionPanel.right
+    margin-top: 3
     border-width-left: 1
     border-color-left: #747474
     image-source: /images/ui/actionbar/actionbar_background-light
@@ -141,10 +142,9 @@ UIWidget
       anchors.top: parent.top
       anchors.right: parent.right
       margin-right: 1
-      icon-offset: 0 3
       @onClick: modules.game_actionbar.changeLockStatus(self, "Right")
       $pressed:
-        icon-offset: 1 4
+        icon-offset: 1 1
   Panel
     id: gameBottomActionPanel
     phantom: true

@@ -151,21 +151,9 @@ ConsoleTabBarPanel < MoveableTabBarPanel
     anchors.right: parent.right
     step: 14
     pixels-scroll: true
-    margin-top: 4
+    margin-top: 3
     margin-right: 4
-    margin-bottom: 4
-
-    UIButton
-      id: decrementButton
-      margin-top: -1
-
-    UIButton
-      id: incrementButton
-      margin-bottom: -1
-
-    UIButton
-      id: sliderButton
-      margin-bottom: -2
+    margin-bottom: 3
 
 ConsoleTabBarButton < UIButton
   size: 96 18
