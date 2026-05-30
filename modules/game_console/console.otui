@@ -137,7 +137,7 @@ ConsoleTabBarPanel < MoveableTabBarPanel
     padding-right: 12
     padding-left: 4
     padding-top: 4
-    padding-bottom: 7
+    padding-bottom: 15
     vertical-scrollbar: consoleScrollBar
     layout:
       type: verticalBox
