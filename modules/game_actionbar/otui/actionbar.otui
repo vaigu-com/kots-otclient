@@ -6,7 +6,7 @@ ActionButton < UIButton
   Item
     id: item
     anchors.fill: parent
-    padding: 1
+    padding: 0
     virtual: true
     draggable: true
     &selectable: true
@@ -32,6 +32,7 @@ ActionButton < UIButton
       id: gray
       anchors.fill: parent
       image-source: /images/ui/ditherpattern
+      image-repeated: true
       visible: false
     Label
       id: text
@@ -46,6 +47,7 @@ ActionButton < UIButton
         id: gray
         anchors.fill: parent
         image-source: /images/ui/ditherpattern
+        image-repeated: true
         visible: false
 
   Label
