@@ -196,7 +196,7 @@ Panel
     anchors.bottom: consoleTextEdit.top
     margin-left: 3
     margin-right: 2
-    margin-bottom: 0
+    margin-bottom: 2
     margin-top: 21
     padding: 1
     focusable: false
@@ -209,7 +209,7 @@ Panel
     anchors.bottom: consoleTextEdit.top
     margin-left: 2
     margin-right: 6
-    margin-bottom: 0
+    margin-bottom: 2
     margin-top: 21
     padding: 1
     focusable: false
