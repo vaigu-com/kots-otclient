@@ -80,7 +80,7 @@ ActionButton < UIButton
 
   UIProgressRect
     id: cooldown
-    background: #101010dd
+    background: #000000b4
     percent: 100
     focusable: false
     phantom: true
