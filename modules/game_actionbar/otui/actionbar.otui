@@ -57,10 +57,12 @@ ActionButton < UIButton
     margin-right: 1
     text-offset: 0 -2
     text-allign: right
-    text-auto-resize: true
+    text-horizontal-auto-resize: true
+    height: 14
     text-wrap: false
     phantom: true
     font: verdana-8px-rounded
+    color: #ffffffff
 
   Label
     id: parameterText
