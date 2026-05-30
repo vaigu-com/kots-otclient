@@ -98,7 +98,9 @@ ConsoleLabel < UITextEdit
   font: verdana-11px-monochrome
   height: 14
   color: yellow
-  margin-left: 2
+  margin-left: 12
+  margin-top: 2
+  margin-bottom: -3
   text-wrap: true
   text-auto-resize: true
   selection-color: #f4f4f4ff
