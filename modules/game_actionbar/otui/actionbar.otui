@@ -84,8 +84,12 @@ ActionButton < UIButton
     percent: 100
     focusable: false
     phantom: true
-    anchors.fill: parent
-    margin: 1 1 1 1
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-top: 1
+    margin-left: 1
     font: verdana-11px-rounded
     color: #dfdfe9
     text-offset: 0 -1

@@ -78,7 +78,12 @@ SideActionButton < UIButton
     percent: 100
     focusable: false
     phantom: true
-    anchors.fill: parent
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-top: 1
+    margin-left: 1
     font: verdana-11px-rounded
     color: white
     border-color: #9fa0a0
