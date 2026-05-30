@@ -80,13 +80,15 @@ ActionButton < UIButton
 
   UIProgressRect
     id: cooldown
-    background: #101010aa
+    background: #101010dd
     percent: 100
     focusable: false
     phantom: true
     anchors.fill: parent
+    margin: 1 1 1 1
     font: verdana-11px-rounded
     color: #dfdfe9
+    text-offset: 0 -1
     border-color: #9fa0a0
   
   Panel
