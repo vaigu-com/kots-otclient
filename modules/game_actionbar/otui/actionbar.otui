@@ -163,6 +163,7 @@ RightSliders < Panel
     anchors.top: parent.top
     anchors.right: parent.right
     margin-right: -1
+    margin-top: 1
     @onClick: modules.game_actionbar.moveActionButtons(self)
     image-source: /images/game/actionbar/arrow-right
     image-clip: 0 0 17 17
@@ -184,7 +185,7 @@ RightSliders < Panel
     anchors.top: parent.top
     anchors.right: parent.right
     margin-right: -1
-    margin-top: 17
+    margin-top: 18
     @onClick: modules.game_actionbar.moveActionButtons(self)
     on: true
     image-source: /images/game/actionbar/double-arrow-right
