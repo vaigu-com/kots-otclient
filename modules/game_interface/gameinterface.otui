@@ -141,9 +141,10 @@ UIWidget
       anchors.top: parent.top
       anchors.right: parent.right
       margin-right: 1
+      icon-offset: 0 3
       @onClick: modules.game_actionbar.changeLockStatus(self, "Right")
       $pressed:
-        icon-offset: 1 1
+        icon-offset: 1 4
   Panel
     id: gameBottomActionPanel
     phantom: true
