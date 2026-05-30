@@ -197,7 +197,7 @@ Panel
   padding-bottom: 0
 
   $on:
-    height: 36
+    height: 38
     visible: true
 
   $!on:
