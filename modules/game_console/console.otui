@@ -96,11 +96,11 @@ ExcludeNameWindow < NewMainWindow
 
 ConsoleLabel < UITextEdit
   font: verdana-11px-monochrome
-  height: 14
+  height: 16
   color: yellow
   margin-left: 12
-  margin-top: 2
-  margin-bottom: -3
+  margin-top: 5
+  margin-bottom: -8
   text-wrap: true
   text-auto-resize: true
   selection-color: #f4f4f4ff
@@ -114,7 +114,7 @@ ConsoleLabel < UITextEdit
 
 ConsolePhantomLabel < UILabel
   font: verdana-11px-monochrome
-  height: 14
+  height: 16
   color: yellow
   text-wrap: true
   text-auto-resize: true
