@@ -86,7 +86,7 @@ ActionButton < UIButton
     phantom: true
     anchors.fill: parent
     font: verdana-11px-rounded
-    color: white
+    color: #dfdfe9
     border-color: #9fa0a0
   
   Panel
