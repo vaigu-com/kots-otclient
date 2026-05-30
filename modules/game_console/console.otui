@@ -137,7 +137,7 @@ ConsoleTabBarPanel < MoveableTabBarPanel
     padding-right: 12
     padding-left: 4
     padding-top: 4
-    padding-bottom: 4
+    padding-bottom: 7
     vertical-scrollbar: consoleScrollBar
     layout:
       type: verticalBox
@@ -466,7 +466,7 @@ Panel
     margin-bottom: 4
     shift-navigation: true
     max-length: 255
-    height: 18
+    height: 16
     placeholder:  "Type here to chat"
     placeholder-color: #707070
     @onTextChange: onTextChange(self:getText())
