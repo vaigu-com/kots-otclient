@@ -72,7 +72,8 @@ enum FlagProp : uint64_t
     PropUpdateChildrenIndexStates = 1 << 24,
     PropDisableUpdateTemporarily = 1 << 25,
     PropApplyAnchorAlignment = 1 << 26,
-    PropUpdateSize = 1 << 27
+    PropUpdateSize = 1 << 27,
+    PropTextRTL = 1 << 28
 };
 
 enum class DisplayType : uint8_t
@@ -1091,6 +1092,8 @@ public:
         updateText();
     }
     void setTextOnlyUpperCase(const bool textOnlyUpperCase) { setProp(PropTextOnlyUpperCase, textOnlyUpperCase); setText(m_text); }
+    void setTextRTL(const bool rtl) { setProp(PropTextRTL, rtl); }
+    bool isTextRTL() const { return hasProp(PropTextRTL); }
     void setFont(std::string_view fontName);
     void setTTFFont(std::string_view fontName, int fontSize = 12, int strokeWidth = 0, const Color& strokeColor = Color::black);
     void setStroke(int strokeWidth, const Color& strokeColor = Color::black);

@@ -59,6 +59,7 @@ ActionButton < UIButton
     text-offset: 0 0
     text-allign: right
     text-horizontal-auto-resize: true
+    text-rtl: true
     height: 14
     text-wrap: false
     phantom: true
