@@ -99,7 +99,7 @@ ConsoleLabel < UITextEdit
   height: 16
   color: yellow
   margin-left: 12
-  margin-top: 2
+  margin-top: 0
   margin-bottom: -3
   text-wrap: true
   text-auto-resize: true
@@ -135,7 +135,7 @@ ConsoleTabBarPanel < MoveableTabBarPanel
     image-border: 4
     padding: 1
     padding-right: 12
-    padding-left: 4
+    padding-left: -3
     padding-top: 4
     padding-bottom: 2
     vertical-scrollbar: consoleScrollBar
@@ -196,7 +196,7 @@ Panel
     anchors.bottom: consoleTextEdit.top
     margin-left: 3
     margin-right: 2
-    margin-bottom: 4
+    margin-bottom: 2
     margin-top: 21
     padding: 1
     focusable: false
@@ -209,7 +209,7 @@ Panel
     anchors.bottom: consoleTextEdit.top
     margin-left: 2
     margin-right: 6
-    margin-bottom: 4
+    margin-bottom: 2
     margin-top: 21
     padding: 1
     focusable: false
