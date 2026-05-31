@@ -263,7 +263,8 @@ MiniWindow
     anchors.top: prev.bottom
     anchors.left: parent.left
     anchors.right: parent.right
-    margin-right: 3
+    margin-left: 2
+    margin-right: 4
     margin-top: 0
     height: 2
     color: #cccccc

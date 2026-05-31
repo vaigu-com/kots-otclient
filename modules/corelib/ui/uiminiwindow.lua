@@ -232,9 +232,31 @@ function UIMiniWindow:onDragEnter(mousePos)
         self.oldParentDrag = parent
         self.oldParentDragIndex = parent:getChildIndex(self)
         local containerParent = parent:getParent()
+
+        local dragRect = self:getRect()
+
         parent:removeChild(self)
         containerParent:addChild(self)
         parent:saveChildren()
+
+        -- Keep the silver bottom line on the stationary window instead of
+        -- letting it float away with the dragged window.
+        local line = self:getChildById('emptyTopLine')
+        if line then
+            line:setVisible(false)
+        end
+        parent:updateBottomSeparators()
+
+        -- Dark placeholder marking where the window came from, until it is
+        -- dropped somewhere (matches cipclient).
+        if self.dropPlaceholder then
+            self.dropPlaceholder:destroy()
+            self.dropPlaceholder = nil
+        end
+        local placeholder = g_ui.createWidget('MiniWindowDropPlaceholder', containerParent)
+        placeholder:setRect(dragRect)
+        self.dropPlaceholder = placeholder
+        self:raise()
     end
 
     local oldPos = self:getPosition()
@@ -248,6 +270,11 @@ function UIMiniWindow:onDragEnter(mousePos)
 end
 
 function UIMiniWindow:onDragLeave(droppedWidget, mousePos)
+    if self.dropPlaceholder then
+        self.dropPlaceholder:destroy()
+        self.dropPlaceholder = nil
+    end
+
     if self.movedWidget then
         self.setMovedChildMargin(self.movedOldMargin or 0)
         self.movedWidget = nil
