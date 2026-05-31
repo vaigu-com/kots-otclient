@@ -77,7 +77,7 @@ UIWidget
     anchors.bottom: bottomSplitter.top
     margin-top: 4
     margin-left: 1
-    padding-top: 1
+    padding-top: 2
     border-width-right: 1
     border-color-right: #292929
     width: 36
@@ -102,7 +102,7 @@ UIWidget
       size: 34 16
       anchors.top: parent.top
       anchors.right: parent.right
-      margin-right: 2
+      margin-right: 3
       @onClick: modules.game_actionbar.changeLockStatus(self, "Left")
       $pressed:
         icon-offset: 1 1
