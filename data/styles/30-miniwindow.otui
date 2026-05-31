@@ -230,6 +230,15 @@ MiniWindow < UIMiniWindow
     margin-right: 3
     background: #ffffff88
 
+  HorizontalSeparator
+    id: bottomLine
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-left: 3
+    margin-right: 3
+    visible: false
+
 MiniWindowContents < ScrollablePanel
   id: contentsPanel
   anchors.top: miniwindowHeader.bottom
