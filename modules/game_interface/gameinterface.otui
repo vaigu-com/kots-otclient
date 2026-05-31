@@ -198,9 +198,9 @@ UIWidget
     phantom: true
     focusable: false
     anchors.top: gameTopPanel.bottom
-    anchors.left: gameLeftExtraPanel.right
+    anchors.left: gameLeftActionPanel.left
+    anchors.right: gameLeftActionPanel.right
     anchors.bottom: gameLeftActionPanel.top
-    width: 36
     image-source: /images/ui/actionbar/actionbar_background-light
     image-border: 1
     border-width-right: 1
@@ -211,10 +211,9 @@ UIWidget
     phantom: true
     focusable: false
     anchors.top: gameTopPanel.bottom
-    anchors.right: gameRightExtraPanel.left
+    anchors.left: gameRightActionPanel.left
+    anchors.right: gameRightActionPanel.right
     anchors.bottom: gameRightActionPanel.top
-    margin-right: 1
-    width: 36
     image-source: /images/ui/actionbar/actionbar_background-light
     image-border: 1
 // end actionsbar
@@ -265,6 +264,7 @@ UIWidget
     anchors.right: parent.right
     anchors.top: gameMainRightPanel.bottom
     anchors.bottom: parent.bottom
+    margin-top: 1
     focusable: false
     on: true
 
