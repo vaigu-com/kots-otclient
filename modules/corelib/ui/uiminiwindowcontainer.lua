@@ -23,9 +23,13 @@ function UIMiniWindowContainer:fitAll(noRemoveChild)
 
     if not noRemoveChild then
         local children = self:getChildren()
-        if #children > 0 then
-            noRemoveChild = children[#children]
-        else
+        for i = #children, 1, -1 do
+            if not children[i].isColumnFiller then
+                noRemoveChild = children[i]
+                break
+            end
+        end
+        if not noRemoveChild then
             return
         end
     end
@@ -33,7 +37,7 @@ function UIMiniWindowContainer:fitAll(noRemoveChild)
     local sumHeight = 0
     local children = self:getChildren()
     for i = 1, #children do
-        if children[i]:isVisible() then
+        if children[i]:isVisible() and not children[i].isColumnFiller then
             sumHeight = sumHeight + children[i]:getHeight()
         end
     end
@@ -61,7 +65,7 @@ function UIMiniWindowContainer:fitAll(noRemoveChild)
         end
 
         local child = children[i]
-        if child ~= noRemoveChild and not child.save then
+        if child ~= noRemoveChild and not child.save and not child.isColumnFiller then
             local childHeight = child:getHeight()
             sumHeight = sumHeight - childHeight
             table.insert(removeChildren, child)
@@ -75,7 +79,7 @@ function UIMiniWindowContainer:fitAll(noRemoveChild)
         end
 
         local child = children[i]
-        if child ~= noRemoveChild and child:isVisible() then
+        if child ~= noRemoveChild and child:isVisible() and not child.isColumnFiller then
             local childHeight = child:getHeight()
             sumHeight = sumHeight - childHeight
             table.insert(removeChildren, child)
@@ -88,22 +92,36 @@ function UIMiniWindowContainer:fitAll(noRemoveChild)
     end
 end
 
--- Shows two silver lines just below the bottom-most window, so the empty
--- area underneath it gets a closing top border (matches cipclient).
 function UIMiniWindowContainer:updateBottomSeparators()
+    local filler = self:getChildById('columnFiller')
+    if not filler then
+        filler = g_ui.createWidget('EmptyColumnFiller')
+        filler:setId('columnFiller')
+        filler.isColumnFiller = true
+        filler.miniLoaded = true
+        self:addChild(filler)
+    end
+
     local children = self:getChildren()
-    local lastVisible = nil
+    if children[#children] ~= filler then
+        self:removeChild(filler)
+        self:addChild(filler)
+    end
+
+    local sumHeight = 0
+    children = self:getChildren()
     for i = 1, #children do
-        if children[i]:isVisible() then
-            lastVisible = children[i]
+        if children[i]:isVisible() and children[i] ~= filler then
+            sumHeight = sumHeight + children[i]:getHeight()
         end
     end
-    for i = 1, #children do
-        local line = children[i].getChildById and children[i]:getChildById('emptyTopLine')
-        if line then
-            line:setVisible(children[i] == lastVisible)
-        end
+
+    local selfHeight = self:getHeight() - (self:getPaddingTop() + self:getPaddingBottom())
+    local remaining = selfHeight - sumHeight
+    if remaining < 2 then
+        remaining = 2
     end
+    filler:setHeight(remaining)
 end
 
 function UIMiniWindowContainer:fits(child, minContentHeight, maxContentHeight)
@@ -118,7 +136,7 @@ function UIMiniWindowContainer:fits(child, minContentHeight, maxContentHeight)
     local totalHeight = 0
     local children = self:getChildren()
     for i = 1, #children do
-        if children[i]:isVisible() then
+        if children[i]:isVisible() and not children[i].isColumnFiller then
             totalHeight = totalHeight + children[i]:getHeight()
         end
     end
@@ -221,13 +239,13 @@ end
 function UIMiniWindowContainer:order()
     local children = self:getChildren()
     for i = 1, #children do
-        if not children[i].miniLoaded then
+        if not children[i].miniLoaded and not children[i].isColumnFiller then
             return
         end
     end
 
     for i = 1, #children do
-        if children[i].miniIndex then
+        if children[i].miniIndex and not children[i].isColumnFiller then
             self:swapInsert(children[i], children[i].miniIndex)
         end
     end

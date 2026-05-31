@@ -230,53 +230,17 @@ MiniWindow < UIMiniWindow
     margin-right: 3
     background: #ffffff88
 
-  UIWidget
-    id: emptyTopLine
-    anchors.top: parent.bottom
-    anchors.left: parent.left
-    anchors.right: parent.right
-    height: 2
-    background-color: #767677
-    phantom: true
-    visible: false
-
-MiniWindowDropPlaceholder < UIWidget
-  image-source: /images/ui/miniwindow_body
+EmptyColumnFiller < UIWidget
+  image-source: /images/ui/2pixel_up_frame_borderimage
   image-border: 4
-  image-border-top: 4
-  image-border-bottom: 4
   phantom: true
   focusable: false
 
-  UIWidget
-    id: darkFill
-    anchors.fill: parent
-    margin: 4
-    background-color: #000000aa
-    phantom: true
-
-  UIWidget
-    id: bevelHighlight
-    anchors.top: parent.top
-    anchors.left: parent.left
-    anchors.right: parent.right
-    margin-top: 17
-    margin-left: 3
-    margin-right: 3
-    height: 1
-    background-color: #66666660
-    phantom: true
-
-  UIWidget
-    id: bevelShadow
-    anchors.top: prev.bottom
-    anchors.left: parent.left
-    anchors.right: parent.right
-    margin-left: 3
-    margin-right: 3
-    height: 1
-    background-color: #31313180
-    phantom: true
+MiniWindowDropPlaceholder < UIWidget
+  image-source: /images/ui/2pixel_up_frame_borderimage_dark
+  image-border: 4
+  phantom: true
+  focusable: false
 
 MiniWindowContents < ScrollablePanel
   id: contentsPanel

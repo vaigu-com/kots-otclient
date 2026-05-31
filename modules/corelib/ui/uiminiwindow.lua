@@ -224,12 +224,8 @@ end
 
 function UIMiniWindow:destroyDropPlaceholder()
     if self.dropPlaceholder then
-        if self.dropPlaceholderParent then
-            self.dropPlaceholderParent:removeChild(self.dropPlaceholder)
-        end
         self.dropPlaceholder:destroy()
         self.dropPlaceholder = nil
-        self.dropPlaceholderParent = nil
     end
 end
 
@@ -244,30 +240,24 @@ function UIMiniWindow:onDragEnter(mousePos)
         self.oldParentDragIndex = parent:getChildIndex(self)
         local containerParent = parent:getParent()
 
+        local dragPos = self:getPosition()
+        local dragWidth = self:getWidth()
         local dragHeight = self:getHeight()
 
         parent:removeChild(self)
         containerParent:addChild(self)
         parent:saveChildren()
 
-        -- Keep the silver bottom line on the stationary window instead of
-        -- letting it float away with the dragged window.
-        local line = self:getChildById('emptyTopLine')
-        if line then
-            line:setVisible(false)
-        end
-
-        -- Hold the vacated slot with a dark empty-window placeholder until the
-        -- window is dropped somewhere (matches cipclient).
-        self:destroyDropPlaceholder()
-        local placeholder = g_ui.createWidget('MiniWindowDropPlaceholder')
-        placeholder.isDropPlaceholder = true
-        placeholder:setHeight(dragHeight)
-        parent:insertChild(self.oldParentDragIndex, placeholder)
-        self.dropPlaceholder = placeholder
-        self.dropPlaceholderParent = parent
-
         parent:updateBottomSeparators()
+
+        self:destroyDropPlaceholder()
+        local placeholder = g_ui.createWidget('MiniWindowDropPlaceholder', containerParent)
+        placeholder.isDropPlaceholder = true
+        placeholder:setPosition(dragPos)
+        placeholder:setWidth(dragWidth)
+        placeholder:setHeight(dragHeight)
+        self.dropPlaceholder = placeholder
+        self:raise()
     end
 
     local oldPos = self:getPosition()
@@ -300,6 +290,7 @@ function UIMiniWindow:onDragLeave(droppedWidget, mousePos)
             local virtualParent = self:getParent()
             virtualParent:removeChild(self)
             self.oldParentDrag:insertChild(self.oldParentDragIndex, self)
+            self.oldParentDrag:updateBottomSeparators()
             self.movedWidget = nil
         end
     end
@@ -312,7 +303,7 @@ function UIMiniWindow:onDragMove(mousePos, mouseMoved)
     local overAnyWidget = false
     for i = 1, #children do
         local child = children[i]
-        if child:getParent():getClassName() == 'UIMiniWindowContainer' and not child.isDropPlaceholder then
+        if child:getParent():getClassName() == 'UIMiniWindowContainer' and not child.isDropPlaceholder and not child.isColumnFiller then
             overAnyWidget = true
 
             local childCenterY = child:getY() + child:getHeight() / 2
