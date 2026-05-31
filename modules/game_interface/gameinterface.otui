@@ -77,7 +77,7 @@ UIWidget
     anchors.bottom: bottomSplitter.top
     margin-top: 4
     margin-left: 1
-    padding-top: 2
+    padding-top: 0
     border-width-right: 1
     border-color-right: #292929
     width: 36
