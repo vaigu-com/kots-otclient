@@ -462,11 +462,8 @@ end
 
 function UIMiniWindow:fitOnParent()
     local parent = self:getParent()
-    if parent and parent:getClassName() == 'UIMiniWindowContainer' then
-        if self:isVisible() then
-            parent:fitAll(self)
-        end
-        parent:updateBottomSeparators()
+    if self:isVisible() and parent and parent:getClassName() == 'UIMiniWindowContainer' then
+        parent:fitAll(self)
     end
 end
 

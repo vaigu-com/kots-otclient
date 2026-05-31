@@ -88,24 +88,6 @@ function UIMiniWindowContainer:fitAll(noRemoveChild)
     end
 end
 
--- Shows a 2px bottom line only on the last visible window in the stack,
--- so a window with no window below it gets a closing separator.
-function UIMiniWindowContainer:updateBottomSeparators()
-    local children = self:getChildren()
-    local lastVisible = nil
-    for i = 1, #children do
-        if children[i]:isVisible() then
-            lastVisible = children[i]
-        end
-    end
-    for i = 1, #children do
-        local line = children[i].getChildById and children[i]:getChildById('bottomLine')
-        if line then
-            line:setVisible(children[i] == lastVisible)
-        end
-    end
-end
-
 function UIMiniWindowContainer:fits(child, minContentHeight, maxContentHeight)
     if self.ignoreFillAll then
         return 0
@@ -162,7 +144,6 @@ function UIMiniWindowContainer:onDrop(widget, mousePos)
             widget:getParent():setWidth(190)
         end
         self:fitAll(widget)
-        self:updateBottomSeparators()
         return true
     end
 end
@@ -227,8 +208,6 @@ function UIMiniWindowContainer:order()
             self:swapInsert(children[i], children[i].miniIndex)
         end
     end
-
-    self:updateBottomSeparators()
 end
 
 function UIMiniWindowContainer:saveChildren()

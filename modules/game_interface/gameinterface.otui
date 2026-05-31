@@ -192,6 +192,31 @@ UIWidget
     layout:
       type: verticalBox
       fit-children: true
+
+  UIWidget
+    id: leftActionPanelFiller
+    phantom: true
+    focusable: false
+    anchors.top: gameTopPanel.bottom
+    anchors.left: gameLeftExtraPanel.right
+    anchors.bottom: gameLeftActionPanel.top
+    width: 36
+    image-source: /images/ui/actionbar/actionbar_background-light
+    image-border: 1
+    border-width-right: 1
+    border-color-right: #292929
+
+  UIWidget
+    id: rightActionPanelFiller
+    phantom: true
+    focusable: false
+    anchors.top: gameTopPanel.bottom
+    anchors.right: gameRightExtraPanel.left
+    anchors.bottom: gameRightActionPanel.top
+    margin-right: 1
+    width: 36
+    image-source: /images/ui/actionbar/actionbar_background-light
+    image-border: 1
 // end actionsbar
   GameBottomPanel
     id: gameBottomPanel

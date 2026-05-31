@@ -1980,6 +1980,8 @@ function applyExtendedViewLayout(extendedView)
         gameRightActionPanel:setImageSource(nil)
         gameLeftActionPanel:setBorderWidthRight(0)
         gameRightActionPanel:setBorderWidthLeft(0)
+        gameRootPanel:getChildById('leftActionPanelFiller'):setImageSource(nil)
+        gameRootPanel:getChildById('rightActionPanelFiller'):setImageSource(nil)
     else
         -- Reset to normal view
         gameMainRightPanel:setHeight(200)
@@ -1989,6 +1991,8 @@ function applyExtendedViewLayout(extendedView)
         gameRightActionPanel:setImageSource('/images/ui/actionbar/actionbar_background-light')
         gameLeftActionPanel:setBorderWidthRight(1)
         gameRightActionPanel:setBorderWidthLeft(0)
+        gameRootPanel:getChildById('leftActionPanelFiller'):setImageSource('/images/ui/actionbar/actionbar_background-light')
+        gameRootPanel:getChildById('rightActionPanelFiller'):setImageSource('/images/ui/actionbar/actionbar_background-light')
         for _, btn in ipairs(buttons) do
             btn:setMarginTop(0)
             btn:show()

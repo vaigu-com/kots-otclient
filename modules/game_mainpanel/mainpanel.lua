@@ -47,7 +47,7 @@ function reloadMainPanelSizes()
     if not main_panel or not right_panel then
         return
     end
-    local total_height = 1
+    local total_height = 0
     for _, panel in ipairs(main_panel:getChildren()) do
         if panel.panelHeight ~= nil then
             if panel:isVisible() then
