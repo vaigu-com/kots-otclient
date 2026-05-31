@@ -328,56 +328,43 @@ function UIMiniWindow:onDragEnter(mousePos)
     return true
 end
 
--- Rule 1: shuffle the placeholder up/down past neighbours within its column,
--- driven by the dragged window's leading edges crossing neighbour midpoints.
+-- Rule 1: shuffle the placeholder one slot up/down past a neighbour within its
+-- column. Driven by the dragged window's centre crossing a neighbour's centre,
+-- which is monotonic: a swap pushes the neighbour's centre further past ours, so
+-- the reverse swap can never immediately re-fire (no oscillation). At most one
+-- step per drag event; onDragMove fires often enough to catch up.
 function UIMiniWindow:reorderPlaceholderSameColumn(column)
     local dp = self.dropPlaceholder
     if not dp then
         return
     end
 
-    local topEdge = self:getY()
-    local bottomEdge = self:getY() + self:getHeight()
+    local center = self:getY() + self:getHeight() / 2
+    local children = column:getChildren()
+    local dpIndex = column:getChildIndex(dp)
 
-    local moved = true
-    while moved do
-        moved = false
-        local children = column:getChildren()
-        local dpIndex = column:getChildIndex(dp)
+    local upRW, downRW
+    for i = dpIndex - 1, 1, -1 do
+        if isRegularWindow(children[i]) and children[i]:isDraggable() then
+            upRW = children[i]
+            break
+        end
+    end
+    for i = dpIndex + 1, #children do
+        if isRegularWindow(children[i]) and children[i]:isDraggable() then
+            downRW = children[i]
+            break
+        end
+    end
 
-        local upRW, downRW
-        for i = dpIndex - 1, 1, -1 do
-            if isRegularWindow(children[i]) then
-                upRW = children[i]
-                break
-            end
-        end
-        for i = dpIndex + 1, #children do
-            if isRegularWindow(children[i]) then
-                downRW = children[i]
-                break
-            end
-        end
-
-        if upRW and upRW:isDraggable() then
-            local mid = upRW:getY() + upRW:getHeight() / 2
-            if topEdge < mid then
-                column:removeChild(dp)
-                column:insertChild(column:getChildIndex(upRW), dp)
-                column:updateBottomSeparators()
-                moved = true
-            end
-        end
-
-        if not moved and downRW and downRW:isDraggable() then
-            local mid = downRW:getY() + downRW:getHeight() / 2
-            if bottomEdge >= mid then
-                column:removeChild(dp)
-                column:insertChild(column:getChildIndex(downRW) + 1, dp)
-                column:updateBottomSeparators()
-                moved = true
-            end
-        end
+    if upRW and center < (upRW:getY() + upRW:getHeight() / 2) then
+        column:removeChild(dp)
+        column:insertChild(column:getChildIndex(upRW), dp)
+        column:updateBottomSeparators()
+    elseif downRW and center > (downRW:getY() + downRW:getHeight() / 2) then
+        column:removeChild(dp)
+        column:insertChild(column:getChildIndex(downRW) + 1, dp)
+        column:updateBottomSeparators()
     end
 end
 

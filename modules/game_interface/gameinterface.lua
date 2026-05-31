@@ -1853,7 +1853,7 @@ end
 
 local function movePanel(mainpanel)
     for _, widget in pairs(mainpanel:getChildren()) do
-        if widget then
+        if widget and not widget.isColumnFiller and not widget.isDropPlaceholder then
             local panel = modules.game_interface.findContentPanelAvailable(widget, widget:getMinimumHeight())
             if panel then
                 if not panel:hasChild(widget) then

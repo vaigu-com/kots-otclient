@@ -24,7 +24,7 @@ function UIMiniWindowContainer:fitAll(noRemoveChild)
     if not noRemoveChild then
         local children = self:getChildren()
         for i = #children, 1, -1 do
-            if not children[i].isColumnFiller then
+            if not children[i].isColumnFiller and not children[i].isDropPlaceholder then
                 noRemoveChild = children[i]
                 break
             end
@@ -65,7 +65,7 @@ function UIMiniWindowContainer:fitAll(noRemoveChild)
         end
 
         local child = children[i]
-        if child ~= noRemoveChild and not child.save and not child.isColumnFiller then
+        if child ~= noRemoveChild and not child.save and not child.isColumnFiller and not child.isDropPlaceholder then
             local childHeight = child:getHeight()
             sumHeight = sumHeight - childHeight
             table.insert(removeChildren, child)
@@ -79,7 +79,7 @@ function UIMiniWindowContainer:fitAll(noRemoveChild)
         end
 
         local child = children[i]
-        if child ~= noRemoveChild and child:isVisible() and not child.isColumnFiller then
+        if child ~= noRemoveChild and child:isVisible() and not child.isColumnFiller and not child.isDropPlaceholder then
             local childHeight = child:getHeight()
             sumHeight = sumHeight - childHeight
             table.insert(removeChildren, child)
@@ -136,7 +136,7 @@ function UIMiniWindowContainer:fits(child, minContentHeight, maxContentHeight)
     local totalHeight = 0
     local children = self:getChildren()
     for i = 1, #children do
-        if children[i]:isVisible() and not children[i].isColumnFiller then
+        if children[i]:isVisible() and not children[i].isColumnFiller and not children[i].isDropPlaceholder then
             totalHeight = totalHeight + children[i]:getHeight()
         end
     end
