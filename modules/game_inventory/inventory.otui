@@ -98,7 +98,7 @@ PhantomMiniWindow
       image-clip: 0 0 20 20
       anchors.right: parent.right
       anchors.top: changeSize.top
-      margin-right: 7
+      margin-right: 8
       size: 20 20
       @onClick: |
         selectPosture('stand')
@@ -144,18 +144,18 @@ PhantomMiniWindow
     UICheckBox
       id: pvp
       image-source: /images/game/combatmodes/onPanel
-      size: 44 21
-      image-clip: 0 0 44 21
+      size: 44 20
+      image-clip: 0 0 44 20
       margin: 2 4
       anchors.right: standPosture.right
       anchors.top: expert.bottom
-      margin-top: 4
+      margin-top: 1
       margin-right: 0
       phantom: false
-      size: 44 21
+      size: 44 20
 
       $checked:
-        image-clip: 0 20 44 21
+        image-clip: 0 20 44 20
 
 
     WhiteHandBox
@@ -163,7 +163,7 @@ PhantomMiniWindow
       anchors.right: parent.right
       anchors.top: pvp.bottom
       margin-right: 8
-      margin-top: 5
+      margin-top: 3
 
     RedFistBox
       id: redFistBox
@@ -241,9 +241,11 @@ PhantomMiniWindow
       anchors.left: defense.left
       anchors.right: standPosture.right
       anchors.bottom: parent.bottom
+      margin-left: -3
       font: cipsoftFont
       color: #c0c0c0ff
-      size: 44 13
+      size: 44 15
+      text-offset: 0 0
       @onClick: |
         g_game.stop()
         g_game.getLocalPlayer():stopAutoWalk()
@@ -273,14 +275,14 @@ PhantomMiniWindow
       id: helmet
       anchors.top: changeSize.top
       anchors.left: amulet.right
-      margin-left: 3
+      margin-left: 4
       &slotPosition: {x = 65535, y = 1, z = 0}
 
     MainInventoryItem
       id: backpack
       anchors.top: amulet.top
       anchors.left: helmet.right
-      margin-left: 3
+      margin-left: 4
       &slotPosition: {x = 65535, y = 3, z = 0}
 
     MainInventoryItem

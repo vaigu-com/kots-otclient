@@ -1,13 +1,13 @@
 PhantomMiniWindow
   id: mainoptionspanel
-  height: 28
-  &panelHeight: 28
+  height: 17
+  &panelHeight: 17
   on: true
 
   UIWidget
     id: offPanel
     anchors.fill: parent
-    margin-top: 8
+    margin-top: 2
     phantom: true
 
     Button
@@ -25,7 +25,7 @@ PhantomMiniWindow
   UIWidget
     id: onPanel
     anchors.fill: parent
-    margin-top: 8
+    margin-top: 2
     phantom: true
 
     UIWidget
@@ -47,16 +47,16 @@ PhantomMiniWindow
 
     Button
       id: resizer
-      size: 44 20
+      size: 42 20
       image-source: /images/options/button_enlarge
-      image-clip: 0 0 44 20
+      image-clip: 2 0 42 20
       anchors.top: parent.top
       anchors.right: parent.right
-      margin-right: 8
+      margin-right: 6
       @onClick: changeOptionsSize()
 
       $pressed !disabled:
-        image-clip: 0 20 44 20
+        image-clip: 2 20 42 20
 
     UIWidget
       id: options

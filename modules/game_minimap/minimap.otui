@@ -2,16 +2,16 @@ PhantomMiniWindow
   id: mainmappanel
   draggable: true
   phantom: false
-  &panelHeight: 116
-  height: 116
+  &panelHeight: 115
+  height: 115
 
   UIWidget
     id: minimapBorder
     anchors.top: parent.top
     anchors.left: parent.left
-    margin-top: 5
+    margin-top: 2
     margin-left: 8
-    size: 115 111
+    size: 108 111
     image-source: /images/ui/1pixel_down_frame
 
     Minimap
@@ -31,12 +31,14 @@ PhantomMiniWindow
       image-source: /images/automap/automap_indicator_maplayers
       anchors.left: parent.left
       anchors.bottom: parent.bottom
+      margin-left: -1
       image-clip: 98 0 14 67
       size: 14 67
 
     UIWidget
+      id: layersSeparator
       image-source: /images/ui/vertical_line_dark
-      margin-left: 2
+      margin-left: 3
       margin-top: 4
       margin-bottom: 4
       anchors.left: automapLayers.right
@@ -45,10 +47,21 @@ PhantomMiniWindow
       width: 1
 
     UIWidget
+      id: layersSeparatorLight
+      background-color: #555555
+      margin-top: 4
+      margin-bottom: 4
+      anchors.left: layersSeparator.right
+      anchors.top: parent.top
+      anchors.bottom: parent.bottom
+      width: 1
+
+    UIWidget
       id: layersMark
-      anchors.left: prev.right
+      anchors.left: layersSeparator.right
       anchors.top: automapLayers.top
       image-source: /images/automap/automap_indicator_slider_left
+      margin-left: -1
       margin-top: 28
 
     Button
@@ -89,7 +102,7 @@ PhantomMiniWindow
     image-clip: 0 40 20 20
     anchors.right: fullMap.right
     anchors.bottom: fullMap.top
-    margin-bottom: 2
+    margin-bottom: 3
     size: 20 20
     @onClick: zoomIn()
 
@@ -105,7 +118,7 @@ PhantomMiniWindow
     image-clip: 0 20 20 20
     anchors.right: fullMap.right
     anchors.bottom: zoomIn.top
-    margin-bottom: 2
+    margin-bottom: 3
     size: 20 20
     @onClick: zoomOut()
 
