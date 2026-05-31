@@ -240,6 +240,11 @@ MiniWindow < UIMiniWindow
     phantom: true
     visible: false
 
+MiniWindowDropPlaceholder < UIWidget
+  background-color: #00000099
+  phantom: true
+  focusable: false
+
 MiniWindowContents < ScrollablePanel
   id: contentsPanel
   anchors.top: miniwindowHeader.bottom
