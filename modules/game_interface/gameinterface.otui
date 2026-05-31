@@ -114,7 +114,7 @@ UIWidget
     anchors.bottom: bottomSplitter.top
     margin-right: 1
     margin-top: 1
-    border-width-left: 1
+    border-width-left: 0
     border-color-left: #747474
     width: 36
     image-source: /images/ui/actionbar/actionbar_background-light
@@ -131,8 +131,8 @@ UIWidget
     size: 38 16
     anchors.top: gameRightActionPanel.bottom
     anchors.right: gameRightActionPanel.right
-    margin-top: 3
-    border-width-left: 1
+    margin-top: 6
+    border-width-left: 0
     border-color-left: #747474
     image-source: /images/ui/actionbar/actionbar_background-light
 
@@ -363,6 +363,7 @@ UIWidget
     id: rightIncreaseSidePanels
     anchors.right: gameRightExtraPanel.left
     anchors.top: parent.top
+    margin-right: -1
     image-source: /images/ui/topstats_button_panel
     image-clip: 0 0 9 27
     size: 9 27
