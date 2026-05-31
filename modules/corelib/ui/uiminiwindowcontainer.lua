@@ -88,6 +88,24 @@ function UIMiniWindowContainer:fitAll(noRemoveChild)
     end
 end
 
+-- Shows two silver lines just below the bottom-most window, so the empty
+-- area underneath it gets a closing top border (matches cipclient).
+function UIMiniWindowContainer:updateBottomSeparators()
+    local children = self:getChildren()
+    local lastVisible = nil
+    for i = 1, #children do
+        if children[i]:isVisible() then
+            lastVisible = children[i]
+        end
+    end
+    for i = 1, #children do
+        local line = children[i].getChildById and children[i]:getChildById('emptyTopLine')
+        if line then
+            line:setVisible(children[i] == lastVisible)
+        end
+    end
+end
+
 function UIMiniWindowContainer:fits(child, minContentHeight, maxContentHeight)
     if self.ignoreFillAll then
         return 0
@@ -144,6 +162,7 @@ function UIMiniWindowContainer:onDrop(widget, mousePos)
             widget:getParent():setWidth(190)
         end
         self:fitAll(widget)
+        self:updateBottomSeparators()
         return true
     end
 end
@@ -208,6 +227,8 @@ function UIMiniWindowContainer:order()
             self:swapInsert(children[i], children[i].miniIndex)
         end
     end
+
+    self:updateBottomSeparators()
 end
 
 function UIMiniWindowContainer:saveChildren()
