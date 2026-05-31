@@ -288,8 +288,13 @@ end
 function UIMiniWindow:getHoveredColumn(mousePos)
     local widgets = rootWidget:recursiveGetChildrenByMarginPos(mousePos)
     for i = 1, #widgets do
+        -- Walk up to the enclosing column. Bounded by a hard depth cap so a
+        -- malformed/cyclic parent chain can never spin forever.
         local w = widgets[i]
-        while w do
+        for _ = 1, 32 do
+            if not w or w == rootWidget then
+                break
+            end
             if w:getClassName() == 'UIMiniWindowContainer' then
                 return w
             end
