@@ -140,6 +140,10 @@ function UIMiniWindowContainer:onDrop(widget, mousePos)
     end
 
     if widget.UIMiniWindowContainer then
+        if widget.destroyDropPlaceholder then
+            widget:destroyDropPlaceholder()
+        end
+
         local oldParent = widget:getParent()
         if oldParent == self then
             return true
