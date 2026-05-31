@@ -152,36 +152,110 @@ function UIMiniWindowContainer:fits(child, minContentHeight, maxContentHeight)
     end
 end
 
+-- Rule 3c: the dragged window has no placeholder in this column, so room must
+-- be made by evicting (closing) existing windows from south to north.
+function UIMiniWindowContainer:dropWithEviction(widget, mousePos)
+    local content = self:getHeight() - (self:getPaddingTop() + self:getPaddingBottom())
+    local needed = widget:getHeight()
+
+    -- IB height = free space currently in the column (widget is floating, not a child here)
+    local children = self:getChildren()
+    local used = 0
+    for i = 1, #children do
+        local c = children[i]
+        if c ~= widget and c:isVisible() and not c.isColumnFiller then
+            used = used + c:getHeight()
+        end
+    end
+    local available = content - used
+
+    -- draggable regular windows in north -> south order
+    local rws = {}
+    for i = 1, #children do
+        local c = children[i]
+        if c ~= widget and c.UIMiniWindowContainer and not c.isColumnFiller and not c.isDropPlaceholder and
+            c:isDraggable() then
+            rws[#rws + 1] = c
+        end
+    end
+
+    -- accumulate free space from south to north until the dragged window fits
+    local sum = available
+    local toClose = {}
+    for i = #rws, 1, -1 do
+        if sum >= needed then
+            break
+        end
+        sum = sum + rws[i]:getHeight()
+        toClose[#toClose + 1] = rws[i]
+    end
+
+    local enough = sum >= needed
+    if not enough then
+        -- rule 3c2: even closing every window is not enough; evict them all and
+        -- rescale the dragged window to exactly the remaining IB height.
+        toClose = rws
+    end
+
+    for i = 1, #toClose do
+        toClose[i]:close()
+    end
+
+    if not enough then
+        local usedAfter = 0
+        local nowChildren = self:getChildren()
+        for i = 1, #nowChildren do
+            local c = nowChildren[i]
+            if c ~= widget and c:isVisible() and not c.isColumnFiller then
+                usedAfter = usedAfter + c:getHeight()
+            end
+        end
+        widget:setHeight(content - usedAfter)
+    end
+
+    -- the freed space sits at the south end (just north of the filler)
+    local oldParent = widget:getParent()
+    if oldParent then
+        oldParent:removeChild(widget)
+    end
+    local filler = self:getChildById('columnFiller')
+    if filler then
+        self:insertChild(self:getChildIndex(filler), widget)
+    else
+        self:addChild(widget)
+    end
+end
+
 function UIMiniWindowContainer:onDrop(widget, mousePos)
     if (self.onlyPhantomDrop and not (widget.moveOnlyToMain)) or (widget.moveOnlyToMain and not (self.onlyPhantomDrop)) then
         return true
     end
 
     if widget.UIMiniWindowContainer then
-        if widget.destroyDropPlaceholder then
-            widget:destroyDropPlaceholder()
-        end
+        if widget.dropPlaceholder and widget.dropPlaceholderColumn == self then
+            -- rules 3a/3b: a placeholder already marks the landing slot
+            local index = self:getChildIndex(widget.dropPlaceholder)
+            widget.dropPlaceholder:destroy()
+            widget.dropPlaceholder = nil
+            widget.dropPlaceholderColumn = nil
 
-        local oldParent = widget:getParent()
-        if oldParent == self then
-            return true
-        end
-
-        if oldParent then
-            oldParent:removeChild(widget)
-        end
-
-        if widget.movedWidget then
-            local index = self:getChildIndex(widget.movedWidget)
-            self:insertChild(index + widget.movedIndex, widget)
+            local oldParent = widget:getParent()
+            if oldParent then
+                oldParent:removeChild(widget)
+            end
+            self:insertChild(index, widget)
         else
-            self:addChild(widget)
+            -- rule 3c: no placeholder here, make room by eviction
+            if widget.destroyDropPlaceholder then
+                widget:destroyDropPlaceholder()
+            end
+            self:dropWithEviction(widget, mousePos)
         end
 
         if widget:getId() == "botWindow" and
-            (widget:getParent():getId() == "gameLeftPanel" or widget:getParent():getId() == "gameLeftExtraPanel" or
-                widget:getParent():getId() == "gameRightExtraPanel") then
-            widget:getParent():setWidth(190)
+            (self:getId() == "gameLeftPanel" or self:getId() == "gameLeftExtraPanel" or
+                self:getId() == "gameRightExtraPanel") then
+            self:setWidth(190)
         end
         self:fitAll(widget)
         self:updateBottomSeparators()

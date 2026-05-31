@@ -222,11 +222,81 @@ function UIMiniWindow:onVisibilityChange(visible)
     self:fitOnParent()
 end
 
+local function isRegularWindow(w)
+    return w.UIMiniWindowContainer and not w.isColumnFiller and not w.isDropPlaceholder
+end
+
+-- Free vertical space in a column (the IB height), excluding the filler.
+local function columnFreeHeight(column)
+    local content = column:getHeight() - (column:getPaddingTop() + column:getPaddingBottom())
+    local used = 0
+    local children = column:getChildren()
+    for i = 1, #children do
+        local c = children[i]
+        if c:isVisible() and not c.isColumnFiller then
+            used = used + c:getHeight()
+        end
+    end
+    return content - used
+end
+
+-- Child index where a placeholder should be inserted in `column` so that it
+-- sits north of the first movable window whose midpoint is south of refY.
+-- Immovable (non-draggable) windows act as fixed top anchors.
+local function slotIndexForY(column, refY)
+    local children = column:getChildren()
+    for i = 1, #children do
+        local c = children[i]
+        if isRegularWindow(c) and c:isDraggable() then
+            local mid = c:getY() + c:getHeight() / 2
+            if refY < mid then
+                return column:getChildIndex(c)
+            end
+        end
+    end
+    local filler = column:getChildById('columnFiller')
+    if filler then
+        return column:getChildIndex(filler)
+    end
+    return column:getChildCount() + 1
+end
+
 function UIMiniWindow:destroyDropPlaceholder()
     if self.dropPlaceholder then
+        local column = self.dropPlaceholderColumn
         self.dropPlaceholder:destroy()
         self.dropPlaceholder = nil
+        self.dropPlaceholderColumn = nil
+        if column then
+            column:updateBottomSeparators()
+        end
     end
+end
+
+function UIMiniWindow:createDropPlaceholder(column, index)
+    self:destroyDropPlaceholder()
+    local dp = g_ui.createWidget('MiniWindowDropPlaceholder')
+    dp.isDropPlaceholder = true
+    dp:setHeight(self:getHeight())
+    column:insertChild(index, dp)
+    self.dropPlaceholder = dp
+    self.dropPlaceholderColumn = column
+    column:updateBottomSeparators()
+    self:raise()
+end
+
+function UIMiniWindow:getHoveredColumn(mousePos)
+    local widgets = rootWidget:recursiveGetChildrenByMarginPos(mousePos)
+    for i = 1, #widgets do
+        local w = widgets[i]
+        while w do
+            if w:getClassName() == 'UIMiniWindowContainer' then
+                return w
+            end
+            w = w:getParent()
+        end
+    end
+    return nil
 end
 
 function UIMiniWindow:onDragEnter(mousePos)
@@ -239,25 +309,13 @@ function UIMiniWindow:onDragEnter(mousePos)
         self.oldParentDrag = parent
         self.oldParentDragIndex = parent:getChildIndex(self)
         local containerParent = parent:getParent()
-
-        local dragPos = self:getPosition()
-        local dragWidth = self:getWidth()
-        local dragHeight = self:getHeight()
+        local originIndex = self.oldParentDragIndex
 
         parent:removeChild(self)
         containerParent:addChild(self)
         parent:saveChildren()
 
-        parent:updateBottomSeparators()
-
-        self:destroyDropPlaceholder()
-        local placeholder = g_ui.createWidget('MiniWindowDropPlaceholder', containerParent)
-        placeholder.isDropPlaceholder = true
-        placeholder:setPosition(dragPos)
-        placeholder:setWidth(dragWidth)
-        placeholder:setHeight(dragHeight)
-        self.dropPlaceholder = placeholder
-        self:raise()
+        self:createDropPlaceholder(parent, originIndex)
     end
 
     local oldPos = self:getPosition()
@@ -270,78 +328,139 @@ function UIMiniWindow:onDragEnter(mousePos)
     return true
 end
 
-function UIMiniWindow:onDragLeave(droppedWidget, mousePos)
-    self:destroyDropPlaceholder()
-
-    if self.movedWidget then
-        self.setMovedChildMargin(self.movedOldMargin or 0)
-        self.movedWidget = nil
-        self.setMovedChildMargin = nil
-        self.movedOldMargin = nil
-        self.movedIndex = nil
+-- Rule 1: shuffle the placeholder up/down past neighbours within its column,
+-- driven by the dragged window's leading edges crossing neighbour midpoints.
+function UIMiniWindow:reorderPlaceholderSameColumn(column)
+    local dp = self.dropPlaceholder
+    if not dp then
+        return
     end
 
-    self:saveParent(self:getParent())
+    local topEdge = self:getY()
+    local bottomEdge = self:getY() + self:getHeight()
 
-    -- Note: It seems to prevent the minimap, inventory, and health widgets from moving off the interface panel.
-    if self.moveOnlyToMain or droppedWidget and droppedWidget.onlyPhantomDrop then
-        if not (droppedWidget) or (self.moveOnlyToMain and not (droppedWidget.onlyPhantomDrop)) or
-            (not (self.moveOnlyToMain) and droppedWidget.onlyPhantomDrop) then
-            local virtualParent = self:getParent()
-            virtualParent:removeChild(self)
-            self.oldParentDrag:insertChild(self.oldParentDragIndex, self)
-            self.oldParentDrag:updateBottomSeparators()
-            self.movedWidget = nil
+    local moved = true
+    while moved do
+        moved = false
+        local children = column:getChildren()
+        local dpIndex = column:getChildIndex(dp)
+
+        local upRW, downRW
+        for i = dpIndex - 1, 1, -1 do
+            if isRegularWindow(children[i]) then
+                upRW = children[i]
+                break
+            end
+        end
+        for i = dpIndex + 1, #children do
+            if isRegularWindow(children[i]) then
+                downRW = children[i]
+                break
+            end
+        end
+
+        if upRW and upRW:isDraggable() then
+            local mid = upRW:getY() + upRW:getHeight() / 2
+            if topEdge < mid then
+                column:removeChild(dp)
+                column:insertChild(column:getChildIndex(upRW), dp)
+                column:updateBottomSeparators()
+                moved = true
+            end
+        end
+
+        if not moved and downRW and downRW:isDraggable() then
+            local mid = downRW:getY() + downRW:getHeight() / 2
+            if bottomEdge >= mid then
+                column:removeChild(dp)
+                column:insertChild(column:getChildIndex(downRW) + 1, dp)
+                column:updateBottomSeparators()
+                moved = true
+            end
         end
     end
-    return true
+end
+
+-- Rule 2: entering a different column. Only create a placeholder if the column
+-- has room for the dragged window (IB height >= dragged height).
+function UIMiniWindow:placePlaceholderInColumn(column, mousePos)
+    if (column.onlyPhantomDrop and not self.moveOnlyToMain) or (self.moveOnlyToMain and not column.onlyPhantomDrop) then
+        self:destroyDropPlaceholder()
+        return
+    end
+
+    if columnFreeHeight(column) < self:getHeight() then
+        self:destroyDropPlaceholder()
+        return
+    end
+
+    local index = slotIndexForY(column, mousePos.y)
+    self:createDropPlaceholder(column, index)
 end
 
 function UIMiniWindow:onDragMove(mousePos, mouseMoved)
-    local oldMousePosY = mousePos.y - mouseMoved.y
-    local children = rootWidget:recursiveGetChildrenByMarginPos(mousePos)
-    local overAnyWidget = false
-    for i = 1, #children do
-        local child = children[i]
-        if child:getParent():getClassName() == 'UIMiniWindowContainer' and not child.isDropPlaceholder and not child.isColumnFiller then
-            overAnyWidget = true
-
-            local childCenterY = child:getY() + child:getHeight() / 2
-            if child == self.movedWidget and mousePos.y < childCenterY and oldMousePosY < childCenterY then
-                break
-            end
-
-            if self.movedWidget then
-                self.setMovedChildMargin(self.movedOldMargin or 0)
-                self.setMovedChildMargin = nil
-            end
-
-            if mousePos.y < childCenterY then
-                self.movedOldMargin = child:getMarginTop()
-                self.setMovedChildMargin = function(v)
-                    child:setMarginTop(v)
-                end
-                self.movedIndex = 0
-            else
-                self.movedOldMargin = child:getMarginBottom()
-                self.setMovedChildMargin = function(v)
-                    child:setMarginBottom(v)
-                end
-                self.movedIndex = 1
-            end
-
-            self.movedWidget = child
-            self.setMovedChildMargin(self:getHeight())
-            break
+    local column = self:getHoveredColumn(mousePos)
+    if column then
+        if column == self.dropPlaceholderColumn then
+            self:reorderPlaceholderSameColumn(column)
+        else
+            self:placePlaceholderInColumn(column, mousePos)
         end
     end
 
-    if not overAnyWidget and self.movedWidget then
-        self.setMovedChildMargin(self.movedOldMargin or 0)
-        self.movedWidget = nil
+    return UIWindow.onDragMove(self, mousePos, mouseMoved)
+end
+
+function UIMiniWindow:onDragLeave(droppedWidget, mousePos)
+    -- moveOnlyToMain widgets (minimap, inventory, ...) must return to their main panel.
+    local forceReturn = false
+    if self.moveOnlyToMain or (droppedWidget and droppedWidget.onlyPhantomDrop) then
+        if (not droppedWidget) or (self.moveOnlyToMain and not droppedWidget.onlyPhantomDrop) or
+            (not self.moveOnlyToMain and droppedWidget.onlyPhantomDrop) then
+            forceReturn = true
+        end
     end
 
-    return UIWindow.onDragMove(self, mousePos, mouseMoved)
+    if forceReturn then
+        self:destroyDropPlaceholder()
+        local p = self:getParent()
+        if p then
+            p:removeChild(self)
+        end
+        self.oldParentDrag:insertChild(self.oldParentDragIndex, self)
+        self.oldParentDrag:updateBottomSeparators()
+    elseif not droppedWidget then
+        -- Drop wasn't accepted by any column: land at the placeholder if it
+        -- exists, otherwise fall back to the origin column (rule 3 guarantee).
+        local column = self.dropPlaceholderColumn
+        if column then
+            local index = column:getChildIndex(self.dropPlaceholder)
+            self.dropPlaceholder:destroy()
+            self.dropPlaceholder = nil
+            self.dropPlaceholderColumn = nil
+            local p = self:getParent()
+            if p then
+                p:removeChild(self)
+            end
+            column:insertChild(index, self)
+            column:fitAll(self)
+            column:updateBottomSeparators()
+        elseif self.oldParentDrag then
+            self:destroyDropPlaceholder()
+            local p = self:getParent()
+            if p then
+                p:removeChild(self)
+            end
+            self.oldParentDrag:dropWithEviction(self, { x = 0, y = 1e9 })
+            self.oldParentDrag:fitAll(self)
+            self.oldParentDrag:updateBottomSeparators()
+        end
+    else
+        self:destroyDropPlaceholder()
+    end
+
+    self:saveParent(self:getParent())
+    return true
 end
 
 function UIMiniWindow:onMousePress()
