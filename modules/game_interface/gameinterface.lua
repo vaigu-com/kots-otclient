@@ -1990,7 +1990,7 @@ function applyExtendedViewLayout(extendedView)
         gameLeftActionPanel:setImageSource('/images/ui/actionbar/actionbar_background-light')
         gameRightActionPanel:setImageSource('/images/ui/actionbar/actionbar_background-light')
         gameLeftActionPanel:setBorderWidthRight(1)
-        gameRightActionPanel:setBorderWidthLeft(0)
+        gameRightActionPanel:setBorderWidthLeft(1)
         gameRootPanel:getChildById('leftActionPanelFiller'):setImageSource('/images/ui/actionbar/actionbar_background-light')
         gameRootPanel:getChildById('rightActionPanelFiller'):setImageSource('/images/ui/actionbar/actionbar_background-light')
         for _, btn in ipairs(buttons) do

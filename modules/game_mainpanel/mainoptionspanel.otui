@@ -76,8 +76,8 @@ PhantomMiniWindow
         flow: true
 
     VerticalSeparator
+      id: optionsSeparator
       anchors.top: options.top
-      anchors.bottom: options.bottom
       anchors.left: store.right
       margin-left: 5
       phantom: true

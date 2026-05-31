@@ -76,14 +76,15 @@ UIWidget
     anchors.left: gameLeftExtraPanel.right
     anchors.bottom: bottomSplitter.top
     margin-top: 4
-    padding-top: 1
+    margin-left: 1
+    padding-top: 2
     border-width-right: 1
     border-color-right: #292929
     width: 36
     image-source: /images/ui/actionbar/actionbar_background-light
     image-border: 1
     margin-bottom: 16
-    padding-right: 3 
+    padding-right: 3
     layout:
       type: horizontalBox
       fit-children: true
@@ -101,7 +102,7 @@ UIWidget
       size: 34 16
       anchors.top: parent.top
       anchors.right: parent.right
-      margin-right: 1
+      margin-right: 2
       @onClick: modules.game_actionbar.changeLockStatus(self, "Left")
       $pressed:
         icon-offset: 1 1
@@ -115,8 +116,9 @@ UIWidget
     anchors.bottom: bottomSplitter.top
     margin-right: 1
     margin-top: 4
-    border-width-left: 0
-    border-color-left: #747474
+    padding-top: 1
+    border-width-left: 1
+    border-color-left: #292929
     width: 36
     image-source: /images/ui/actionbar/actionbar_background-light
     image-border: 1
@@ -132,8 +134,8 @@ UIWidget
     size: 38 16
     anchors.top: gameRightActionPanel.bottom
     anchors.right: gameRightActionPanel.right
-    border-width-left: 0
-    border-color-left: #747474
+    border-width-left: 1
+    border-color-left: #292929
     image-source: /images/ui/actionbar/actionbar_background-light
 
     Button
@@ -141,7 +143,7 @@ UIWidget
       size: 34 16
       anchors.top: parent.top
       anchors.right: parent.right
-      margin-right: 1
+      margin-right: 0
       @onClick: modules.game_actionbar.changeLockStatus(self, "Right")
       $pressed:
         icon-offset: 1 1
