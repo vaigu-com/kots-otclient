@@ -29,7 +29,7 @@ InviteNameWindow < NewMainWindow
       anchors.top: prev.bottom
       anchors.left: parent.left
       anchors.right: parent.right
-      margin-top: 10
+      margin-top: 1
 
     Button
       id: cancel
@@ -186,7 +186,7 @@ Panel
     image-source: /images/ui/2pixel_up_frame_borderimage
     image-border: 3
     anchors.fill: parent
-    margin-top: 20
+    margin-top: 21
     focusable: false
   Panel
     id: consoleContentPanel
@@ -210,7 +210,7 @@ Panel
     margin-left: 2
     margin-right: 6
     margin-bottom: 2
-    margin-top: 24
+    margin-top: 21
     padding: 1
     focusable: false
     ScrollablePanel
@@ -246,7 +246,7 @@ Panel
     anchors.right: closeChannelButton.left
     margin-right: 22
     margin-left: 21
-    margin-bottom: -6
+    margin-bottom: -8
     padding-bottom: -5
     tab-spacing: 0
     movable: true
