@@ -229,7 +229,6 @@ UIWidget
     anchors.right: gameBottomCooldownPanel.right
     anchors.top: gameBottomCooldownPanel.bottom
     anchors.bottom: parent.bottom
-    margin-top: -3
 
   GameSidePanel
     id: gameLeftPanel
