@@ -325,9 +325,14 @@ function hide()
     modules.client_background.show()
 end
 
+-- The splitter rests 3px lower than its persisted drag value. We store the
+-- un-offset value and re-apply the offset on load so the shift is permanent
+-- and does not drift across save/load cycles.
+local splitterOffset = 3
+
 function save()
     local settings = {}
-    settings.splitterMarginBottom = bottomSplitter:getMarginBottom()
+    settings.splitterMarginBottom = bottomSplitter:getMarginBottom() + splitterOffset
     g_settings.setNode('game_interface', settings)
 end
 
@@ -335,7 +340,7 @@ function load()
     local settings = g_settings.getNode('game_interface')
     if settings then
         if settings.splitterMarginBottom then
-            bottomSplitter:setMarginBottom(settings.splitterMarginBottom)
+            bottomSplitter:setMarginBottom(settings.splitterMarginBottom - splitterOffset)
         end
     end
 end
