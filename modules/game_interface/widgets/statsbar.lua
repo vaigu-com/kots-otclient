@@ -16,9 +16,6 @@ local statsBarsPlacements = {
 --                   reloadCurrentTab(), createStatsBarWidgets(),
 --                       hideAll() and destroyALlIcons functions.
 local statsBarsDimensions = {
-    Full = {
-        height = 30
-    },
     Large = {
         height = 52
     },
@@ -402,26 +399,6 @@ function StatsBar.reloadCurrentStatsBarQuickInfo_state(localPlayer, now, old)
     end)
 end
 
-function StatsBar.initInlineXpBar(barWidget)
-    local player = g_game.getLocalPlayer()
-    if not player then return end
-
-    local xpBar = barWidget:getChildById('inlineXpBar')
-    if xpBar then
-        xpBar.statsGrade = 4
-        xpBar.statsGradeColor = '#070707ff'
-        xpBar:reloadBorder()
-        xpBar.showText = false
-        xpBar.statsType = 'experience'
-        xpBar:setValue(player:getLevelPercent(), 100)
-    end
-
-    local levelLabel = barWidget:getChildById('inlineLevelValue')
-    if levelLabel then
-        levelLabel:setText(tostring(player:getLevel()))
-    end
-end
-
 function StatsBar.reloadCurrentStatsBarDeepInfo()
     local player = g_game.getLocalPlayer()
     if not player then
@@ -449,14 +426,6 @@ function StatsBar.reloadCurrentStatsBarDeepInfo()
         end
     end
 
-    local xpBar = bar:recursiveGetChildById('inlineXpBar')
-    if xpBar then
-        xpBar:setValue(player:getLevelPercent(), 100)
-    end
-    local levelLabel = bar:recursiveGetChildById('inlineLevelValue')
-    if levelLabel then
-        levelLabel:setText(tostring(player:getLevel()))
-    end
 end
 
 function StatsBar.onHarmonyChange(localPlayer, harmony, oldHarmony)
@@ -537,11 +506,7 @@ function constructStatsBar(dimension, placement)
         statsBar[dimensionOnPlacement].manashield = statsBar[dimensionOnPlacement]:getChildById('manashield')
         statsBar[dimensionOnPlacement].skills = statsBar[dimensionOnPlacement]:getChildById('skills')
 
-        if dimension ~= "Full" then
-            reloadSkillsTab(statsBar[dimensionOnPlacement].skills, statsBar[dimensionOnPlacement])
-        else
-            StatsBar.initInlineXpBar(statsBar[dimensionOnPlacement])
-        end
+        reloadSkillsTab(statsBar[dimensionOnPlacement].skills, statsBar[dimensionOnPlacement])
         StatsBar.reloadCurrentStatsBarQuickInfo()
 
         modules.game_healthcircle.setStatsBarOption()
