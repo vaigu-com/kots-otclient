@@ -210,7 +210,6 @@ StatsBarTopWithShrink < UIWidget
     anchors.left: parent.left
     anchors.top: parent.top
     anchors.bottom: parent.bottom
-    margin-left: 2
     width: 2
     background-color: white
     opacity: 0.8
