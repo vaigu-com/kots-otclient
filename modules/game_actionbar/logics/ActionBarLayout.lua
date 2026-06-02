@@ -127,7 +127,7 @@ function resizeLockButtons()
     bottomLockPanel:setVisible(true)
     updateLockIcon(bottomLockPanel, "actionBarBottomLocked")
     if bottomCount >= 1 and bottomCount <= 3 then
-        bottomLockPanel:setHeight(34 + (bottomCount - 1) * 36)
+        bottomLockPanel:setHeight(34 + (bottomCount - 1) * 34)
     else
         bottomLockPanel:setHeight(0)
         bottomLockPanel:setVisible(false)

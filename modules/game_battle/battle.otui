@@ -178,9 +178,10 @@ MiniWindow
 
   Panel
     id: filterPanel
-    margin-top: 20
+    margin-top: 18
     anchors.top: parent.top
-    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.left: parent.left
+    margin-left: 19
     height: 46
     width: 130
     layout:
@@ -252,7 +253,7 @@ MiniWindow
       @onClick: modules.game_battle.onFilterButtonClick(self)
 
   Panel
-    height: 18
+    height: 0
     anchors.top: filterPanel.bottom
     anchors.left: parent.left
     anchors.right: parent.right
@@ -272,14 +273,14 @@ MiniWindow
   MiniWindowContents
     id: contentsPanel
     anchors.top: prev.bottom
-    margin-top: 6
+    margin-top: 1
 
     Panel
       id: battlePanel
       anchors.left: parent.left
       anchors.right: parent.right
       anchors.top: parent.top
-      margin-top: 5
+      margin-top: 0
       padding-right: 5
       layout:
         type: verticalBox
