@@ -20,7 +20,7 @@ local statsBarsDimensions = {
         height = 52
     },
     Default = {
-        height = 52
+        height = 45
     },
     Parallel = {
         height = 55
@@ -37,7 +37,7 @@ local currentStats = {
     placement = "hide"
 }
 
-local skillsLineHeight = 20
+local skillsLineHeight = 11
 local skillsTuples = {
     { skill = nil,             key = 'experience', icon = '/images/icons/icon_experience', placement = 'center', order = 0, name = "Level" },
     { skill = nil,             key = 'magic',      icon = '/images/icons/icon_magic',      placement = 'left',   order = 1, name = "Magic Level" },
@@ -160,7 +160,7 @@ local function reloadSkillsTab(skills, parent)
         end
     end
 
-    skills:setHeight((lines * skillsLineHeight) + 5)
+    skills:setHeight((lines * skillsLineHeight))
     parent:setHeight(40 + skills:getHeight())
     statsBar:setHeight(statsBar:getHeight() + skills:getHeight())
 end
