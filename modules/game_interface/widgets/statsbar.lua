@@ -52,6 +52,11 @@ local skillsTuples = {
 
 StatsBar = {}
 
+-- The experience bar is shown by default; other skill bars are opt-in.
+local function isSkillTupleEnabled(skillTuple)
+    return g_settings.getBoolean('top_statsbar_' .. skillTuple.key, skillTuple.key == 'experience')
+end
+
 function getConfigurations()
     -- This method will return all the stats bar configurations.
     local configs = {}
@@ -79,7 +84,7 @@ local function reloadSkillsTab(skills, parent)
     local tuples = {}
     for i = 1, #skillsTuples do
         local skillTuple = skillsTuples[i]
-        if skillTuple and g_settings.getBoolean('top_statsbar_' .. skillTuple.key) then
+        if skillTuple and isSkillTupleEnabled(skillTuple) then
             table.insert(tuples, skillTuple)
         end
     end
@@ -545,7 +550,7 @@ local function openDropMenu(mousePos)
     local current = StatsBar.getCurrentStatsBarWithPosition()
     if current and current.skills then
         for _, skillTuple in ipairs(skillsTuples) do
-            if not g_settings.getBoolean('top_statsbar_' .. skillTuple.key) then
+            if not isSkillTupleEnabled(skillTuple) then
                 menu:addOption(tr('Show') .. ' ' .. tr(skillTuple.name), function()
                     g_settings.set('top_statsbar_' .. skillTuple.key, true)
                     reloadSkillsTab(current.skills, current)
