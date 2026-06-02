@@ -152,7 +152,7 @@ UIWidget
     phantom: true
     focusable: false
     margin-right: 12
-    padding-top: 3
+    padding-top: 6
     padding-bottom: 2
     anchors.left: bottomSplitter.left
     anchors.right: bottomSplitter.right
