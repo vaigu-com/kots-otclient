@@ -204,7 +204,7 @@ StatsBarTopWithShrink < UIWidget
     anchors.top: parent.top
     height: 2
     background-color: white
-    opacity: 0.35
+    opacity: 0.6
 
   UIWidget
     anchors.left: parent.left
@@ -212,7 +212,7 @@ StatsBarTopWithShrink < UIWidget
     anchors.bottom: parent.bottom
     width: 2
     background-color: white
-    opacity: 0.35
+    opacity: 0.6
 
   UIWidget
     anchors.left: parent.left
@@ -486,7 +486,7 @@ TopStatsBarDefaultOnTop < UIWidget
     !statsbar-size: 'small'
     !statsbar-orientation: 'horizontal'
     statsbar-text: true
-    margin-left: 12
+    margin-left: 4
     margin-right: 5
     margin-top: 4
     height: 14
@@ -500,7 +500,7 @@ TopStatsBarDefaultOnTop < UIWidget
     !statsbar-size: 'small'
     !statsbar-orientation: 'horizontal'
     statsbar-text: true
-    margin-right: 12
+    margin-right: 4
     margin-left: 1
     margin-top: 4
     height: 14
