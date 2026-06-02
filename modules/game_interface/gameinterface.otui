@@ -156,6 +156,7 @@ UIWidget
     anchors.left: bottomSplitter.left
     anchors.right: bottomSplitter.right
     anchors.top: gameBottomStatsBarPanel.bottom
+    margin-top: 1
     image-source: /images/ui/actionbar/actionbar_background
     image-repeated: true
     layout:
@@ -324,7 +325,7 @@ UIWidget
       function(self, newMargin)
         local dontStretch = modules.client_options.getOption('dontStretchShrink')
         local actionBars = modules.game_actionbar.getActiveBottomBars()
-        local maxHeight = 120 + (36 * actionBars)
+        local maxHeight = 123 + (36 * actionBars)
         local result = math.max(math.min(newMargin, self:getParent():getHeight() - 150), maxHeight)
         if dontStretch then
           result = result > 650 and 650 or (result > 450 and 450 or 200)
@@ -334,7 +335,7 @@ UIWidget
     @onGeometryChange: |
       function(self)
         local actionBars = modules.game_actionbar.getActiveBottomBars()
-        local maxHeight = 120 + (36 * actionBars)
+        local maxHeight = 123 + (36 * actionBars)
         local parentHeight = self:getParent():getHeight()
         self:setMarginBottom(math.min(math.max(parentHeight - 150, maxHeight), self:getMarginBottom()))
       end
@@ -356,7 +357,7 @@ UIWidget
     anchors.left: gameLeftExtraPanel.right
     anchors.right: gameRightExtraPanel.left
     anchors.top: bottomSplitter.bottom
-    margin-top: 1
+    margin-top: 3
     margin-left: 1
     margin-right: 1
     focusable: false
