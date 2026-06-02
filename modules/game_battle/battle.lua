@@ -370,8 +370,8 @@ function BattleListManager:createWindowForInstance(instance)
     -- Set initial scrollbar position for new instances (filters visible by default)
     local scrollbar = newWindow:getChildById('miniwindowScrollBar')
     if scrollbar then
-        -- Header (16px) + filterPanel height (46px) + spacing panel (18px) + separator (2px) - 4 (taller north)
-        scrollbar:setMarginTop(78) -- 16 + 46 + 18 + 2 - 4 = 78
+        -- Align with contentsPanel top: filterPanel margin-top (18) + height (46) + separator (2) - contentsPanel margin (6)
+        scrollbar:setMarginTop(60)
     end
     
     if g_game.isOnline() then
@@ -910,8 +910,8 @@ function BattleListInstance:showFilterPanel()
     -- Adjust scrollbar to start at filter panel bottom when filter is visible
     local scrollbar = self.window:getChildById('miniwindowScrollBar')
     if scrollbar then
-        -- Header (16px) + filterPanel height + spacing panel (18px) + separator (2px) - 4 (taller north)
-        local totalMargin = 16 + self.filterPanel.originalHeight + 18 + 2 - 4
+        -- Align with contentsPanel top: filterPanel margin-top (18) + height + separator (2) - contentsPanel margin (6)
+        local totalMargin = self.filterPanel.originalHeight + 14
         scrollbar:setMarginTop(totalMargin)
     end
     
@@ -1497,8 +1497,8 @@ function init()
         -- Set initial scrollbar position when filters are visible
         local scrollbar = battleWindow:getChildById('miniwindowScrollBar')
         if scrollbar then
-            -- Header (16px) + filterPanel height (46px) + spacing panel (18px) + separator (2px) + margin (6px) - 4 (taller north)
-            scrollbar:setMarginTop(84) -- 16 + 46 + 18 + 2 + 6 - 4 = 84
+            -- Align with contentsPanel top: filterPanel margin-top (18) + height (46) + separator (2) - contentsPanel margin (6)
+            scrollbar:setMarginTop(60)
         end
     end
 

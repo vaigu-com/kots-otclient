@@ -344,6 +344,17 @@ PhantomMiniWindow < UIMiniWindow
     opacity: 0.6
 
   UIWidget
+    image-source: /images/ui/background
+    image-repeated: true
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-left: 3
+    margin-right: 3
+    height: 2
+    phantom: true
+
+  UIWidget
     id: miniwindowTopBar
     phantom: true
 

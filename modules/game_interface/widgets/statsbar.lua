@@ -125,6 +125,10 @@ local function reloadSkillsTab(skills, parent)
         widget.bar.showText = false
         if skillTuple.key == 'experience' then
             widget.bar.statsType = 'experience'
+            local darkBg = widget.bar:getChildById('statsDarkBackground')
+            if darkBg then
+                darkBg:hide()
+            end
         else
             widget.bar.statsType = 'skill'
         end

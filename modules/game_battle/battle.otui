@@ -183,12 +183,12 @@ MiniWindow
     anchors.left: parent.left
     margin-left: 12
     height: 46
-    width: 130
+    width: 152
     layout:
       type: grid
       flow: true
       cell-spacing: 2
-      num-columns: 6
+      num-columns: 7
       cell-size: 20 20
       fit-children: false
 

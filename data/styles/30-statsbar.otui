@@ -49,6 +49,7 @@ StatsHorizontalBarGrade < UIWidget
     id: grade_left_1
     anchors.left: parent.left
     anchors.top: parent.top
+    margin-top: 2
     image-source: /images/bars/marker_top
     size: 7 11
     visible: false
@@ -58,6 +59,7 @@ StatsHorizontalBarGrade < UIWidget
     id: grade_left_2
     anchors.left: parent.left
     anchors.top: parent.top
+    margin-top: 2
     image-source: /images/bars/marker_top
     size: 7 11
     visible: false
@@ -67,6 +69,7 @@ StatsHorizontalBarGrade < UIWidget
     id: grade_right_1
     anchors.right: parent.right
     anchors.top: parent.top
+    margin-top: 2
     image-source: /images/bars/marker_top
     size: 7 11
     visible: false
@@ -76,6 +79,7 @@ StatsHorizontalBarGrade < UIWidget
     id: grade_right_2
     anchors.right: parent.right
     anchors.top: parent.top
+    margin-top: 2
     image-source: /images/bars/marker_top
     size: 7 11
     visible: false
@@ -164,6 +168,7 @@ InvManaBar < UIStatsBar
 
 StatsBarUp < UIStatsBar
   StatsBarDarkBackground
+    id: statsDarkBackground
     anchors.fill: parent
     phantom: true
 
@@ -186,6 +191,8 @@ StatsBarUp < UIStatsBar
     anchors.verticalCenter: parent.verticalCenter
     anchors.horizontalCenter: parent.horizontalCenter
     text-align: center
+    font: verdana-11px-monochrome
+    color: #ffffffff
     visible: false
     !text: '9999999999/9999999999'
 
@@ -296,10 +303,12 @@ TopStatsSkillElement < UIWidget
     id: level
     !text: '99999'
     color: #c0c0c0ff
+    font: verdana-11px-monochrome
     text-align: right
     anchors.left: parent.left
     anchors.verticalCenter: parent.verticalCenter
-    margin-left: 10
+    margin-left: 0
+    margin-top: -3
 
   UIWidget
     id: icon
@@ -317,7 +326,7 @@ TopStatsSkillElement < UIWidget
     !statsbar-orientation: 'horizontal'
     statsbar-text: true
     margin-left: 5
-    height: 7
+    height: 5
 
 HarmonyIcon < UIWidget
   size: 13 13
@@ -510,7 +519,7 @@ TopStatsBarParallelOnTop < UIWidget
     id: proficiencyTopBar
     anchors.top: skills.bottom
     anchors.right: icons.left
-    margin-right: 4
+    margin-right: 12
     size: 113 13
 
   Panel
@@ -586,7 +595,7 @@ TopStatsBarDefaultOnTop < UIWidget
     id: proficiencyTopBar
     anchors.top: skills.bottom
     anchors.right: icons.left
-    margin-right: 4
+    margin-right: 12
     size: 113 13
 
   Panel
@@ -776,6 +785,7 @@ StatsHorizontalBarGrade < UIWidget
     id: grade_left_1
     anchors.left: parent.left
     anchors.top: parent.top
+    margin-top: 2
     image-source: /images/bars/marker_top
     size: 7 11
     visible: false
@@ -785,6 +795,7 @@ StatsHorizontalBarGrade < UIWidget
     id: grade_left_2
     anchors.left: parent.left
     anchors.top: parent.top
+    margin-top: 2
     image-source: /images/bars/marker_top
     size: 7 11
     visible: false
@@ -794,6 +805,7 @@ StatsHorizontalBarGrade < UIWidget
     id: grade_right_1
     anchors.right: parent.right
     anchors.top: parent.top
+    margin-top: 2
     image-source: /images/bars/marker_top
     size: 7 11
     visible: false
@@ -803,6 +815,7 @@ StatsHorizontalBarGrade < UIWidget
     id: grade_right_2
     anchors.right: parent.right
     anchors.top: parent.top
+    margin-top: 2
     image-source: /images/bars/marker_top
     size: 7 11
     visible: false
@@ -887,6 +900,7 @@ StatsVerticalLeftBarGrade < UIWidget
 
 StatsBarUp < UIStatsBar
   StatsBarDarkBackground
+    id: statsDarkBackground
     anchors.fill: parent
     phantom: true
 
@@ -909,6 +923,8 @@ StatsBarUp < UIStatsBar
     anchors.verticalCenter: parent.verticalCenter
     anchors.horizontalCenter: parent.horizontalCenter
     text-align: center
+    font: verdana-11px-monochrome
+    color: #ffffffff
     visible: false
     !text: '9999999999/9999999999'
 
