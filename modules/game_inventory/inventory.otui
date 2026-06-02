@@ -242,7 +242,7 @@ PhantomMiniWindow
       anchors.right: standPosture.right
       anchors.bottom: parent.bottom
       margin-left: -3
-      font: cipsoftFont
+      font: verdana_bold_8
       color: #c0c0c0ff
       size: 44 15
       text-offset: 0 0
@@ -346,9 +346,9 @@ PhantomMiniWindow
       margin-top: 3
 
       Label
-        !text: tr('Soul')
+        !text: tr('Soul:')
         text.align: center
-        font: cipsoftFont
+        font: segoe_ui_8
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         color: #c0c0c0ff
@@ -357,7 +357,7 @@ PhantomMiniWindow
       Label
         id: soul
         !text: '100000'
-        font: cipsoftFont
+        font: segoe_ui_regular_12
         text-align: center
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
@@ -375,9 +375,9 @@ PhantomMiniWindow
       margin-top: 3
 
       Label
-        !text: tr('Cap')
+        !text: tr('Cap:')
         text.align: center
-        font: cipsoftFont
+        font: segoe_ui_8
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         color: #c0c0c0ff
@@ -386,7 +386,7 @@ PhantomMiniWindow
       Label
         id: capacity
         !text: '10000'
-        font: cipsoftFont
+        font: segoe_ui_regular_12
         text-align: center
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
@@ -423,9 +423,9 @@ PhantomMiniWindow
       size: 30 44
 
       Label
-        !text: tr('Cap')
+        !text: tr('Cap:')
         text.align: center
-        font: cipsoftFont
+        font: segoe_ui_8
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         color: #c0c0c0ff
@@ -435,7 +435,7 @@ PhantomMiniWindow
       Label
         id: capacity
         !text: '10000'
-        font: cipsoftFont
+        font: segoe_ui_regular_12
         text-align: center
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
@@ -443,9 +443,9 @@ PhantomMiniWindow
         color: #c0c0c0ff
 
       Label
-        !text: tr('Soul')
+        !text: tr('Soul:')
         text.align: center
-        font: cipsoftFont
+        font: segoe_ui_8
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
         color: #c0c0c0ff
@@ -455,7 +455,7 @@ PhantomMiniWindow
       Label
         id: soul
         !text: '100000'
-        font: cipsoftFont
+        font: segoe_ui_regular_12
         text-align: center
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
@@ -600,7 +600,7 @@ PhantomMiniWindow
       anchors.right: parent.right
       margin-right: 7
       anchors.bottom: icons.bottom
-      font: cipsoftFont
+      font: verdana_bold_8
       color: #c0c0c0ff
       size: 44 13
       @onClick: |
