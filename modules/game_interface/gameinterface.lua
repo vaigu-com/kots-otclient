@@ -338,11 +338,15 @@ end
 
 function load()
     local settings = g_settings.getNode('game_interface')
+    g_logger.info('[SPLITTER] load() called. settings=' .. tostring(settings ~= nil) ..
+        ' saved=' .. tostring(settings and settings.splitterMarginBottom) ..
+        ' currentMargin=' .. tostring(bottomSplitter:getMarginBottom()))
     if settings then
         if settings.splitterMarginBottom then
             bottomSplitter:setMarginBottom(settings.splitterMarginBottom - splitterOffset)
         end
     end
+    g_logger.info('[SPLITTER] load() done. marginNow=' .. tostring(bottomSplitter:getMarginBottom()))
 end
 
 function onLoginAdvice(message)
@@ -455,6 +459,9 @@ function tryLogout(prompt)
 end
 
 function updateStretchShrink()
+    g_logger.info('[SPLITTER] updateStretchShrink() dontStretch=' ..
+        tostring(modules.client_options.getOption('dontStretchShrink')) ..
+        ' marginBefore=' .. tostring(bottomSplitter:getMarginBottom()))
     if modules.client_options.getOption('dontStretchShrink') and not alternativeView then
         gameMapPanel:setVisibleDimension({
             width = 15,
@@ -464,6 +471,7 @@ function updateStretchShrink()
         -- Set gameMapPanel size to height = 11 * 32 + 2
         bottomSplitter:setMarginBottom(bottomSplitter:getMarginBottom() + (gameMapPanel:getHeight() - 32 * 11) - 10)
     end
+    g_logger.info('[SPLITTER] updateStretchShrink() marginAfter=' .. tostring(bottomSplitter:getMarginBottom()))
     -- Update action bar layout when window geometry changes
     if modules.game_actionbar and modules.game_actionbar.updateVisibleWidgetsExternal then
         addEvent(function()
