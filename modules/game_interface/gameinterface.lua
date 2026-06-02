@@ -457,7 +457,7 @@ function updateStretchShrink()
         })
 
         -- Set gameMapPanel size to height = 11 * 32 + 2
-        bottomSplitter:setMarginBottom(bottomSplitter:getMarginBottom() + (gameMapPanel:getHeight() - 32 * 11) - 10)
+        bottomSplitter:setMarginBottom(bottomSplitter:getMarginBottom() + (gameMapPanel:getHeight() - 32 * 11) - 13)
     end
     -- Update action bar layout when window geometry changes
     if modules.game_actionbar and modules.game_actionbar.updateVisibleWidgetsExternal then
