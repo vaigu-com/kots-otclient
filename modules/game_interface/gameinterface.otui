@@ -352,6 +352,7 @@ UIWidget
     anchors.left: leftIncreaseSidePanels.right
     anchors.right: rightIncreaseSidePanels.left
     anchors.top: parent.top
+    margin-left: 2
     focusable: false
 
   TopStatsBar
