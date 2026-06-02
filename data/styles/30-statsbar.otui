@@ -552,7 +552,7 @@ TopStatsBarDefaultOnTop < UIWidget
     !statsbar-orientation: 'horizontal'
     statsbar-text: true
     margin-left: 12
-    margin-right: 5
+    margin-right: 89
     margin-top: 5
     height: 14
 
