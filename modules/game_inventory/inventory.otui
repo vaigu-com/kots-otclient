@@ -149,7 +149,8 @@ PhantomMiniWindow
       margin: 2 4
       anchors.right: standPosture.right
       anchors.top: expert.bottom
-      margin-top: 1
+      margin-top: 7
+      margin-left: 1
       margin-right: 0
       phantom: false
       size: 44 20
@@ -241,10 +242,10 @@ PhantomMiniWindow
       anchors.left: defense.left
       anchors.right: standPosture.right
       anchors.bottom: parent.bottom
-      margin-left: -3
-      font: verdana_bold_8
+      margin-left: 0
+      font: verdana-bold-8
       color: #c0c0c0ff
-      size: 44 15
+      size: 45 15   
       text-offset: 0 0
       @onClick: |
         g_game.stop()
@@ -348,7 +349,7 @@ PhantomMiniWindow
       Label
         !text: tr('Soul:')
         text.align: center
-        font: segoe_ui_8
+        font: segoe-ui-8
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         color: #c0c0c0ff
@@ -357,7 +358,7 @@ PhantomMiniWindow
       Label
         id: soul
         !text: '100000'
-        font: segoe_ui_regular_12
+        font: segoe-ui-regular-12
         text-align: center
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
@@ -377,7 +378,7 @@ PhantomMiniWindow
       Label
         !text: tr('Cap:')
         text.align: center
-        font: segoe_ui_8
+        font: segoe-ui-8
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         color: #c0c0c0ff
@@ -386,7 +387,7 @@ PhantomMiniWindow
       Label
         id: capacity
         !text: '10000'
-        font: segoe_ui_regular_12
+        font: segoe-ui-regular-12
         text-align: center
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
@@ -425,7 +426,7 @@ PhantomMiniWindow
       Label
         !text: tr('Cap:')
         text.align: center
-        font: segoe_ui_8
+        font: cipsoftFont
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         color: #c0c0c0ff
@@ -435,7 +436,7 @@ PhantomMiniWindow
       Label
         id: capacity
         !text: '10000'
-        font: segoe_ui_regular_12
+        font: segoe-ui-regular-12
         text-align: center
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
@@ -445,7 +446,7 @@ PhantomMiniWindow
       Label
         !text: tr('Soul:')
         text.align: center
-        font: segoe_ui_8
+        font: segoe-ui-8
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
         color: #c0c0c0ff
@@ -455,7 +456,7 @@ PhantomMiniWindow
       Label
         id: soul
         !text: '100000'
-        font: segoe_ui_regular_12
+        font: segoe-ui-regular-12
         text-align: center
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
@@ -559,6 +560,7 @@ PhantomMiniWindow
       image-source: /data/images/inventory/button-expert-up
       anchors.left: changeSize.left
       anchors.bottom: soulAndCapacity.bottom
+      padding-left: -1
       phantom: false
       size: 12 12
       @onClick: |
@@ -598,11 +600,11 @@ PhantomMiniWindow
       id: stop
       !text: tr('Stop')
       anchors.right: parent.right
-      margin-right: 7
+      margin-right: 8
       anchors.bottom: icons.bottom
-      font: verdana_bold_8
+      font: verdana-bold-8
       color: #c0c0c0ff
-      size: 44 13
+      size: 45 15
       @onClick: |
         g_game.stop()
         g_game.getLocalPlayer():stopAutoWalk()

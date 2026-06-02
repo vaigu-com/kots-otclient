@@ -102,7 +102,7 @@ PhantomMiniWindow
     image-clip: 0 40 20 20
     anchors.right: fullMap.right
     anchors.bottom: fullMap.top
-    margin-bottom: 3
+    margin-bottom: 1
     size: 20 20
     @onClick: zoomIn()
 
@@ -118,7 +118,7 @@ PhantomMiniWindow
     image-clip: 0 20 20 20
     anchors.right: fullMap.right
     anchors.bottom: zoomIn.top
-    margin-bottom: 3
+    margin-bottom: 1
     size: 20 20
     @onClick: zoomOut()
 

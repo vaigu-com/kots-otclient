@@ -482,7 +482,7 @@ Panel
     margin-right: 3
     size: 64 18
     color: #dfdfdfff
-    font: verdana_bold_8
+    font: verdana-bold-8
     text-offset: 0 1
     !text: tr('Chat Off')
     &isChecked: false
