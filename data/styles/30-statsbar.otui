@@ -304,7 +304,7 @@ TopStatsSkillElement < UIWidget
     anchors.left: parent.left
     anchors.verticalCenter: parent.verticalCenter
     margin-left: -3
-    margin-top: -3
+    margin-top: 7
 
   UIWidget
     id: icon
@@ -593,7 +593,7 @@ TopStatsBarDefaultOnTop < UIWidget
     anchors.top: skills.bottom
     anchors.right: icons.left
     margin-right: 12
-    margin-top: 4
+    margin-top: 5
     size: 113 12
 
   Panel
@@ -602,7 +602,7 @@ TopStatsBarDefaultOnTop < UIWidget
     image-source: /images/ui/containerslot
     anchors.top: skills.bottom
     anchors.horizontalCenter: parent.horizontalCenter
-    margin-top: 4
+    margin-top: 5
     size: 103 13
     layout:
       type: horizontalBox
