@@ -229,6 +229,7 @@ UIWidget
     anchors.right: gameBottomCooldownPanel.right
     anchors.top: gameBottomCooldownPanel.bottom
     anchors.bottom: parent.bottom
+    margin-top: -3
 
   GameSidePanel
     id: gameLeftPanel
@@ -324,7 +325,7 @@ UIWidget
       function(self, newMargin)
         local dontStretch = modules.client_options.getOption('dontStretchShrink')
         local actionBars = modules.game_actionbar.getActiveBottomBars()
-        local maxHeight = 119 + (36 * actionBars)
+        local maxHeight = 120 + (36 * actionBars)
         local result = math.max(math.min(newMargin, self:getParent():getHeight() - 150), maxHeight)
         if dontStretch then
           result = result > 650 and 650 or (result > 450 and 450 or 200)
@@ -334,7 +335,7 @@ UIWidget
     @onGeometryChange: |
       function(self)
         local actionBars = modules.game_actionbar.getActiveBottomBars()
-        local maxHeight = 119 + (36 * actionBars)
+        local maxHeight = 120 + (36 * actionBars)
         local parentHeight = self:getParent():getHeight()
         self:setMarginBottom(math.min(math.max(parentHeight - 150, maxHeight), self:getMarginBottom()))
       end
@@ -356,6 +357,7 @@ UIWidget
     anchors.left: gameLeftExtraPanel.right
     anchors.right: gameRightExtraPanel.left
     anchors.top: bottomSplitter.bottom
+    margin-top: 1
     margin-left: 1
     margin-right: 1
     focusable: false
