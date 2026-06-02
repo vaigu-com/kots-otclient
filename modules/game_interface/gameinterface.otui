@@ -178,7 +178,7 @@ UIWidget
       width: 12
       anchors.top: parent.top
       anchors.right: parent.right
-      margin-top: 4
+      margin-top: 2
       margin-bottom: 1
       icon-source: /images/ui/actionbar/locked
       icon-offset: 0 0
