@@ -25,6 +25,7 @@ PhantomMiniWindow
     anchors.bottom: parent.bottom
     anchors.right: parent.right
     margin-right: 7
+    margin-bottom: 2
 
     UIWidget
       id: automapLayers
@@ -37,31 +38,22 @@ PhantomMiniWindow
 
     UIWidget
       id: layersSeparator
-      image-source: /images/ui/vertical_line_dark
+      image-source: /images/ui/separator_vertical
+      image-border: 1
       margin-left: 3
       margin-top: 4
-      margin-bottom: 4
+      margin-bottom: 3
       anchors.left: automapLayers.right
       anchors.top: parent.top
       anchors.bottom: parent.bottom
-      width: 1
-
-    UIWidget
-      id: layersSeparatorLight
-      background-color: #555555
-      margin-top: 4
-      margin-bottom: 4
-      anchors.left: layersSeparator.right
-      anchors.top: parent.top
-      anchors.bottom: parent.bottom
-      width: 1
+      width: 2
 
     UIWidget
       id: layersMark
       anchors.left: layersSeparator.right
       anchors.top: automapLayers.top
       image-source: /images/automap/automap_indicator_slider_left
-      margin-left: -1
+      margin-left: -2
       margin-top: 28
 
     Button
@@ -87,6 +79,7 @@ PhantomMiniWindow
     anchors.right: layersPanel.left
     anchors.bottom: minimapBorder.bottom
     margin-right: 4
+    margin-bottom: -1
     size: 20 20
     @onClick: openCyclopediaMap()
 

@@ -59,6 +59,15 @@ UIWidget
     margin-top: 1
     margin-bottom: 1
 
+    UIWidget
+      id: mapBorderFrame
+      anchors.fill: parent
+      margin: 3
+      image-source: /images/ui/panel_map_frame
+      image-border: 1
+      phantom: true
+      focusable: false
+
     Button
       id: showTopMenuButton
       anchors.top: parent.top
@@ -75,9 +84,9 @@ UIWidget
     anchors.top: leftDecreaseSidePanels.bottom
     anchors.left: gameLeftExtraPanel.right
     anchors.bottom: bottomSplitter.top
-    margin-top: 4
+    margin-top: 0
     margin-left: 1
-    padding-top: 0
+    padding-top: 1
     border-width-right: 1
     border-color-right: #292929
     width: 36
@@ -115,7 +124,7 @@ UIWidget
     anchors.right: gameRightExtraPanel.left
     anchors.bottom: bottomSplitter.top
     margin-right: 1
-    margin-top: 4
+    margin-top: 0
     padding-top: 1
     border-width-left: 1
     border-color-left: #292929
@@ -156,6 +165,8 @@ UIWidget
     anchors.left: bottomSplitter.left
     anchors.right: bottomSplitter.right
     anchors.top: gameBottomStatsBarPanel.bottom
+    image-source: /images/ui/actionbar/actionbar_background
+    image-repeated: true
     layout:
       type: verticalBox
       fit-children: true
@@ -176,7 +187,7 @@ UIWidget
       width: 12
       anchors.top: parent.top
       anchors.right: parent.right
-      margin-top: 1
+      margin-top: 9
       margin-bottom: 1
       icon-source: /images/ui/actionbar/locked
       icon-offset: 0 0
@@ -218,6 +229,8 @@ UIWidget
     anchors.bottom: gameRightActionPanel.top
     image-source: /images/ui/actionbar/actionbar_background-light
     image-border: 1
+    border-width-left: 1
+    border-color-left: #292929
 // end actionsbar
   GameBottomPanel
     id: gameBottomPanel
@@ -320,7 +333,7 @@ UIWidget
       function(self, newMargin)
         local dontStretch = modules.client_options.getOption('dontStretchShrink')
         local actionBars = modules.game_actionbar.getActiveBottomBars()
-        local maxHeight = 117 + (37 * actionBars)
+        local maxHeight = 119 + (37 * actionBars)
         local result = math.max(math.min(newMargin, self:getParent():getHeight() - 150), maxHeight)
         if dontStretch then
           result = result > 650 and 650 or (result > 450 and 450 or 200)
@@ -330,7 +343,7 @@ UIWidget
     @onGeometryChange: |
       function(self)
         local actionBars = modules.game_actionbar.getActiveBottomBars()
-        local maxHeight = 117 + (37 * actionBars)
+        local maxHeight = 119 + (37 * actionBars)
         local parentHeight = self:getParent():getHeight()
         self:setMarginBottom(math.min(math.max(parentHeight - 150, maxHeight), self:getMarginBottom()))
       end

@@ -235,4 +235,4 @@ Panel
     id: nextPanel
     anchors.bottom: parent.bottom
     anchors.horizontalCenter: parent.horizontalCenter
-    margin-bottom: 2
+    margin-bottom: 1
