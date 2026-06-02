@@ -129,6 +129,29 @@ local function reloadSkillsTab(skills, parent)
             if darkBg then
                 darkBg:hide()
             end
+            -- The grade frame's dark side borders sit on top of the thin exp
+            -- fill and swallow its left/right edge columns. Drop the frame
+            -- (markers stay) and keep it dropped after reloadBorder re-runs.
+            local expBar = widget.bar
+            local function hideExpFrameBorders()
+                local grade = expBar:getChildById('horizontalGrade')
+                if grade then
+                    for b = 1, 4 do
+                        local border = grade:getChildById('grade_border_' .. b)
+                        if border then
+                            border:hide()
+                        end
+                    end
+                end
+            end
+            hideExpFrameBorders()
+            local baseOnGeometryChange = expBar.onGeometryChange
+            expBar.onGeometryChange = function(...)
+                if baseOnGeometryChange then
+                    baseOnGeometryChange(...)
+                end
+                hideExpFrameBorders()
+            end
         else
             widget.bar.statsType = 'skill'
         end
