@@ -199,98 +199,36 @@ StatsBarTopWithShrink < UIWidget
     image-repeated: true
 
   UIWidget
-    anchors.right: rightIncreaseSidePanels.left
-    anchors.left: leftIncreaseSidePanels.right
+    anchors.left: parent.left
+    anchors.right: parent.right
     anchors.top: parent.top
     height: 2
     background-color: white
     opacity: 0.35
 
   UIWidget
-    anchors.right: rightIncreaseSidePanels.left
+    anchors.left: parent.left
     anchors.top: parent.top
-    anchors.bottom: rightDecreaseSidePanels.bottom
-    margin-bottom: -2
-    margin-top: 2
+    anchors.bottom: parent.bottom
     width: 2
-    background-color: black
-    opacity: 0.35
-
-  UIWidget
-    anchors.right: parent.right
-    anchors.left: prev.left
-    anchors.top: rightDecreaseSidePanels.bottom
-    height: 2
     background-color: white
     opacity: 0.35
 
   UIWidget
-    anchors.right: parent.right
-    anchors.top: prev.bottom
-    anchors.bottom: parent.bottom
-    width: 2
-    background-color: black
-    opacity: 0.35
-
-  UIWidget
-    anchors.right: parent.right
     anchors.left: parent.left
+    anchors.right: parent.right
     anchors.bottom: parent.bottom
-    margin-left: 2
-    margin-right: 2
     height: 2
     background-color: black
     opacity: 0.35
 
   UIWidget
-    anchors.bottom: parent.bottom
-    anchors.left: parent.left
-    anchors.top: leftDecreaseSidePanels.bottom
-    width: 1
-    background-color: white
-    opacity: 0.35
-
-  UIWidget
-    anchors.left: parent.left
-    anchors.top: leftDecreaseSidePanels.bottom
-    anchors.right: leftDecreaseSidePanels.right
-    margin-left: 1
-    height: 1
-    background-color: white
-    opacity: 0.35
-
-  UIWidget
-    anchors.left: leftDecreaseSidePanels.right
-    anchors.bottom: leftDecreaseSidePanels.bottom
+    anchors.right: parent.right
     anchors.top: parent.top
-    margin-top: 2
+    anchors.bottom: parent.bottom
     width: 2
     background-color: black
     opacity: 0.35
-
-  UIWidget
-    id: leftIncreaseSidePanels
-    anchors.left: parent.left
-    anchors.top: parent.top
-    size: 9 27
-
-  UIWidget
-    id: leftDecreaseSidePanels
-    anchors.left: parent.left
-    anchors.top: leftIncreaseSidePanels.bottom
-    size: 9 27
-
-  UIWidget
-    id: rightIncreaseSidePanels
-    anchors.right: parent.right
-    anchors.top: parent.top
-    size: 9 27
-
-  UIWidget
-    id: rightDecreaseSidePanels
-    anchors.right: parent.right
-    anchors.top: rightIncreaseSidePanels.bottom
-    size: 9 27
 
 TopStatsSkillElement < UIWidget
   height: 11
@@ -304,7 +242,7 @@ TopStatsSkillElement < UIWidget
     anchors.left: parent.left
     anchors.verticalCenter: parent.verticalCenter
     margin-left: -3
-    margin-top: 7
+    margin-top: -3
 
   UIWidget
     id: icon
