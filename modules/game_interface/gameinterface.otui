@@ -349,8 +349,8 @@ UIWidget
 
   TopStatsBar
     id: gameTopPanel
-    anchors.left: gameLeftExtraPanel.right
-    anchors.right: gameRightExtraPanel.left
+    anchors.left: leftIncreaseSidePanels.right
+    anchors.right: rightIncreaseSidePanels.left
     anchors.top: parent.top
     focusable: false
 
