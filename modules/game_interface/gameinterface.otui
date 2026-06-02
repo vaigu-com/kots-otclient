@@ -368,7 +368,7 @@ UIWidget
     id: leftIncreaseSidePanels
     anchors.left: gameLeftExtraPanel.right
     anchors.top: parent.top
-    margin-left: 1
+    margin-left: 0
     image-source: /images/ui/topstats_button_panel
     image-clip: 27 0 9 27
     size: 9 27

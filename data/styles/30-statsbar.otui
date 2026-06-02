@@ -593,7 +593,8 @@ TopStatsBarDefaultOnTop < UIWidget
     anchors.top: skills.bottom
     anchors.right: icons.left
     margin-right: 12
-    size: 113 13
+    margin-top: 4
+    size: 113 12
 
   Panel
     id: icons
@@ -601,7 +602,8 @@ TopStatsBarDefaultOnTop < UIWidget
     image-source: /images/ui/containerslot
     anchors.top: skills.bottom
     anchors.horizontalCenter: parent.horizontalCenter
-    size: 103 14
+    margin-top: 4
+    size: 103 13
     layout:
       type: horizontalBox
 
@@ -1366,8 +1368,8 @@ ProficiencyTopBarWidget < UIWidget
     anchors.right: proficiencyBg.right
     anchors.verticalCenter: proficiencyBg.verticalCenter
     text-align: center
-    font: verdana-11px-rounded
-    color: #ffffff
+    font: verdana-11px-monochrome
+    color: #f4f4f4
     text: 0%
     phantom: true
 
