@@ -186,7 +186,7 @@ Panel
     image-source: /images/ui/2pixel_up_frame_borderimage
     image-border: 3
     anchors.fill: parent
-    margin-top: 18
+    margin-top: 20
     focusable: false
   Panel
     id: consoleContentPanel
@@ -197,7 +197,7 @@ Panel
     margin-left: 3
     margin-right: 3
     margin-bottom: 2
-    margin-top: 23
+    margin-top: 24
     padding: 1
     focusable: false
 
@@ -210,7 +210,7 @@ Panel
     margin-left: 2
     margin-right: 6
     margin-bottom: 2
-    margin-top: 23
+    margin-top: 24
     padding: 1
     focusable: false
     ScrollablePanel
