@@ -4,11 +4,11 @@ CreatureButton < UICreatureButton
 
   UICreature
     id: creature
-    size: 40 40
+    size: 32 32
     anchors.left: parent.left
     anchors.verticalCenter: parent.verticalCenter
-    margin-left: -10
-    margin-top: -6
+    margin-left: -2
+    margin-top: 4
     phantom: true
 
   UIWidget
@@ -69,7 +69,7 @@ CreatureButton < UICreatureButton
     anchors.top: parent.top
     color: #C0C0C0
     font: verdana-11px-monochrome
-    margin-left: 4
+    margin-left: 6
     phantom: true
     text-auto-resize: true
 
