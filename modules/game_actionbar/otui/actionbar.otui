@@ -1,7 +1,7 @@
 ActionButton < UIButton
   font: cipsoftFont
   size: 34 34
-  margin-left: 0
+  margin-left: 2
   image-source: /images/game/actionbar/actionbarslot
   Item
     id: item
@@ -240,7 +240,7 @@ Panel
     anchors.top: parent.top
     anchors.bottom: parent.bottom
     anchors.right: parent.right
-    step: 35
+    step: 36
     pixels-scroll: true
     visible: false
 

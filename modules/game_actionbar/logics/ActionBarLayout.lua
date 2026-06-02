@@ -153,7 +153,7 @@ function updateVisibleWidgets()
             local tabBar = actionBar.tabBar
             local children = tabBar:getChildren()
             local dimension = actionBar.isVertical and tabBar:getHeight() or tabBar:getWidth()
-            local slotSize = actionBar.isVertical and 36 or 34
+            local slotSize = actionBar.isVertical and 36 or 36
             local visibleCount = math.max(1, math.floor(dimension / slotSize))
             local firstIndex = actionBar.firstVisibleIndex or 1
             local totalChildren = #children
@@ -227,7 +227,7 @@ function moveActionButtons(widget)
     local children = tabBar:getChildren()
     local reverseChildren = tabBar.getReverseChildren and tabBar:getReverseChildren() or {}
     local dimension = actionBar.isVertical and tabBar:getHeight() or tabBar:getWidth()
-    local slotSize = actionBar.isVertical and 36 or 34
+    local slotSize = actionBar.isVertical and 36 or 36
     local visibleCount = math.max(1, math.floor(dimension / slotSize))
     if dir == "next" then
         local firstVisible = getFirstVisibleButton(actionBar)

@@ -246,7 +246,7 @@ Panel
     anchors.right: closeChannelButton.left
     margin-right: 22
     margin-left: 21
-    margin-bottom: -8
+    margin-bottom: -6
     padding-bottom: -5
     tab-spacing: 0
     movable: true

@@ -16,7 +16,7 @@ CreatureButton < UICreatureButton
     width: 5
     anchors.left: parent.left
     anchors.top: parent.top
-    margin-left: 10
+    margin-left: 20
     phantom: true
 
   UIWidget
