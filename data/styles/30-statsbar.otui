@@ -1220,14 +1220,14 @@ TopStatsBarCompactOnBottom < UIWidget
 // Structure: [Button+Highlight] [Progress Bar with % label] [Tree Icon]
 ProficiencyTopBarWidget < UIWidget
   id: proficiencyTopBar
-  size: 113 13
+  size: 113 14
   visible: false
 
   UIButton
     id: proficiencyButton
     anchors.left: parent.left
     anchors.verticalCenter: parent.verticalCenter
-    margin-left: 5
+    margin-left: 10
     size: 13 13
     image-source: /images/game/topbar/proficiency-button
     image-clip: 0 0 13 13
