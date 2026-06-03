@@ -492,6 +492,7 @@ TopStatsBarDefaultOnTop < UIWidget
     anchors.top: manashield.bottom
     margin-left: 12
     margin-right: 18
+    margin-top: 10
     height: 0
 
   ProficiencyTopBarWidget
@@ -499,7 +500,7 @@ TopStatsBarDefaultOnTop < UIWidget
     anchors.top: skills.bottom
     anchors.right: icons.left
     margin-right: 11
-    margin-top: 5
+    margin-top: 3
     size: 113 13
 
   Panel
@@ -508,7 +509,7 @@ TopStatsBarDefaultOnTop < UIWidget
     image-source: /images/ui/containerslot
     anchors.top: skills.bottom
     anchors.horizontalCenter: parent.horizontalCenter
-    margin-top: 5
+    margin-top: 3
     size: 103 13
     padding-left: 1
     layout:
