@@ -75,7 +75,7 @@ UIWidget
     anchors.top: leftDecreaseSidePanels.bottom
     anchors.left: gameLeftExtraPanel.right
     anchors.bottom: bottomSplitter.top
-    margin-top: 0
+    margin-top: 3
     margin-left: 1
     padding-top: 1
     border-width-right: 1
@@ -83,7 +83,7 @@ UIWidget
     width: 36
     image-source: /images/ui/actionbar/actionbar_background-light
     image-border: 1
-    margin-bottom: 11
+    margin-bottom: 8
     padding-right: 3
     layout:
       type: horizontalBox
@@ -115,14 +115,14 @@ UIWidget
     anchors.right: gameRightExtraPanel.left
     anchors.bottom: bottomSplitter.top
     margin-right: 1
-    margin-top: 0
+    margin-top: 3
     padding-top: 1
     border-width-left: 1
     border-color-left: #292929
     width: 36
     image-source: /images/ui/actionbar/actionbar_background-light
     image-border: 1
-    margin-bottom: 11
+    margin-bottom: 8
     padding-left: 3
 
     layout:

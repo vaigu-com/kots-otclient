@@ -195,7 +195,7 @@ StatsBarUp < UIStatsBar
 StatsBarTopWithShrink < UIWidget
   UIWidget
     anchors.fill: parent
-    image-source: /images/ui/2pixel_up_frame_borderimage_dark
+    image-source: /images/ui/miniwindow_body
     image-border: 4
 
 TopStatsSkillElement < UIWidget
@@ -498,9 +498,9 @@ TopStatsBarDefaultOnTop < UIWidget
     id: proficiencyTopBar
     anchors.top: skills.bottom
     anchors.right: icons.left
-    margin-right: 12
+    margin-right: 11
     margin-top: 5
-    size: 113 12
+    size: 113 13
 
   Panel
     id: icons
@@ -510,6 +510,7 @@ TopStatsBarDefaultOnTop < UIWidget
     anchors.horizontalCenter: parent.horizontalCenter
     margin-top: 5
     size: 103 13
+    padding-left: 1
     layout:
       type: horizontalBox
 
@@ -1254,8 +1255,8 @@ ProficiencyTopBarWidget < UIWidget
     anchors.top: parent.top
     anchors.bottom: parent.bottom
     margin-left: 3
-    image-source: /images/game/topbar/proficiency-bg
-    image-border: 2
+    image-source: /images/ui/containerslot
+    image-border: 3
     !tooltip: tr('Proficiency Progress')
 
   ProgressBar
