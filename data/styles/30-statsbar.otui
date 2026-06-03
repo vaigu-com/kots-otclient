@@ -195,7 +195,7 @@ StatsBarUp < UIStatsBar
 StatsBarTopWithShrink < UIWidget
   UIWidget
     anchors.fill: parent
-    image-source: /images/ui/miniwindow_body
+    image-source: /images/ui/2pixel_up_frame_borderimage
     image-border: 4
 
 TopStatsSkillElement < UIWidget
@@ -1227,6 +1227,7 @@ ProficiencyTopBarWidget < UIWidget
     id: proficiencyButton
     anchors.left: parent.left
     anchors.verticalCenter: parent.verticalCenter
+    margin-left: 5
     size: 13 13
     image-source: /images/game/topbar/proficiency-button
     image-clip: 0 0 13 13
@@ -1267,6 +1268,7 @@ ProficiencyTopBarWidget < UIWidget
     anchors.top: proficiencyBg.top
     anchors.bottom: proficiencyBg.bottom
     margin: 1 1 1 1
+    image-source:
     background-color: #1abc9c
     percent: 0
 
