@@ -101,12 +101,12 @@ function UICreatureButton:update()
 
     if self.isHovered or self.isTarget or self.isFollowed then
         self.creature:showStaticSquare(color)
-        self:getChildById('creature'):setBorderWidth(1)
-        self:getChildById('creature'):setBorderColor(color)
+        self:getChildById('hoverSquare'):setBorderWidth(1)
+        self:getChildById('hoverSquare'):setBorderColor(color)
         self:getChildById('label'):setColor(color)
     else
         self.creature:hideStaticSquare()
-        self:getChildById('creature'):setBorderWidth(0)
+        self:getChildById('hoverSquare'):setBorderWidth(0)
         self:getChildById('label'):setColor(color)
     end
 end
@@ -199,7 +199,7 @@ function UICreatureButton:resetState()
     if self.creature then
         self.creature:hideStaticSquare()
     end
-    self:getChildById('creature'):setBorderWidth(0)
+    self:getChildById('hoverSquare'):setBorderWidth(0)
     self:getChildById('label'):setColor(CreatureButtonColors.onIdle.notHovered)
     self:getChildById('skull'):setImageSource('')
     self:getChildById('emblem'):setImageSource('')

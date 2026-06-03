@@ -12,6 +12,13 @@ CreatureButton < UICreatureButton
     phantom: true
 
   UIWidget
+    id: hoverSquare
+    size: 22 22
+    anchors.horizontalCenter: creature.horizontalCenter
+    anchors.verticalCenter: creature.verticalCenter
+    phantom: true
+
+  UIWidget
     id: spacer
     width: 5
     anchors.left: parent.left
