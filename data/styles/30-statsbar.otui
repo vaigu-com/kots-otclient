@@ -500,7 +500,8 @@ TopStatsBarDefaultOnTop < UIWidget
     anchors.top: skills.bottom
     anchors.right: icons.left
     margin-right: 11
-    margin-top: 3
+    margin-left: 50
+    margin-top: 4
     size: 113 13
 
   Panel
@@ -509,7 +510,8 @@ TopStatsBarDefaultOnTop < UIWidget
     image-source: /images/ui/buffbar_cip
     anchors.top: skills.bottom
     anchors.horizontalCenter: parent.horizontalCenter
-    margin-top: 3
+    margin-top: 4
+    margin-left: 51
     size: 103 13
     padding-left: 1
     layout:
@@ -519,7 +521,8 @@ TopStatsBarDefaultOnTop < UIWidget
     anchors.top: skills.bottom
     anchors.left: icons.right
     anchors.bottom: parent.bottom
-    margin-top: 1
+    margin-left: 50
+    margin-top: 2
 
 TopStatsBarCompactOnTop < UIWidget
   StatsBarTopWithShrink
