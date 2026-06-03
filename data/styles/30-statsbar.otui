@@ -227,7 +227,7 @@ TopStatsSkillElement < UIWidget
     !statsbar-size: 'tiny'
     !statsbar-orientation: 'horizontal'
     statsbar-text: true
-    margin-left: 4
+    margin-left: 6
     margin-right: 75
     height: 5
 
@@ -302,8 +302,8 @@ TopStatsBarLargeOnTop < UIWidget
 
   Panel
     id: icons
-    image-border: 3
-    image-source: /images/ui/containerslot
+    image-border: 1
+    image-source: /images/ui/buffbar_cip
     anchors.top: parent.top
     anchors.horizontalCenter: parent.horizontalCenter
     margin-top: 5
@@ -427,8 +427,8 @@ TopStatsBarParallelOnTop < UIWidget
 
   Panel
     id: icons
-    image-border: 3
-    image-source: /images/ui/containerslot
+    image-border: 1
+    image-source: /images/ui/buffbar_cip
     anchors.top: skills.bottom
     anchors.horizontalCenter: parent.horizontalCenter
     size: 103 14
@@ -505,8 +505,8 @@ TopStatsBarDefaultOnTop < UIWidget
 
   Panel
     id: icons
-    image-border: 3
-    image-source: /images/ui/containerslot
+    image-border: 1
+    image-source: /images/ui/buffbar_cip
     anchors.top: skills.bottom
     anchors.horizontalCenter: parent.horizontalCenter
     margin-top: 3
@@ -527,8 +527,8 @@ TopStatsBarCompactOnTop < UIWidget
 
   Panel
     id: icons
-    image-border: 3
-    image-source: /images/ui/containerslot
+    image-border: 1
+    image-source: /images/ui/buffbar_cip
     anchors.top: parent.top
     anchors.horizontalCenter: parent.horizontalCenter
     margin-top: 5
@@ -968,8 +968,8 @@ TopStatsBarLargeOnBottom < UIWidget
 
   Panel
     id: icons
-    image-border: 3
-    image-source: /images/ui/containerslot
+    image-border: 1
+    image-source: /images/ui/buffbar_cip
     anchors.top: parent.top
     anchors.horizontalCenter: parent.horizontalCenter
     margin-top: 7
@@ -1082,8 +1082,8 @@ TopStatsBarParallelOnBottom < UIWidget
 
   Panel
     id: icons
-    image-border: 3
-    image-source: /images/ui/containerslot
+    image-border: 1
+    image-source: /images/ui/buffbar_cip
     anchors.top: skills.bottom
     anchors.horizontalCenter: parent.horizontalCenter
     size: 103 14
@@ -1143,8 +1143,8 @@ TopStatsBarDefaultOnBottom < UIWidget
 
   Panel
     id: icons
-    image-border: 3
-    image-source: /images/ui/containerslot
+    image-border: 1
+    image-source: /images/ui/buffbar_cip
     anchors.top: skills.bottom
     anchors.horizontalCenter: parent.horizontalCenter
     size: 103 14
@@ -1157,8 +1157,8 @@ TopStatsBarCompactOnBottom < UIWidget
 
   Panel
     id: icons
-    image-border: 3
-    image-source: /images/ui/containerslot
+    image-border: 1
+    image-source: /images/ui/buffbar_cip
     anchors.top: parent.top
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.bottom: parent.bottom
@@ -1257,8 +1257,8 @@ ProficiencyTopBarWidget < UIWidget
     anchors.top: parent.top
     anchors.bottom: parent.bottom
     margin-left: 3
-    image-source: /images/ui/containerslot
-    image-border: 3
+    image-source: /images/ui/buffbar_cip
+    image-border: 1
     !tooltip: tr('Proficiency Progress')
 
   ProgressBar

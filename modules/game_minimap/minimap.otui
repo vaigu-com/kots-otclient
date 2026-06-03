@@ -32,7 +32,7 @@ PhantomMiniWindow
       image-source: /images/automap/automap_indicator_maplayers
       anchors.left: parent.left
       anchors.bottom: parent.bottom
-      margin-left: -1
+      margin-left: -2
       image-clip: 98 0 14 67
       size: 14 67
 
@@ -79,7 +79,7 @@ PhantomMiniWindow
     anchors.right: layersPanel.left
     anchors.bottom: minimapBorder.bottom
     margin-right: 4
-    margin-bottom: -1
+    margin-bottom: 0
     size: 20 20
     @onClick: openCyclopediaMap()
 

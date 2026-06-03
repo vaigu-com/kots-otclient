@@ -47,16 +47,16 @@ PhantomMiniWindow
 
     Button
       id: resizer
-      size: 42 20
+      size: 44 20
       image-source: /images/options/button_enlarge
-      image-clip: 2 0 42 20
+      image-clip: 0 0 44 20
       anchors.top: parent.top
       anchors.right: parent.right
-      margin-right: 6
+      margin-right: 8
       @onClick: changeOptionsSize()
 
       $pressed !disabled:
-        image-clip: 2 20 42 20
+        image-clip: 0 20 44 20
 
     UIWidget
       id: options
