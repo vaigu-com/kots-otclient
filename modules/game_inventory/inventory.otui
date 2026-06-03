@@ -164,7 +164,7 @@ PhantomMiniWindow
       anchors.right: parent.right
       anchors.top: pvp.bottom
       margin-right: 8
-      margin-top: 7
+      margin-top: 8
 
     RedFistBox
       id: redFistBox

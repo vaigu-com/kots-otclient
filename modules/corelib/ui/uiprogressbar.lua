@@ -63,8 +63,9 @@ end
 
 function UIProgressBar:updateBackground()
     if self:isOn() then
-        local width = math.round(math.max((self:getProgress() *
-                                              (self:getWidth() - self.bgBorderLeft - self.bgBorderRight)), 1))
+        local progress = self:getProgress()
+        local fillWidth = self:getWidth() - self.bgBorderLeft - self.bgBorderRight
+        local width = progress > 0 and math.round(math.max(progress * fillWidth, 1)) or 0
         local height = self:getHeight() - self.bgBorderTop - self.bgBorderBottom
         local rect = {
             x = self.bgBorderLeft,

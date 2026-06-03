@@ -455,7 +455,7 @@ TopStatsBarDefaultOnTop < UIWidget
     !statsbar-orientation: 'horizontal'
     statsbar-text: true
     margin-left: 4
-    margin-right: 5
+    margin-right: 3
     margin-top: 4
     height: 14
 
@@ -469,7 +469,7 @@ TopStatsBarDefaultOnTop < UIWidget
     !statsbar-orientation: 'horizontal'
     statsbar-text: true
     margin-right: 4
-    margin-left: 1
+    margin-left: 3
     margin-top: 4
     height: 14
 
@@ -1230,7 +1230,7 @@ ProficiencyTopBarWidget < UIWidget
     id: proficiencyButton
     anchors.left: parent.left
     anchors.verticalCenter: parent.verticalCenter
-    margin-left: 10
+    margin-left: 5
     size: 13 13
     image-source: /images/game/topbar/proficiency-button
     image-clip: 0 0 13 13
@@ -1290,7 +1290,7 @@ ProficiencyTopBarWidget < UIWidget
     id: proficiencyIcon
     anchors.right: proficiencyBg.right
     anchors.verticalCenter: proficiencyBg.verticalCenter
-    margin-right: 1
+    margin-right: -4
     size: 9 11
     phantom: true
     image-source: /images/game/topbar/icon-proficiencytree-on

@@ -80,5 +80,5 @@ CreatureButton < UICreatureButton
     anchors.left: spacer.right
     anchors.right: parent.right
     anchors.bottom: parent.bottom
-    margin-bottom: 2
+    margin-bottom: -2
     phantom: true
