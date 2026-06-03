@@ -79,6 +79,6 @@ CreatureButton < UICreatureButton
     height: 5
     anchors.left: spacer.right
     anchors.right: parent.right
-    anchors.top: label.bottom
-    margin-top: 2
+    anchors.bottom: parent.bottom
+    margin-bottom: 2
     phantom: true
