@@ -210,7 +210,7 @@ TopStatsSkillElement < UIWidget
     anchors.left: parent.left
     anchors.verticalCenter: parent.verticalCenter
     margin-left: -3
-    margin-top: -3
+    margin-top: -2
 
   UIWidget
     id: icon
@@ -490,9 +490,9 @@ TopStatsBarDefaultOnTop < UIWidget
     anchors.left: parent.left
     anchors.right: parent.right
     anchors.top: manashield.bottom
-    margin-left: 12
+    margin-left: 5
     margin-right: 18
-    margin-top: 10
+    margin-top: 9
     height: 0
 
   ProficiencyTopBarWidget
@@ -519,7 +519,7 @@ TopStatsBarDefaultOnTop < UIWidget
     anchors.top: skills.bottom
     anchors.left: icons.right
     anchors.bottom: parent.bottom
-
+    margin-top: 1
 
 TopStatsBarCompactOnTop < UIWidget
   StatsBarTopWithShrink
