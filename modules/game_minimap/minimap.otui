@@ -32,7 +32,7 @@ PhantomMiniWindow
       image-source: /images/automap/automap_indicator_maplayers
       anchors.left: parent.left
       anchors.bottom: parent.bottom
-      margin-left: -2
+      margin-left: -1
       image-clip: 98 0 14 67
       size: 14 67
 
@@ -53,7 +53,7 @@ PhantomMiniWindow
       anchors.left: layersSeparator.right
       anchors.top: automapLayers.top
       image-source: /images/automap/automap_indicator_slider_left
-      margin-left: -2
+      margin-left: -3
       margin-top: 28
 
     Button

@@ -302,7 +302,7 @@ TopStatsBarLargeOnTop < UIWidget
 
   Panel
     id: icons
-    image-border: 1
+    image-border: 3
     image-source: /images/ui/buffbar_cip
     anchors.top: parent.top
     anchors.horizontalCenter: parent.horizontalCenter
@@ -427,7 +427,7 @@ TopStatsBarParallelOnTop < UIWidget
 
   Panel
     id: icons
-    image-border: 1
+    image-border: 3
     image-source: /images/ui/buffbar_cip
     anchors.top: skills.bottom
     anchors.horizontalCenter: parent.horizontalCenter
@@ -505,7 +505,7 @@ TopStatsBarDefaultOnTop < UIWidget
 
   Panel
     id: icons
-    image-border: 1
+    image-border: 3
     image-source: /images/ui/buffbar_cip
     anchors.top: skills.bottom
     anchors.horizontalCenter: parent.horizontalCenter
@@ -527,7 +527,7 @@ TopStatsBarCompactOnTop < UIWidget
 
   Panel
     id: icons
-    image-border: 1
+    image-border: 3
     image-source: /images/ui/buffbar_cip
     anchors.top: parent.top
     anchors.horizontalCenter: parent.horizontalCenter
@@ -968,7 +968,7 @@ TopStatsBarLargeOnBottom < UIWidget
 
   Panel
     id: icons
-    image-border: 1
+    image-border: 3
     image-source: /images/ui/buffbar_cip
     anchors.top: parent.top
     anchors.horizontalCenter: parent.horizontalCenter
@@ -1082,7 +1082,7 @@ TopStatsBarParallelOnBottom < UIWidget
 
   Panel
     id: icons
-    image-border: 1
+    image-border: 3
     image-source: /images/ui/buffbar_cip
     anchors.top: skills.bottom
     anchors.horizontalCenter: parent.horizontalCenter
@@ -1143,7 +1143,7 @@ TopStatsBarDefaultOnBottom < UIWidget
 
   Panel
     id: icons
-    image-border: 1
+    image-border: 3
     image-source: /images/ui/buffbar_cip
     anchors.top: skills.bottom
     anchors.horizontalCenter: parent.horizontalCenter
@@ -1157,7 +1157,7 @@ TopStatsBarCompactOnBottom < UIWidget
 
   Panel
     id: icons
-    image-border: 1
+    image-border: 3
     image-source: /images/ui/buffbar_cip
     anchors.top: parent.top
     anchors.horizontalCenter: parent.horizontalCenter
@@ -1258,7 +1258,7 @@ ProficiencyTopBarWidget < UIWidget
     anchors.bottom: parent.bottom
     margin-left: 3
     image-source: /images/ui/buffbar_cip
-    image-border: 1
+    image-border: 3
     !tooltip: tr('Proficiency Progress')
 
   ProgressBar

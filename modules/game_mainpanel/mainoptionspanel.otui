@@ -47,7 +47,7 @@ PhantomMiniWindow
 
     Button
       id: resizer
-      size: 44 20
+      size: 43 20
       image-source: /images/options/button_enlarge
       image-clip: 0 0 44 20
       anchors.top: parent.top
@@ -89,12 +89,12 @@ PhantomMiniWindow
       anchors.top: options.top
       anchors.bottom: parent.bottom
       margin-top: 0
-      margin-left: 0
-      margin-right: 0
+      margin-left: -2
+      margin-right: 2
       margin-bottom: 0
       phantom: true
       layout:
         type: grid
         cell-size: 20 20
-        cell-spacing: 2
+        cell-spacing: 3
         flow: true

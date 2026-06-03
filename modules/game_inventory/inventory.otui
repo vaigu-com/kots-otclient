@@ -145,7 +145,7 @@ PhantomMiniWindow
       id: pvp
       image-source: /images/game/combatmodes/onPanel
       size: 43 20
-      image-clip: 0 0 43 20
+      image-clip: 0 0 44 20
       margin: 2 4
       anchors.right: standPosture.right
       anchors.top: expert.bottom
@@ -156,7 +156,7 @@ PhantomMiniWindow
       size: 43 20
 
       $checked:
-        image-clip: 0 20 43 20
+        image-clip: 0 20 44 20
 
 
     WhiteHandBox
@@ -257,12 +257,12 @@ PhantomMiniWindow
       padding: 2
 
       image-source: /images/ui/buffbar_cip
-      image-border: 1
+      image-border: 3
       anchors.left: changeSize.left
       anchors.right: backpack.right
       anchors.bottom: parent.bottom
       anchors.top: stop.top
-      margin-right: 2
+      margin-top: 2
       layout:
         type: horizontalBox
 
@@ -593,7 +593,7 @@ PhantomMiniWindow
       anchors.top: blessings.top
       phantom: false
       image-source: /images/ui/buffbar_cip
-      image-border: 1
+      image-border: 3
       layout:
         type: horizontalBox
 
