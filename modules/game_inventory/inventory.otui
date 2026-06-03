@@ -164,7 +164,7 @@ PhantomMiniWindow
       anchors.right: parent.right
       anchors.top: pvp.bottom
       margin-right: 8
-      margin-top: 3
+      margin-top: 7
 
     RedFistBox
       id: redFistBox
@@ -242,7 +242,8 @@ PhantomMiniWindow
       anchors.left: defense.left
       anchors.right: standPosture.right
       anchors.bottom: parent.bottom
-      margin-left: -1
+      margin-left: -2
+      margin-bottom: -1
       font: verdana-bold-8
       color: #c0c0c0ff
       size: 45 15   
