@@ -195,40 +195,8 @@ StatsBarUp < UIStatsBar
 StatsBarTopWithShrink < UIWidget
   UIWidget
     anchors.fill: parent
-    image-source: /images/ui/background
-    image-repeated: true
-
-  UIWidget
-    anchors.left: parent.left
-    anchors.right: parent.right
-    anchors.top: parent.top
-    height: 2
-    background-color: white
-    opacity: 0.35
-
-  UIWidget
-    anchors.left: parent.left
-    anchors.top: parent.top
-    anchors.bottom: parent.bottom
-    width: 2
-    background-color: white
-    opacity: 0.35
-
-  UIWidget
-    anchors.left: parent.left
-    anchors.right: parent.right
-    anchors.bottom: parent.bottom
-    height: 2
-    background-color: black
-    opacity: 0.35
-
-  UIWidget
-    anchors.right: parent.right
-    anchors.top: parent.top
-    anchors.bottom: parent.bottom
-    width: 2
-    background-color: black
-    opacity: 0.35
+    image-source: /images/ui/2pixel_up_frame_borderimage_dark
+    image-border: 4
 
 TopStatsSkillElement < UIWidget
   height: 11
