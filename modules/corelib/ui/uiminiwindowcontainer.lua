@@ -92,6 +92,22 @@ function UIMiniWindowContainer:fitAll(noRemoveChild)
     end
 end
 
+-- Coalesce filler updates to at most once per frame. A ResizeBorder drag emits
+-- roughly one mouse-move per pixel, each triggering a layout pass; running the
+-- filler resize inline turned a 50px drag into ~100 relayouts in a single frame
+-- (FPS < 1). scheduleEvent(fn, 0) defers to the next poll, and the pending flag
+-- collapses every request in this frame into a single update.
+function UIMiniWindowContainer:requestUpdateBottomSeparators()
+    if self.fillerUpdatePending then
+        return
+    end
+    self.fillerUpdatePending = true
+    scheduleEvent(function()
+        self.fillerUpdatePending = false
+        self:updateBottomSeparators()
+    end, 0)
+end
+
 function UIMiniWindowContainer:updateBottomSeparators()
     -- Guard against reentrancy: moving/resizing the filler below re-triggers
     -- the layout pass, which calls this again through onLayoutUpdate.
@@ -131,11 +147,6 @@ function UIMiniWindowContainer:updateBottomSeparators()
     end
 
     local before = filler:getHeight()
-    if before ~= remaining or not wasLast then
-        g_logger.info(string.format(
-            '[FILLER] %s children=%d wasLast=%s selfH=%d sumH=%d height %d -> %d',
-            tostring(self:getId()), #children, tostring(wasLast), selfHeight, sumHeight, before, remaining))
-    end
     if before ~= remaining then
         filler:setHeight(remaining)
     end
@@ -147,11 +158,11 @@ function UIMiniWindowContainer:onGeometryChange(oldRect, newRect)
     if oldRect and newRect and oldRect.height == newRect.height then
         return
     end
-    self:updateBottomSeparators()
+    self:requestUpdateBottomSeparators()
 end
 
 function UIMiniWindowContainer:onLayoutUpdate()
-    self:updateBottomSeparators()
+    self:requestUpdateBottomSeparators()
 end
 
 function UIMiniWindowContainer:fits(child, minContentHeight, maxContentHeight)
