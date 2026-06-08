@@ -75,7 +75,7 @@ UIWidget
     anchors.top: leftDecreaseSidePanels.bottom
     anchors.left: gameLeftThirdPanel.right
     anchors.bottom: bottomSplitter.top
-    margin-top: 3
+    margin-top: 2
     margin-left: 1
     padding-top: 1
     border-width-right: 1
@@ -115,7 +115,7 @@ UIWidget
     anchors.right: gameRightFourthPanel.left
     anchors.bottom: bottomSplitter.top
     margin-right: 1
-    margin-top: 3
+    margin-top: 2
     padding-top: 1
     border-width-left: 1
     border-color-left: #292929
@@ -407,8 +407,8 @@ UIWidget
     anchors.right: rightIncreaseSidePanels.left
     anchors.top: parent.top
     margin-left: -1
-    margin-right: 3
-    margin-top: 1
+    margin-right: 1
+    margin-top: 0
     focusable: false
 
   TopStatsBar
@@ -426,7 +426,7 @@ UIWidget
     anchors.left: gameLeftThirdPanel.right
     anchors.top: parent.top
     margin-left: 1
-    margin-top: 1
+    margin-top: 0
     image-source: /images/ui/topstats_button_panel
     image-clip: 27 0 9 27
     size: 9 27
@@ -444,6 +444,7 @@ UIWidget
     anchors.left: leftIncreaseSidePanels.left
     anchors.top: leftIncreaseSidePanels.bottom
     image-source: /images/ui/topstats_button_panel
+    margin-top: 1
     image-clip: 36 26 9 27
     size: 9 27
     opacity: 1
@@ -461,7 +462,7 @@ UIWidget
     anchors.right: gameRightFourthPanel.left
     anchors.top: parent.top
     margin-right: -3
-    margin-top: 1
+    margin-top: 0
     image-source: /images/ui/topstats_button_panel
     image-clip: 0 0 9 27
     size: 9 27
