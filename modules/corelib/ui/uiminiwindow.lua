@@ -210,7 +210,10 @@ function UIMiniWindow:setupOnStart()
 
         if parentId == "gameLeftPanel" or
             parentId == "gameLeftExtraPanel" or
-            parentId == "gameRightExtraPanel" then
+            parentId == "gameLeftThirdPanel" or
+            parentId == "gameRightExtraPanel" or
+            parentId == "gameRightThirdPanel" or
+            parentId == "gameRightFourthPanel" then
             if parent:isVisible() then
                 parent:setWidth(190)
             end
