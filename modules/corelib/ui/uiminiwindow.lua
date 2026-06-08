@@ -336,42 +336,23 @@ function UIMiniWindow:onDragEnter(mousePos)
     return true
 end
 
--- Rule 1: shuffle the placeholder one slot up/down past a neighbour within its
--- column. Driven by the dragged window's centre crossing a neighbour's centre,
--- which is monotonic: a swap pushes the neighbour's centre further past ours, so
--- the reverse swap can never immediately re-fire (no oscillation). At most one
--- step per drag event; onDragMove fires often enough to catch up.
-function UIMiniWindow:reorderPlaceholderSameColumn(column)
+-- Rule 1: reposition the placeholder within its own column. Uses the exact same
+-- mouse-Y-vs-window-midpoint rule as cross-column placement (slotIndexForY), so
+-- the snap height is a pure function of the cursor position with no direction
+-- dependence. The placeholder is lifted out before computing the target slot so
+-- midpoints are read at their natural (undisplaced) positions, then reinserted.
+function UIMiniWindow:reorderPlaceholderSameColumn(column, mousePos)
     local dp = self.dropPlaceholder
     if not dp then
         return
     end
 
-    local center = self:getY() + self:getHeight() / 2
-    local children = column:getChildren()
-    local dpIndex = column:getChildIndex(dp)
+    local curIndex = column:getChildIndex(dp)
+    column:removeChild(dp)
+    local index = slotIndexForY(column, mousePos.y)
+    column:insertChild(index, dp)
 
-    local upRW, downRW
-    for i = dpIndex - 1, 1, -1 do
-        if isRegularWindow(children[i]) and children[i]:isDraggable() then
-            upRW = children[i]
-            break
-        end
-    end
-    for i = dpIndex + 1, #children do
-        if isRegularWindow(children[i]) and children[i]:isDraggable() then
-            downRW = children[i]
-            break
-        end
-    end
-
-    if upRW and center < (upRW:getY() + upRW:getHeight() / 2) then
-        column:removeChild(dp)
-        column:insertChild(column:getChildIndex(upRW), dp)
-        column:updateBottomSeparators()
-    elseif downRW and center > (downRW:getY() + downRW:getHeight() / 2) then
-        column:removeChild(dp)
-        column:insertChild(column:getChildIndex(downRW) + 1, dp)
+    if column:getChildIndex(dp) ~= curIndex then
         column:updateBottomSeparators()
     end
 end
@@ -397,7 +378,7 @@ function UIMiniWindow:onDragMove(mousePos, mouseMoved)
     local column = self:getHoveredColumn(mousePos)
     if column then
         if column == self.dropPlaceholderColumn then
-            self:reorderPlaceholderSameColumn(column)
+            self:reorderPlaceholderSameColumn(column, mousePos)
         else
             self:placePlaceholderInColumn(column, mousePos)
         end
