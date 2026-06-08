@@ -137,15 +137,32 @@ function UIMiniWindowContainer:updateBottomSeparators()
     self.updatingBottomSeparators = false
 end
 
+-- onLayoutUpdate fires on every layout pass, and updateBottomSeparators
+-- resizes the filler, which re-dirties the layout. Calling it inline would
+-- recompute many times per frame and tank FPS during a resize drag. Coalesce
+-- to at most one recompute per frame instead.
+function UIMiniWindowContainer:scheduleBottomSeparators()
+    if self.bottomSeparatorsScheduled then
+        return
+    end
+    self.bottomSeparatorsScheduled = true
+    addEvent(function()
+        self.bottomSeparatorsScheduled = false
+        if not self:isDestroyed() then
+            self:updateBottomSeparators()
+        end
+    end)
+end
+
 function UIMiniWindowContainer:onGeometryChange(oldRect, newRect)
     if oldRect and newRect and oldRect.height == newRect.height then
         return
     end
-    self:updateBottomSeparators()
+    self:scheduleBottomSeparators()
 end
 
 function UIMiniWindowContainer:onLayoutUpdate()
-    self:updateBottomSeparators()
+    self:scheduleBottomSeparators()
 end
 
 function UIMiniWindowContainer:fits(child, minContentHeight, maxContentHeight)
