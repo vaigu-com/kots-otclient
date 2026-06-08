@@ -124,6 +124,13 @@ function UIMiniWindowContainer:updateBottomSeparators()
     filler:setHeight(remaining)
 end
 
+function UIMiniWindowContainer:onGeometryChange(oldRect, newRect)
+    if oldRect and newRect and oldRect.height == newRect.height then
+        return
+    end
+    self:updateBottomSeparators()
+end
+
 function UIMiniWindowContainer:fits(child, minContentHeight, maxContentHeight)
     if self.ignoreFillAll then
         return 0
@@ -254,7 +261,8 @@ function UIMiniWindowContainer:onDrop(widget, mousePos)
 
         if widget:getId() == "botWindow" and
             (self:getId() == "gameLeftPanel" or self:getId() == "gameLeftExtraPanel" or
-                self:getId() == "gameRightExtraPanel") then
+                self:getId() == "gameLeftThirdPanel" or self:getId() == "gameRightExtraPanel" or
+                self:getId() == "gameRightThirdPanel" or self:getId() == "gameRightFourthPanel") then
             self:setWidth(190)
         end
         self:fitAll(widget)
