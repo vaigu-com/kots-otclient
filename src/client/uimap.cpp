@@ -80,7 +80,7 @@ void UIMap::drawSelf(const DrawPoolType drawPane)
 
     if (drawPane == DrawPoolType::FOREGROUND) {
         const auto border = m_mapRect.expanded(1);
-        const Color darkEdge(0x2b, 0x2b, 0x2b);
+        const Color darkEdge(0x14, 0x14, 0x14);
         const Color lightEdge(0x76, 0x76, 0x76);
         // top edge (dark)
         g_drawPool.addFilledRect(Rect(border.left(), border.top(), border.width(), 1), darkEdge);

@@ -100,7 +100,24 @@ function UIMiniWindowContainer:updateBottomSeparators()
     end
     self.updatingBottomSeparators = true
 
-    local filler = self:getChildById('columnFiller')
+    -- Keep exactly one filler. Duplicates can rarely slip in (e.g. a filler
+    -- restored from a stale saved layout alongside a freshly created one), so
+    -- scan all children rather than trusting getChildById's first match and
+    -- destroy any extras.
+    local filler
+    local children = self:getChildren()
+    for i = #children, 1, -1 do
+        local c = children[i]
+        if c.isColumnFiller or c:getId() == 'columnFiller' then
+            if filler then
+                self:removeChild(c)
+                c:destroy()
+            else
+                filler = c
+            end
+        end
+    end
+
     if not filler then
         filler = g_ui.createWidget('EmptyColumnFiller')
         filler:setId('columnFiller')
@@ -109,7 +126,7 @@ function UIMiniWindowContainer:updateBottomSeparators()
         self:addChild(filler)
     end
 
-    local children = self:getChildren()
+    children = self:getChildren()
     local wasLast = (children[#children] == filler)
     if not wasLast then
         self:removeChild(filler)

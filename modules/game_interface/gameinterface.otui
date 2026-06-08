@@ -57,6 +57,7 @@ UIWidget
     anchors.bottom: bottomSplitter.top
     focusable: false
     margin-top: 1
+    margin-left: -1
     margin-bottom: -4
 
     Button
@@ -159,7 +160,7 @@ UIWidget
     anchors.left: bottomSplitter.left
     anchors.right: bottomSplitter.right
     anchors.top: gameBottomStatsBarPanel.bottom
-    image-source: /images/ui/actionbar/actionbar_background
+    image-source: /images/ui/actionbar/background-dark
     image-repeated: true
     layout:
       type: verticalBox
