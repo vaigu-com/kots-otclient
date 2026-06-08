@@ -73,7 +73,8 @@ enum FlagProp : uint64_t
     PropDisableUpdateTemporarily = 1 << 25,
     PropApplyAnchorAlignment = 1 << 26,
     PropUpdateSize = 1 << 27,
-    PropTextRTL = 1 << 28
+    PropTextRTL = 1 << 28,
+    PropImageRepeatedFromBottom = 1ULL << 29
 };
 
 enum class DisplayType : uint8_t
@@ -942,6 +943,7 @@ public:
     void setImageColor(const Color& color) { m_imageColor = color; updateImageCache(); }
     void setImageFixedRatio(const bool fixedRatio) { setProp(PropImageFixedRatio, fixedRatio); updateImageCache(); }
     void setImageRepeated(const bool repeated) { setProp(PropImageRepeated, repeated); updateImageCache(); }
+    void setImageRepeatedFromBottom(const bool v) { setProp(PropImageRepeatedFromBottom, v); updateImageCache(); }
     void setImageSmooth(const bool smooth) { setProp(PropImageSmooth, smooth); }
     void setImageAutoResize(const bool autoResize) { setProp(PropImageAutoResize, autoResize); }
     void setImageIndividualAnimation(const bool v) { setProp(PropImageIndividualAnimation, v); }
@@ -962,6 +964,7 @@ public:
     Rect getImageRect() { return m_imageRect; }
     Color getImageColor() { return m_imageColor; }
     bool isImageFixedRatio() { return hasProp(PropImageFixedRatio); }
+    bool isImageRepeatedFromBottom() { return hasProp(PropImageRepeatedFromBottom); }
     bool isImageSmooth() { return hasProp(PropImageSmooth); }
     bool isImageAutoResize() { return hasProp(PropImageAutoResize); }
     bool isImageIndividualAnimation() { return hasProp(PropImageIndividualAnimation); }
