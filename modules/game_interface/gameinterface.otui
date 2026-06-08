@@ -95,6 +95,7 @@ UIWidget
     anchors.top: gameLeftActionPanel.bottom
     anchors.left: gameLeftActionPanel.left
     border-width-right: 1
+    padding-top: -3
     border-color-right: #292929
     image-source: /images/ui/actionbar/actionbar_background-light
     Button
@@ -135,6 +136,7 @@ UIWidget
     anchors.top: gameRightActionPanel.bottom
     anchors.right: gameRightActionPanel.right
     border-width-left: 1
+    padding-top: -3
     border-color-left: #292929
     image-source: /images/ui/actionbar/actionbar_background-light
 
@@ -461,7 +463,7 @@ UIWidget
     id: rightIncreaseSidePanels
     anchors.right: gameRightFourthPanel.left
     anchors.top: parent.top
-    margin-right: -3
+    margin-right: -2
     margin-top: 0
     image-source: /images/ui/topstats_button_panel
     image-clip: 0 0 9 27
