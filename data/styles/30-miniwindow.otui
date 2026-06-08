@@ -231,10 +231,30 @@ MiniWindow < UIMiniWindow
     background: #ffffff88
 
 EmptyColumnFiller < UIWidget
-  image-source: /images/ui/2pixel_up_frame_borderimage
-  image-border: 4
   phantom: true
   focusable: false
+
+  UIWidget
+    id: fillerBevelHighlight
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-left: 3
+    margin-right: 3
+    height: 1
+    background-color: #66666640
+    phantom: true
+
+  UIWidget
+    id: fillerBevelShadow
+    anchors.top: prev.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-left: 3
+    margin-right: 3
+    height: 1
+    background-color: #31313160
+    phantom: true
 
 MiniWindowDropPlaceholder < UIWidget
   image-source: /images/ui/2pixel_up_frame_borderimage_dark

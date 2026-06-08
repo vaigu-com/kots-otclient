@@ -130,13 +130,7 @@ function UIMiniWindowContainer:updateBottomSeparators()
         remaining = 2
     end
 
-    local before = filler:getHeight()
-    if before ~= remaining or not wasLast then
-        g_logger.info(string.format(
-            '[FILLER] %s children=%d wasLast=%s selfH=%d sumH=%d height %d -> %d',
-            tostring(self:getId()), #children, tostring(wasLast), selfHeight, sumHeight, before, remaining))
-    end
-    if before ~= remaining then
+    if filler:getHeight() ~= remaining then
         filler:setHeight(remaining)
     end
 
