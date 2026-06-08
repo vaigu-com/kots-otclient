@@ -93,14 +93,14 @@ function UIMiniWindowContainer:fitAll(noRemoveChild)
 end
 
 function UIMiniWindowContainer:updateBottomSeparators()
-    -- Guard against reentrancy: moving/resizing the filler below re-triggers
-    -- the layout pass, which calls this again through onLayoutUpdate.
-    if self.updatingBottomSeparators then
-        return
-    end
-    self.updatingBottomSeparators = true
-
     local filler = self:getChildById('columnFiller')
+    -- A filler instantiated before the bevel was added to the style keeps its
+    -- old (line-less) child structure even after a style reload, so rebuild it.
+    if filler and not filler:getChildById('fillerBevelHighlight') then
+        self:removeChild(filler)
+        filler:destroy()
+        filler = nil
+    end
     if not filler then
         filler = g_ui.createWidget('EmptyColumnFiller')
         filler:setId('columnFiller')
@@ -114,10 +114,10 @@ function UIMiniWindowContainer:updateBottomSeparators()
     if not wasLast then
         self:removeChild(filler)
         self:addChild(filler)
+        children = self:getChildren()
     end
 
     local sumHeight = 0
-    children = self:getChildren()
     for i = 1, #children do
         if children[i]:isVisible() and children[i] ~= filler then
             sumHeight = sumHeight + children[i]:getHeight()
@@ -125,22 +125,27 @@ function UIMiniWindowContainer:updateBottomSeparators()
     end
 
     local selfHeight = self:getHeight() - (self:getPaddingTop() + self:getPaddingBottom())
+
+    -- Critical: filler:setHeight() below re-dirties this container's layout,
+    -- which re-enters here through onLayoutUpdate. The dispatcher drains those
+    -- re-queued layout events within the same frame (executeDeferEvents loops
+    -- until the queue is empty), so without this early-out the column relayouts
+    -- in a tight loop while resizing and the frame rate collapses. The filler's
+    -- own height is excluded from sumHeight, so once we've resized it the inputs
+    -- are unchanged and the re-entrant call returns here immediately.
+    if wasLast and self.lastFillerSum == sumHeight and self.lastFillerSelf == selfHeight then
+        return
+    end
+    self.lastFillerSum = sumHeight
+    self.lastFillerSelf = selfHeight
+
     local remaining = selfHeight - sumHeight
     if remaining < 2 then
         remaining = 2
     end
-
-    local before = filler:getHeight()
-    if before ~= remaining or not wasLast then
-        g_logger.info(string.format(
-            '[FILLER] %s children=%d wasLast=%s selfH=%d sumH=%d height %d -> %d',
-            tostring(self:getId()), #children, tostring(wasLast), selfHeight, sumHeight, before, remaining))
-    end
-    if before ~= remaining then
+    if filler:getHeight() ~= remaining then
         filler:setHeight(remaining)
     end
-
-    self.updatingBottomSeparators = false
 end
 
 function UIMiniWindowContainer:onGeometryChange(oldRect, newRect)
