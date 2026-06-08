@@ -231,6 +231,8 @@ MiniWindow < UIMiniWindow
     background: #ffffff88
 
 EmptyColumnFiller < UIWidget
+  image-source: /images/ui/2pixel_up_frame_borderimage
+  image-border: 4
   phantom: true
   focusable: false
 
