@@ -92,6 +92,40 @@ function UIMiniWindowContainer:fitAll(noRemoveChild)
     end
 end
 
+-- The filler body has no image of its own: the GameSidePanel paints the same
+-- slate texture from its (stable) top-left, so the panel's grain shows through
+-- with no shift. The filler only needs the top bevel line that separates it
+-- from the window above. Build that line directly on the live widget so it is
+-- present even on fillers restored from a saved layout (which never run the
+-- EmptyColumnFiller style and so carry no style-declared children).
+function UIMiniWindowContainer:ensureFillerBevel(filler)
+    if filler:getChildById('fillerBevelHighlight') then
+        return
+    end
+
+    local highlight = g_ui.createWidget('UIWidget', filler)
+    highlight:setId('fillerBevelHighlight')
+    highlight:setPhantom(true)
+    highlight:setHeight(1)
+    highlight:setBackgroundColor('#9d9d9d')
+    highlight:setMarginLeft(3)
+    highlight:setMarginRight(3)
+    highlight:addAnchor(AnchorTop, 'parent', AnchorTop)
+    highlight:addAnchor(AnchorLeft, 'parent', AnchorLeft)
+    highlight:addAnchor(AnchorRight, 'parent', AnchorRight)
+
+    local shadow = g_ui.createWidget('UIWidget', filler)
+    shadow:setId('fillerBevelShadow')
+    shadow:setPhantom(true)
+    shadow:setHeight(1)
+    shadow:setBackgroundColor('#2a2a2a')
+    shadow:setMarginLeft(3)
+    shadow:setMarginRight(3)
+    shadow:addAnchor(AnchorTop, 'fillerBevelHighlight', AnchorBottom)
+    shadow:addAnchor(AnchorLeft, 'parent', AnchorLeft)
+    shadow:addAnchor(AnchorRight, 'parent', AnchorRight)
+end
+
 function UIMiniWindowContainer:updateBottomSeparators()
     -- Guard against reentrancy: moving/resizing the filler below re-triggers
     -- the layout pass, which calls this again through onLayoutUpdate.
@@ -108,6 +142,7 @@ function UIMiniWindowContainer:updateBottomSeparators()
         filler.miniLoaded = true
         self:addChild(filler)
     end
+    self:ensureFillerBevel(filler)
 
     local children = self:getChildren()
     local wasLast = (children[#children] == filler)
@@ -131,11 +166,6 @@ function UIMiniWindowContainer:updateBottomSeparators()
     end
 
     local before = filler:getHeight()
-    if before ~= remaining or not wasLast then
-        g_logger.info(string.format(
-            '[FILLER] %s children=%d wasLast=%s selfH=%d sumH=%d height %d -> %d',
-            tostring(self:getId()), #children, tostring(wasLast), selfHeight, sumHeight, before, remaining))
-    end
     if before ~= remaining then
         filler:setHeight(remaining)
     end
