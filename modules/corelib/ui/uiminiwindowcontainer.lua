@@ -130,39 +130,28 @@ function UIMiniWindowContainer:updateBottomSeparators()
         remaining = 2
     end
 
-    if filler:getHeight() ~= remaining then
+    local before = filler:getHeight()
+    if before ~= remaining or not wasLast then
+        g_logger.info(string.format(
+            '[FILLER] %s children=%d wasLast=%s selfH=%d sumH=%d height %d -> %d',
+            tostring(self:getId()), #children, tostring(wasLast), selfHeight, sumHeight, before, remaining))
+    end
+    if before ~= remaining then
         filler:setHeight(remaining)
     end
 
     self.updatingBottomSeparators = false
 end
 
--- onLayoutUpdate fires on every layout pass, and updateBottomSeparators
--- resizes the filler, which re-dirties the layout. Calling it inline would
--- recompute many times per frame and tank FPS during a resize drag. Coalesce
--- to at most one recompute per frame instead.
-function UIMiniWindowContainer:scheduleBottomSeparators()
-    if self.bottomSeparatorsScheduled then
-        return
-    end
-    self.bottomSeparatorsScheduled = true
-    addEvent(function()
-        self.bottomSeparatorsScheduled = false
-        if not self:isDestroyed() then
-            self:updateBottomSeparators()
-        end
-    end)
-end
-
 function UIMiniWindowContainer:onGeometryChange(oldRect, newRect)
     if oldRect and newRect and oldRect.height == newRect.height then
         return
     end
-    self:scheduleBottomSeparators()
+    self:updateBottomSeparators()
 end
 
 function UIMiniWindowContainer:onLayoutUpdate()
-    self:scheduleBottomSeparators()
+    self:updateBottomSeparators()
 end
 
 function UIMiniWindowContainer:fits(child, minContentHeight, maxContentHeight)
