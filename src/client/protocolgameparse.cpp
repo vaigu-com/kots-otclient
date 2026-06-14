@@ -1949,6 +1949,7 @@ void ProtocolGame::parseMagicEffect(const InputMessagePtr& msg)
                     const auto& effect = std::make_shared<Effect>();
                     effect->setId(effectId);
                     effect->setSource(static_cast<Otc::MagicEffectSources>(effectSource));
+                    g_logger.info("[DEBUG #25] parseMagicEffect CREATE_EFFECT id={} pos={} source={}", effectId, pos, effectSource);
                     g_map.addThing(effect, pos);
                     break;
                 }
@@ -1989,6 +1990,7 @@ void ProtocolGame::parseMagicEffect(const InputMessagePtr& msg)
     const auto& effect = std::make_shared<Effect>();
     effect->setId(effectId);
 
+    g_logger.info("[DEBUG #25] parseMagicEffect (legacy) id={} pos={}", effectId, pos);
     g_map.addThing(effect, pos);
 }
 

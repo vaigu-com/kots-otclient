@@ -192,7 +192,13 @@ void Map::addThing(const ThingPtr& thing, const Position& pos, const int16_t sta
         return;
     }
 
-    if (const auto& tile = getOrCreateTile(pos)) {
+    const auto& tile = getOrCreateTile(pos);
+    if (thing->isEffect()) {
+        g_logger.info("[DEBUG #25] addThing effect pos={} tileCreated={} hasGround={} floatingEffect={} willDraw={}",
+            pos, static_cast<bool>(tile), tile ? static_cast<bool>(tile->getGround()) : false, m_floatingEffect,
+            static_cast<bool>(tile) && (m_floatingEffect || tile->getGround()));
+    }
+    if (tile) {
         if (m_floatingEffect || !thing->isEffect() || tile->getGround()) {
             tile->addThing(thing, stackPos);
             notificateTileUpdate(pos, thing, Otc::OPERATION_ADD);
