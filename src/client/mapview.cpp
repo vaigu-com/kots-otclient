@@ -554,6 +554,13 @@ void MapView::onTileUpdate(const Position& pos, const ThingPtr& thing, const Otc
             m_lastHighlightTile = nullptr;
 
         requestUpdateVisibleTiles();
+    } else if (op == Otc::OPERATION_ADD) {
+        // updateVisibleTiles() skips non-drawable tiles, so a groundless/empty tile
+        // is absent from the visible-tile cache. Adding a thing (e.g. an effect)
+        // makes it drawable, but without rebuilding the cache it never renders -
+        // this is why effects don't animate on empty tiles (#25).
+        if (const auto& tile = g_map.getTile(pos); tile && !tile->getGround())
+            requestUpdateVisibleTiles();
     }
 }
 
