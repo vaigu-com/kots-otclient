@@ -80,6 +80,10 @@ function UIMessageBox.display(title, message, buttons, onEnterCallback, onEscape
         })
     end
 
+    messageBox:setFocusable(true)
+    messageBox:raise()
+    messageBox:focus()
+
     return messageBox
 end
 
