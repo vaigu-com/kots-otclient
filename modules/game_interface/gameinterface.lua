@@ -1791,18 +1791,40 @@ function getBottomSplitter()
     return bottomSplitter
 end
 
+-- Visible side-panel columns ordered from the rightmost on screen to the
+-- leftmost. New miniwindows fill from the right and spill leftward.
+local function visibleColumnsRightToLeft()
+    local order = { gameRightPanel, gameRightExtraPanel, gameRightThirdPanel, gameRightFourthPanel,
+        gameLeftThirdPanel, gameLeftExtraPanel, gameLeftPanel }
+    local columns = {}
+    for i = 1, #order do
+        if order[i] and order[i]:isVisible() then
+            columns[#columns + 1] = order[i]
+        end
+    end
+    return columns
+end
+
 function findContentPanelAvailable(child, minContentHeight)
     if gameSelectedPanel and gameSelectedPanel:isVisible() and gameSelectedPanel:fits(child, minContentHeight, 0) >= 0 then
         return gameSelectedPanel
     end
 
-    for k, v in pairs(panelsList) do
-        if v.panel ~= gameSelectedPanel and v.panel:isVisible() and v.panel:fits(child, minContentHeight, 0) >= 0 then
-            return v.panel
+    local columns = visibleColumnsRightToLeft()
+    for i = 1, #columns do
+        if columns[i]:fits(child, minContentHeight, 0) >= 0 then
+            return columns[i]
         end
     end
 
-    return gameSelectedPanel
+    -- No column has room: evict windows from the leftmost column until the new
+    -- one fits there.
+    local leftmost = columns[#columns]
+    if leftmost and leftmost:evictForChild(child, minContentHeight) then
+        return leftmost
+    end
+
+    return gameSelectedPanel or leftmost
 end
 
 function nextViewMode()

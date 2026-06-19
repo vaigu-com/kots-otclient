@@ -146,6 +146,7 @@ function UIResizeBorder:getMinimum()
 end
 
 function UIResizeBorder:setParentSize(size)
+    size = math.min(math.max(size, self.minimum), self.maximum)
     local parent = self:getParent()
     if self.vertical then
         parent:setHeight(size)
