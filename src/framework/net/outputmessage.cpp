@@ -26,14 +26,14 @@
 #include "framework/util/crypt.h"
 
 OutputMessage::OutputMessage() {
-    m_maxHeaderSize = g_game.getClientVersion() >= 1405 ? 7 : 8;
+    m_maxHeaderSize = 8;
     m_writePos = m_maxHeaderSize;
     m_headerPos = m_maxHeaderSize;
 }
 
 void OutputMessage::reset()
 {
-    m_maxHeaderSize = g_game.getClientVersion() >= 1405 ? 7 : 8;
+    m_maxHeaderSize = 8;
     m_writePos = m_maxHeaderSize;
     m_headerPos = m_maxHeaderSize;
     m_messageSize = 0;
@@ -192,5 +192,5 @@ void OutputMessage::prependU16(uint16_t value)
 
 uint8_t* OutputMessage::getXteaEncryptionBuffer()
 {
-    return g_game.getClientVersion() >= 1405 ? getHeaderBuffer() : getDataBuffer() - 2;
+    return getDataBuffer() - 2;
 }

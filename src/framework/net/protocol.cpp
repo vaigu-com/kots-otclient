@@ -131,11 +131,6 @@ void Protocol::send(const OutputMessagePtr& outputMessage, bool raw)
     }
 
     if (!raw) {
-        // padding
-        if (g_game.getClientVersion() >= 1405) {
-            outputMessage->writePaddingAmount();
-        }
-
         // encrypt
         if (m_xteaEncryptionEnabled) {
             xteaEncrypt(outputMessage);
@@ -149,11 +144,7 @@ void Protocol::send(const OutputMessagePtr& outputMessage, bool raw)
         }
 
         // write message size
-        if (g_game.getClientVersion() >= 1405) {
-            outputMessage->writeHeaderSize();
-        } else {
-            outputMessage->writeMessageSize();
-        }
+        outputMessage->writeMessageSize();
     }
 
     onSend();
@@ -185,9 +176,7 @@ void Protocol::recv()
     int headerSize = 2; // 2 bytes for message size
     if (m_checksumEnabled)
         headerSize += 4; // 4 bytes for checksum
-    if (g_game.getClientVersion() >= 1405) {
-        headerSize += 1; // 1 bytes for padding size
-    } else if (m_xteaEncryptionEnabled) {
+    if (m_xteaEncryptionEnabled) {
         headerSize += 2; // 2 bytes for XTEA encrypted message size
     }
     m_inputMessage->setHeaderSize(headerSize);
@@ -205,9 +194,6 @@ void Protocol::internalRecvHeader(const uint8_t* buffer, const uint16_t size)
     // read message size
     m_inputMessage->fillBuffer(buffer, size);
     uint32_t remainingSize = m_inputMessage->readSize();
-    if (g_game.getClientVersion() >= 1405) {
-        remainingSize = remainingSize * 8U + 4U;
-    }
 
     constexpr uint32_t MAX_PACKET = std::numeric_limits<uint16_t>::max();
     if (remainingSize == 0 || remainingSize > MAX_PACKET) {
@@ -363,30 +349,20 @@ bool Protocol::xteaDecrypt(const InputMessagePtr& inputMessage) const
         });
     }
 
-    uint16_t decryptedSize;
-    if (g_game.getClientVersion() >= 1405) {
-        const uint8_t paddingSize = inputMessage->getU8();
-        inputMessage->setPaddingSize(paddingSize);
-        decryptedSize = encryptedSize - paddingSize - 1;
-        inputMessage->setMessageSize(inputMessage->getHeaderSize() + decryptedSize);
-    } else {
-        decryptedSize = inputMessage->getU16() + 2;
-        const int sizeDelta = decryptedSize - encryptedSize;
-        if (sizeDelta > 0 || -sizeDelta > encryptedSize) {
-            g_logger.traceError("invalid decrypted network message");
-            return false;
-        }
-        inputMessage->setMessageSize(inputMessage->getMessageSize() + sizeDelta);
+    uint16_t decryptedSize = inputMessage->getU16() + 2;
+    const int sizeDelta = decryptedSize - encryptedSize;
+    if (sizeDelta > 0 || -sizeDelta > encryptedSize) {
+        g_logger.traceError("invalid decrypted network message");
+        return false;
     }
+    inputMessage->setMessageSize(inputMessage->getMessageSize() + sizeDelta);
 
     return true;
 }
 
 void Protocol::xteaEncrypt(const OutputMessagePtr& outputMessage) const
 {
-    if (g_game.getClientVersion() < 1405) {
-        outputMessage->writeMessageSize();
-    }
+    outputMessage->writeMessageSize();
 
     uint16_t encryptedSize = outputMessage->getMessageSize();
 
@@ -443,9 +419,7 @@ void Protocol::onProxyPacket(const std::shared_ptr<std::vector<uint8_t>>& packet
         int headerSize = 2; // 2 bytes for message size
         if (m_checksumEnabled)
             headerSize += 4; // 4 bytes for checksum
-        if (g_game.getClientVersion() >= 1405) {
-            headerSize += 1; // 1 bytes for padding size
-        } else if (m_xteaEncryptionEnabled) {
+        if (m_xteaEncryptionEnabled) {
             headerSize += 2; // 2 bytes for XTEA encrypted message size
         }
         m_inputMessage->setHeaderSize(headerSize);
