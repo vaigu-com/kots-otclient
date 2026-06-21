@@ -83,6 +83,7 @@ function UIMessageBox.display(title, message, buttons, onEnterCallback, onEscape
     messageBox:setFocusable(true)
     messageBox:raise()
     messageBox:focus()
+    messageBox:grabKeyboard()
 
     return messageBox
 end
@@ -229,6 +230,11 @@ function UIMessageBox.displaySHOP(title, message, description, buttons, onEnterC
             onEscape = onEscapeCallback
         })
     end
+
+    messageBox:setFocusable(true)
+    messageBox:raise()
+    messageBox:focus()
+    messageBox:grabKeyboard()
 
     return messageBox
 end
