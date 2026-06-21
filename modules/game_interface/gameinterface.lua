@@ -1817,14 +1817,10 @@ function findContentPanelAvailable(child, minContentHeight)
         end
     end
 
-    -- No column has room: evict windows from the leftmost column until the new
-    -- one fits there.
-    local leftmost = columns[#columns]
-    if leftmost and leftmost:evictForChild(child, minContentHeight) then
-        return leftmost
-    end
-
-    return gameSelectedPanel or leftmost
+    -- No column has room. Never evict windows from another column to make
+    -- space (that silently closes unrelated miniwindows, e.g. when collapsing a
+    -- side tab). Fall back to a column and let fitAll stack/shrink within it.
+    return gameSelectedPanel or columns[#columns]
 end
 
 function nextViewMode()

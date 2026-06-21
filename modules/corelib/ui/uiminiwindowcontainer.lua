@@ -194,33 +194,6 @@ function UIMiniWindowContainer:fits(child, minContentHeight, maxContentHeight)
     end
 end
 
--- Close existing miniwindows (south to north) until `child` fits, then report
--- whether it now fits. Used as a last resort when no column has free space.
-function UIMiniWindowContainer:evictForChild(child, minContentHeight)
-    if self.ignoreFillAll then
-        return false
-    end
-
-    while self:fits(child, minContentHeight, 0) < 0 do
-        local victim
-        local children = self:getChildren()
-        for i = #children, 1, -1 do
-            local c = children[i]
-            if c ~= child and c:isVisible() and c.UIMiniWindowContainer
-                and not c.isColumnFiller and not c.isDropPlaceholder then
-                victim = c
-                break
-            end
-        end
-        if not victim then
-            break
-        end
-        victim:close()
-    end
-
-    return self:fits(child, minContentHeight, 0) >= 0
-end
-
 -- Rule 3c: the dragged window has no placeholder in this column, so room must
 -- be made by evicting (closing) existing windows from south to north.
 function UIMiniWindowContainer:dropWithEviction(widget, mousePos)
