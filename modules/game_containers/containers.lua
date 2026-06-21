@@ -1072,8 +1072,11 @@ function onContainerOpen(container, previousContainer)
     local chromeHeight = container:hasPages() and 55 or 31
     containerWindow:setContentMinimumHeight(cellSize.height)
 
-    containerWindow:setContentMinimumHeight(step + chromeHeight)
-    containerWindow:setContentMaximumHeight(numLines * step + chromeHeight)
+    local resizeBorder = containerWindow:getChildById('bottomResizeBorder')
+    if resizeBorder then
+        resizeBorder:setMinimum(step + chromeHeight)
+        resizeBorder:setMaximum(numLines * step + chromeHeight)
+    end
     -- Enables dragging only when mouse press occurs within window bounds (with tolerance margins)
     -- and not over the containerPanel child widget
     -- On Drop: When an item is dropped, it is placed at the nearest valid parent location, such as in a grid.
