@@ -87,7 +87,7 @@ function init()
 
     preyWindow = g_ui.displayUI('prey')
     preyWindow:hide()
-    preyTracker = g_ui.createWidget('PreyTracker', modules.game_interface.getRightPanel())
+    preyTracker = g_ui.createWidget('PreyTracker')
     preyTracker:setup()
     preyTracker:setContentMaximumHeight(110)
     preyTracker:setContentMinimumHeight(70)

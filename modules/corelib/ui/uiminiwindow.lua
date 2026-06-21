@@ -8,6 +8,11 @@ function UIMiniWindow.create()
 end
 
 function UIMiniWindow:open(dontSave)
+    -- On a user-initiated open, make sure the window lands in a column that can
+    -- hold it. Restores (dontSave) keep their saved placement untouched.
+    if not dontSave then
+        self:relocateIfColumnFull()
+    end
     self:setVisible(true)
     if not dontSave then
         self:setSettings({
@@ -15,6 +20,39 @@ function UIMiniWindow:open(dontSave)
         })
     end
     signalcall(self.onOpen, self)
+end
+
+-- If the window currently lives in a side-panel column that has no room for it,
+-- move it to the first column (right-to-left) that fits. Windows pinned to the
+-- fixed main panel or floating outside any column are left alone.
+function UIMiniWindow:relocateIfColumnFull()
+    if self.moveOnlyToMain then
+        return
+    end
+    if not modules or not modules.game_interface then
+        return
+    end
+
+    -- Runs from open() before the window is made visible, so the window is not
+    -- yet counted in its column's fits() computation. This lets us reuse the
+    -- same "fits at minimum height" rule as findContentPanelAvailable.
+    local parent = self:getParent()
+    if parent then
+        if parent:getClassName() ~= 'UIMiniWindowContainer' or parent.ignoreFillAll then
+            return
+        end
+        if parent:fits(self, self:getMinimumHeight(), 0) >= 0 then
+            return
+        end
+    end
+
+    local panel = modules.game_interface.findContentPanelAvailable(self, self:getMinimumHeight())
+    if panel and panel ~= parent then
+        if parent then
+            parent:removeChild(self)
+        end
+        panel:addChild(self)
+    end
 end
 
 function UIMiniWindow:close(dontSave)
