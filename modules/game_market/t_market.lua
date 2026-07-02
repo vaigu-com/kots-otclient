@@ -87,8 +87,8 @@ function init()
     mainMarket.createOfferSell:setChecked(true)
     connect(g_game, {
         onResourcesBalanceChange = onResourcesBalanceChange,
-        onGameEnd = hide,
-        onGameStart = hide,
+        onGameEnd = onMarketGameStart,
+        onGameStart = onMarketGameStart,
         onMarketEnter = onMarketEnter,
         onMarketBrowse = onMarketBrowse,
         onMarketDetail = onMarketDetail,
@@ -104,8 +104,8 @@ end
 function terminate()
     disconnect(g_game, {
         onResourcesBalanceChange = onResourcesBalanceChange,
-        onGameStart = hide,
-        onGameEnd = hide,
+        onGameStart = onMarketGameStart,
+        onGameEnd = onMarketGameStart,
         onMarketEnter = onMarketEnter,
         onMarketBrowse = onMarketBrowse,
         onMarketDetail = onMarketDetail,
@@ -161,6 +161,18 @@ function hide()
     end
 end
 
+-- User-initiated close (ESC / close button). Tell the server we left the market
+-- before hiding locally; hide() alone never notified the server, leaving the
+-- session open server-side. Not used for server-pushed onMarketLeave, which must
+-- not echo a leave packet back.
+function leaveMarket()
+    if not marketWindow or not marketWindow:isVisible() then
+        return
+    end
+    sendMarketLeave()
+    hide()
+end
+
 function show()
     marketWindow:lock()
     marketWindow:show(true)
@@ -203,6 +215,10 @@ end
 function closeMarket()
     if not marketWindow then
         return
+    end
+
+    if marketWindow:isVisible() then
+        sendMarketLeave()
     end
 
     local marketMain = marketWindow:getChildById('contentPanel')
@@ -379,6 +395,48 @@ local marketHistoryBuy = {}
 local marketHistorySell = {}
 local marketMyOffersBuy = {}
 local marketMyOffersSell = {}
+
+-- Market data is kept in module-level tables that live for the whole client
+-- process, so without an explicit reset a previous game session's offers stay
+-- cached (and rendered) after logging back in on the same client. Wipe both the
+-- data and the rendered rows whenever a new game session starts.
+function resetMarketOffers()
+    marketOffersBuy = {}
+    marketOffersSell = {}
+    marketHistoryBuy = {}
+    marketHistorySell = {}
+    marketMyOffersBuy = {}
+    marketMyOffersSell = {}
+    marketBrowseRequest = nil
+    lastItemID = 0
+    lastItemTier = 0
+
+    MarketOwnOffers.myBuyOffers = {}
+    MarketOwnOffers.mySellOffers = {}
+
+    if not marketWindow then
+        return
+    end
+
+    local currentOffers = marketWindow.MarketHistory.currentOffers
+    if currentOffers then
+        currentOffers.sellOffersList:destroyChildren()
+        currentOffers.buyOffersList:destroyChildren()
+        currentOffers.sellOffersLabel:setText("Sell Offers (0):")
+        currentOffers.buyOffersLabel:setText("Buy Offers (0):")
+    end
+
+    local offerHistory = marketWindow.MarketHistory.offerHistory
+    if offerHistory then
+        offerHistory.sellOffersList:destroyChildren()
+        offerHistory.buyOffersList:destroyChildren()
+    end
+end
+
+function onMarketGameStart()
+    resetMarketOffers()
+    hide()
+end
 
 function onMarketReadOffer(action, amount, counter, itemId, playerName, price, state, timestamp, var, itemTier)
     local offer = {
@@ -677,6 +735,7 @@ function onMarketBrowse(intOffers, nameOffers)
         marketHistoryBuy = {}
         marketHistorySell = {}
 
+        marketBrowseRequest = nil
         MarketHistory.onParseMarketHistory(buyOffersData, sellOffersData)
         return
     end
@@ -688,9 +747,33 @@ function onMarketBrowse(intOffers, nameOffers)
         marketMyOffersBuy = {}
         marketMyOffersSell = {}
 
+        marketBrowseRequest = nil
         MarketOwnOffers.onParseMyOffers(buyOffersData, sellOffersData)
         return
     end
+
+    -- Empty response: the server sent no offers, so onMarketReadOffer never ran
+    -- and the buffers above are empty. Route by the pending request so stale
+    -- History / My Offers rows get cleared instead of lingering as ghosts.
+    if marketBrowseRequest == 1 then
+        marketBrowseRequest = nil
+        marketHistoryBuy = {}
+        marketHistorySell = {}
+        MarketHistory.onParseMarketHistory({}, {})
+        return
+    end
+
+    if marketBrowseRequest == 2 then
+        marketBrowseRequest = nil
+        marketMyOffersBuy = {}
+        marketMyOffersSell = {}
+        MarketOwnOffers.myBuyOffers = {}
+        MarketOwnOffers.mySellOffers = {}
+        MarketOwnOffers.onParseMyOffers({}, {})
+        return
+    end
+
+    marketBrowseRequest = nil
 
     if table.empty(lastSelectedItem) then
         return
