@@ -30,6 +30,18 @@ MarketOwnOffers = {
 
 MarketOwnOffers.__index = MarketOwnOffers
 
+-- An amount of 0 is the server's "offer removed" sentinel; such an offer is not a
+-- live auction and must never be stored or rendered. Prune in place (backwards so
+-- indices stay valid) to keep the array contiguous for the render loops below.
+local function removeZeroAmountOffers(offers)
+    for i = #offers, 1, -1 do
+        local offer = offers[i]
+        if not offer or not offer.amount or offer.amount <= 0 then
+            table.remove(offers, i)
+        end
+    end
+end
+
 function MarketOwnOffers.onParseMyOffers(buyOffers, sellOffers)
     local window = marketWindow.MarketHistory.currentOffers
 
@@ -91,6 +103,9 @@ function MarketOwnOffers.onParseMyOffers(buyOffers, sellOffers)
     if not updatedSell and #sellOffers > 0 then
         MarketOwnOffers.mySellOffers = sellOffers
     end
+
+    removeZeroAmountOffers(MarketOwnOffers.myBuyOffers)
+    removeZeroAmountOffers(MarketOwnOffers.mySellOffers)
 
     window.sellOffersList:destroyChildren()
     for i = 1, MarketOwnOffers.ownSellPool do
