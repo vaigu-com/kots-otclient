@@ -161,6 +161,18 @@ function hide()
     end
 end
 
+-- User-initiated close (ESC / close button). Tell the server we left the market
+-- before hiding locally; hide() alone never notified the server, leaving the
+-- session open server-side. Not used for server-pushed onMarketLeave, which must
+-- not echo a leave packet back.
+function leaveMarket()
+    if not marketWindow or not marketWindow:isVisible() then
+        return
+    end
+    sendMarketLeave()
+    hide()
+end
+
 function show()
     marketWindow:lock()
     marketWindow:show(true)
@@ -203,6 +215,10 @@ end
 function closeMarket()
     if not marketWindow then
         return
+    end
+
+    if marketWindow:isVisible() then
+        sendMarketLeave()
     end
 
     local marketMain = marketWindow:getChildById('contentPanel')
