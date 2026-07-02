@@ -677,6 +677,7 @@ function onMarketBrowse(intOffers, nameOffers)
         marketHistoryBuy = {}
         marketHistorySell = {}
 
+        marketBrowseRequest = nil
         MarketHistory.onParseMarketHistory(buyOffersData, sellOffersData)
         return
     end
@@ -688,9 +689,33 @@ function onMarketBrowse(intOffers, nameOffers)
         marketMyOffersBuy = {}
         marketMyOffersSell = {}
 
+        marketBrowseRequest = nil
         MarketOwnOffers.onParseMyOffers(buyOffersData, sellOffersData)
         return
     end
+
+    -- Empty response: the server sent no offers, so onMarketReadOffer never ran
+    -- and the buffers above are empty. Route by the pending request so stale
+    -- History / My Offers rows get cleared instead of lingering as ghosts.
+    if marketBrowseRequest == 1 then
+        marketBrowseRequest = nil
+        marketHistoryBuy = {}
+        marketHistorySell = {}
+        MarketHistory.onParseMarketHistory({}, {})
+        return
+    end
+
+    if marketBrowseRequest == 2 then
+        marketBrowseRequest = nil
+        marketMyOffersBuy = {}
+        marketMyOffersSell = {}
+        MarketOwnOffers.myBuyOffers = {}
+        MarketOwnOffers.mySellOffers = {}
+        MarketOwnOffers.onParseMyOffers({}, {})
+        return
+    end
+
+    marketBrowseRequest = nil
 
     if table.empty(lastSelectedItem) then
         return

@@ -1,4 +1,8 @@
 function sendMarketAction(action, itemId, tier)
+    -- Remember what we asked for so an empty server response can still be routed
+    -- to the right renderer (otherwise stale rows are never cleared).
+    marketBrowseRequest = action
+
     if action == 3 and itemId then
         g_game.browseMarket(3, itemId, tier or 0)
     elseif action == 2 then
