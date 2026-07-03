@@ -651,8 +651,6 @@ void ProtocolGame::sendChangeFightModes(const Otc::FightModes fightMode, const O
 {
     const auto& msg = std::make_shared<OutputMessage>();
     msg->addU8(Proto::ClientChangeFightModes);
-    // The combat-stance (fight mode) byte was removed from the server protocol; it now reads chaseMode
-    // first and safeFight second. Sending the stance byte here shifted every field by one.
     msg->addU8(chaseMode);
     msg->addU8(safeFight);
     if (g_game.getFeature(Otc::GamePVPMode))
