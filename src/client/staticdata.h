@@ -1038,6 +1038,8 @@ struct GemData {
 struct CustomWheelNode {
     uint16_t wireId = 0;
     uint16_t iconId = 0;
+    // Per-point dedication value x1000 (thousandths); the client shows points*value in the {value} template slot.
+    uint32_t dedicationPerPointMilli = 0;
     std::string dedication;
     std::string conviction;
 };

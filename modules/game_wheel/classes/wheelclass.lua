@@ -699,10 +699,31 @@ function WheelOfDestiny.applyWheelIcons(text)
   return text
 end
 
--- Returns the server-defined dedication (per-point) text for a node, or unknown_dedication_<wireId> when none sent.
+-- Formats a dedication value: whole numbers without decimals, fractions trimmed of trailing zeros (7.5, 2.475, 33).
+local function formatDedicationValue(v)
+  if v == math.floor(v) then
+    return string.format("%d", v)
+  end
+  return (string.format("%.3f", v):gsub("0+$", ""):gsub("%.$", ""))
+end
+
+-- Returns the server-defined dedication text for a node. The stored string is a template with a {value} token,
+-- which is filled with the *accumulated* value = points spent on the node x per-point (so the player sees the final
+-- value, e.g. "+2.475% Mitigation Multiplier" at 33 points, not a per-point rate). Falls back to
+-- unknown_dedication_<wireId> when the server sent no entry.
 function WheelOfDestiny.getNodeDedication(wireId)
   local node = WheelOfDestiny.customNodes and WheelOfDestiny.customNodes[wireId]
-  return WheelOfDestiny.applyWheelIcons((node and node.dedication) or ("unknown_dedication_" .. wireId))
+  if not node then
+    return WheelOfDestiny.applyWheelIcons("unknown_dedication_" .. wireId)
+  end
+  local text = node.dedication or ""
+  local perPointMilli = node.dedicationPerPointMilli or 0
+  if perPointMilli > 0 then
+    local points = WheelOfDestiny.pointInvested[wireId] or 0
+    local value = points * perPointMilli / 1000
+    text = text:gsub("{value}", formatDedicationValue(value))
+  end
+  return WheelOfDestiny.applyWheelIcons(text)
 end
 
 -- Returns the server-defined conviction (max-allocation) text for a node, or unknown_conviction_<wireId> if none.
@@ -743,6 +764,15 @@ end
 function WheelOfDestiny.getRevelationIconId(sliceId)
   local rev = WheelOfDestiny.getRevelation(sliceId)
   return (rev and rev.iconId) or 0
+end
+
+-- Sets a wheel-corner revelation icon (perkIcon{TopLeft,TopRight,BottomLeft,BottomRight}) from the server icon id
+-- for its slice (a column index into the 34px perk-corner sheet). 0 falls back to the first column (a default of
+-- the correct size) instead of a hardcoded per-vocation clip.
+function WheelOfDestiny.setRevelationCornerIcon(childId, sliceId)
+  local w = wheelPanel:recursiveGetChildById(childId)
+  if not w then return end
+  w:setImageClip((34 * WheelOfDestiny.getRevelationIconId(sliceId)) .. " 0 34 34")
 end
 
 -- Server-defined revelation name for a slice (with tier icons applied), or unknown_revelation_<sliceId>.
@@ -802,8 +832,12 @@ function WheelOfDestiny.onDestinyWheel(playerId, canView, changeState, vocationI
   WheelOfDestiny.customNodes = {}
   if customNodes then
     for _, node in ipairs(customNodes) do
-      WheelOfDestiny.customNodes[node.wireId] =
-        { dedication = node.dedication, conviction = node.conviction, iconId = node.iconId or 0 }
+      WheelOfDestiny.customNodes[node.wireId] = {
+        dedication = node.dedication,
+        conviction = node.conviction,
+        iconId = node.iconId or 0,
+        dedicationPerPointMilli = node.dedicationPerPointMilli or 0,
+      }
     end
   end
   WheelOfDestiny.customRevelations = {}
@@ -869,37 +903,22 @@ function WheelOfDestiny.onDestinyWheel(playerId, canView, changeState, vocationI
 
   managePresetsButton:setEnabled(presetEnabled)
 
-  if vocationId == 1 then
-    wheelPanel.vocationWheel:setImageSource('/images/game/wheel/wheel-vocations/backdrop_skillwheel_knight')
-    wheelPanel:recursiveGetChildById("perkIconTopLeft"):setImageClip("0 0 34 34")
-    wheelPanel:recursiveGetChildById("perkIconTopRight"):setImageClip("34 0 34 34")
-    wheelPanel:recursiveGetChildById("perkIconBottomLeft"):setImageClip("68 0 34 34")
-    wheelPanel:recursiveGetChildById("perkIconBottomRight"):setImageClip("102 0 34 34")
-  elseif vocationId == 2 then
-    wheelPanel.vocationWheel:setImageSource('/images/game/wheel/wheel-vocations/backdrop_skillwheel_paladin')
-    wheelPanel:recursiveGetChildById("perkIconTopLeft"):setImageClip("0 0 34 34")
-    wheelPanel:recursiveGetChildById("perkIconTopRight"):setImageClip("136 0 34 34")
-    wheelPanel:recursiveGetChildById("perkIconBottomLeft"):setImageClip("170 0 34 34")
-    wheelPanel:recursiveGetChildById("perkIconBottomRight"):setImageClip("204 0 34 34")
-  elseif vocationId == 3 then
-    wheelPanel.vocationWheel:setImageSource('/images/game/wheel/wheel-vocations/backdrop_skillwheel_sorcerer')
-    wheelPanel:recursiveGetChildById("perkIconTopLeft"):setImageClip("0 0 34 34")
-    wheelPanel:recursiveGetChildById("perkIconTopRight"):setImageClip("238 0 34 34")
-    wheelPanel:recursiveGetChildById("perkIconBottomLeft"):setImageClip("272 0 34 34")
-    wheelPanel:recursiveGetChildById("perkIconBottomRight"):setImageClip("306 0 34 34")
-  elseif vocationId == 4 then
-    wheelPanel.vocationWheel:setImageSource('/images/game/wheel/wheel-vocations/backdrop_skillwheel_druid')
-    wheelPanel:recursiveGetChildById("perkIconTopLeft"):setImageClip("0 0 34 34")
-    wheelPanel:recursiveGetChildById("perkIconTopRight"):setImageClip("374 0 34 34")
-    wheelPanel:recursiveGetChildById("perkIconBottomLeft"):setImageClip("340 0 34 34")
-    wheelPanel:recursiveGetChildById("perkIconBottomRight"):setImageClip("408 0 34 34")
-  elseif vocationId == 5 then
-    wheelPanel.vocationWheel:setImageSource('/images/game/wheel/wheel-vocations/backdrop_skillwheel_monk')
-    wheelPanel:recursiveGetChildById("perkIconTopLeft"):setImageClip("0 0 34 34")
-    wheelPanel:recursiveGetChildById("perkIconTopRight"):setImageClip("442 0 34 34")
-    wheelPanel:recursiveGetChildById("perkIconBottomLeft"):setImageClip("476 0 34 34")
-    wheelPanel:recursiveGetChildById("perkIconBottomRight"):setImageClip("510 0 34 34")
+  -- The big wheel backdrop stays a per-vocation image; the four corner revelation icons are server-defined.
+  local backdrops = {
+    [1] = 'backdrop_skillwheel_knight',
+    [2] = 'backdrop_skillwheel_paladin',
+    [3] = 'backdrop_skillwheel_sorcerer',
+    [4] = 'backdrop_skillwheel_druid',
+    [5] = 'backdrop_skillwheel_monk',
+  }
+  if backdrops[vocationId] then
+    wheelPanel.vocationWheel:setImageSource('/images/game/wheel/wheel-vocations/' .. backdrops[vocationId])
   end
+  -- Corners map to slices 1..4 (top-left, top-right, bottom-left, bottom-right).
+  WheelOfDestiny.setRevelationCornerIcon("perkIconTopLeft", 1)
+  WheelOfDestiny.setRevelationCornerIcon("perkIconTopRight", 2)
+  WheelOfDestiny.setRevelationCornerIcon("perkIconBottomLeft", 3)
+  WheelOfDestiny.setRevelationCornerIcon("perkIconBottomRight", 4)
 	
   if WheelOfDestiny.changeState == 1 then
     wheelWindow.reset:setEnabled(true)
@@ -949,26 +968,26 @@ function WheelOfDestiny.onCreate(vocationId)
             modIcon:setVisible(true)
           else
             widget:setImageSource("/images/game/wheel/icons-skillwheel-mediumperks")
-            widget:setImageClip(WheelOfDestiny.nodeIconClip(index))
+            widget:setImageClip(WheelOfDestiny.nodeIconClip(id))
             widget:setSize(tosize("30 30"))
             modIcon:setVisible(false)
           end
         else
           widget:setImageSource("/images/game/wheel/icons-skillwheel-mediumperks")
-          widget:setImageClip(WheelOfDestiny.nodeIconClip(index))
+          widget:setImageClip(WheelOfDestiny.nodeIconClip(id))
           widget:setSize(tosize("30 30"))
           if modIcon then
             modIcon:setVisible(false)
           end
         end
       else
-        widget:setImageClip(WheelOfDestiny.nodeIconClip(index))
+        widget:setImageClip(WheelOfDestiny.nodeIconClip(id))
       end
     end
 		
     local widget = wheelPanel:recursiveGetChildById("smallicon"..id)
     if widget then
-      widget:setImageClip(WheelOfDestiny.nodeIconClip(index, 16))
+      widget:setImageClip(WheelOfDestiny.nodeIconClip(id, 16))
     end
   end
 	
