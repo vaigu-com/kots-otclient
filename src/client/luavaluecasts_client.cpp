@@ -2167,10 +2167,13 @@ bool luavalue_cast(int index, GemData& gem)
 
 int push_luavalue(const CustomWheelNode& node)
 {
-    g_lua.createTable(0, 3);
+    g_lua.createTable(0, 4);
 
     g_lua.pushInteger(node.wireId);
     g_lua.setField("wireId");
+
+    g_lua.pushInteger(node.iconId);
+    g_lua.setField("iconId");
 
     g_lua.pushString(node.dedication);
     g_lua.setField("dedication");
@@ -2196,10 +2199,13 @@ int push_luavalue(const CustomWheelRevelationTier& tier)
 
 int push_luavalue(const CustomWheelRevelation& revelation)
 {
-    g_lua.createTable(0, 3);
+    g_lua.createTable(0, 4);
 
     g_lua.pushInteger(revelation.sliceId);
     g_lua.setField("sliceId");
+
+    g_lua.pushInteger(revelation.iconId);
+    g_lua.setField("iconId");
 
     g_lua.pushString(revelation.name);
     g_lua.setField("name");

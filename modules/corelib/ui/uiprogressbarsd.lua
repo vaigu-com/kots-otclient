@@ -59,10 +59,14 @@ function UIProgressBarSD:getProgress()
   return (self.value - self.minimum) / (self.maximum - self.minimum)
 end
 
-function UIProgressBarSD:updateBackground()  
-  if self:isOn() then  
-    local width = math.round(math.max((self:getProgress() * (self:getWidth() - self.bgBorderLeft - self.bgBorderRight)), 1))  
-    local height = self:getHeight() - self.bgBorderTop - self.bgBorderBottom  
+function UIProgressBarSD:updateBackground()
+  if self:isOn() then
+    -- Scale the fill to the progress. At zero progress the fill must be empty (0px); only clamp a *positive*
+    -- fill up to a minimum 1px so a tiny non-zero value stays visible (previously 0 also rendered as 1px, which
+    -- made an unspent bar look partly filled).
+    local fill = self:getProgress() * (self:getWidth() - self.bgBorderLeft - self.bgBorderRight)
+    local width = fill <= 0 and 0 or math.round(math.max(fill, 1))
+    local height = self:getHeight() - self.bgBorderTop - self.bgBorderBottom
     local rect = { x = self.bgBorderLeft, y = self.bgBorderTop, width = width, height = height }  
 
     self:setImageRect(rect)

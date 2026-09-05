@@ -524,11 +524,11 @@ function WheelOfDestiny.insertPoint(index, points)
           end
         else
           widget:setImageSource("/images/game/wheel/icons-skillwheel-mediumperks")
-          widget:setImageClip(iconInfo.iconRect)
+          widget:setImageClip(WheelOfDestiny.nodeIconClip(index))
           modIcon:setVisible(false)
         end
       else
-        widget:setImageClip(iconInfo.iconRect)
+        widget:setImageClip(WheelOfDestiny.nodeIconClip(index))
       end
     else
       local maxcolor = math.floor(points / 10) + 1
@@ -578,7 +578,7 @@ function WheelOfDestiny.checkFilledVessels(originalIndex)
 		end
 
 		widget:setImageSource("/images/game/wheel/icons-skillwheel-mediumperks")
-		widget:setImageClip(iconInfo.iconRect)
+		widget:setImageClip(WheelOfDestiny.nodeIconClip(id))
 		widget:setSize(tosize("30 30"))
 
 		if lastModInserted == 0 and gem.lesserBonus > -1 then
@@ -635,7 +635,7 @@ function WheelOfDestiny.removePoint(index, points)
         local modIcon = widget:recursiveGetChildById("modIcon"..index)
         local iconInfo = WheelIcons[WheelOfDestiny.vocationId][index]
         widget:setImageSource("/images/game/wheel/icons-skillwheel-mediumperks")
-        widget:setImageClip(iconInfo.iconRect)
+        widget:setImageClip(WheelOfDestiny.nodeIconClip(index))
         widget:setSize(tosize("30 30"))
         modIcon:setVisible(false)
         WheelOfDestiny.equipedGemBonuses[index] = {bonusID = -1, supreme = false, gemID = 0}
@@ -661,7 +661,7 @@ function WheelOfDestiny.removePoint(index, points)
       local modIcon = widget:recursiveGetChildById("modIcon"..index)
       local iconInfo = WheelIcons[WheelOfDestiny.vocationId][index]
       widget:setImageSource("/images/game/wheel/icons-skillwheel-mediumperks")
-      widget:setImageClip(iconInfo.iconRect)
+      widget:setImageClip(WheelOfDestiny.nodeIconClip(index))
       widget:setSize(tosize("30 30"))
       modIcon:setVisible(false)
       WheelOfDestiny.equipedGemBonuses[index] = {bonusID = -1, supreme = false, gemID = 0}
@@ -711,9 +711,38 @@ function WheelOfDestiny.getNodeConviction(wireId)
   return WheelOfDestiny.applyWheelIcons((node and node.conviction) or ("unknown_conviction_" .. wireId))
 end
 
+-- Server-defined icon id for a node (column index into the medium-perks sheet), or 0 when unspecified.
+function WheelOfDestiny.getNodeIconId(wireId)
+  local node = WheelOfDestiny.customNodes and WheelOfDestiny.customNodes[wireId]
+  return (node and node.iconId) or 0
+end
+
+-- Image clip for a node's icon at the given glyph size (30 for the main icon, 16 for the mini icon). Uses the
+-- server-defined icon id when present; otherwise falls back to the hardcoded per-vocation icon, and finally to the
+-- first icon in the sheet (a default of the correct size) so an unknown node never renders a broken/oversized clip.
+function WheelOfDestiny.nodeIconClip(wireId, size)
+  size = size or 30
+  local iconId = WheelOfDestiny.getNodeIconId(wireId)
+  if iconId and iconId > 0 then
+    return (size * iconId) .. " 0 " .. size .. " " .. size
+  end
+  local voc = WheelIcons[WheelOfDestiny.vocationId]
+  local info = voc and voc[wireId]
+  if info then
+    return (size == 16) and info.miniIconRect or info.iconRect
+  end
+  return "0 0 " .. size .. " " .. size
+end
+
 -- Returns the server-defined revelation perk for a slice (1..4), or nil when the server sent none.
 function WheelOfDestiny.getRevelation(sliceId)
   return WheelOfDestiny.customRevelations and WheelOfDestiny.customRevelations[sliceId]
+end
+
+-- Server-defined icon id for a slice's revelation perk, or 0 when unspecified.
+function WheelOfDestiny.getRevelationIconId(sliceId)
+  local rev = WheelOfDestiny.getRevelation(sliceId)
+  return (rev and rev.iconId) or 0
 end
 
 -- Server-defined revelation name for a slice (with tier icons applied), or unknown_revelation_<sliceId>.
@@ -773,13 +802,14 @@ function WheelOfDestiny.onDestinyWheel(playerId, canView, changeState, vocationI
   WheelOfDestiny.customNodes = {}
   if customNodes then
     for _, node in ipairs(customNodes) do
-      WheelOfDestiny.customNodes[node.wireId] = { dedication = node.dedication, conviction = node.conviction }
+      WheelOfDestiny.customNodes[node.wireId] =
+        { dedication = node.dedication, conviction = node.conviction, iconId = node.iconId or 0 }
     end
   end
   WheelOfDestiny.customRevelations = {}
   if customRevelations then
     for _, rev in ipairs(customRevelations) do
-      WheelOfDestiny.customRevelations[rev.sliceId] = { name = rev.name, tiers = rev.tiers or {} }
+      WheelOfDestiny.customRevelations[rev.sliceId] = { name = rev.name, tiers = rev.tiers or {}, iconId = rev.iconId or 0 }
     end
   end
 
@@ -919,26 +949,26 @@ function WheelOfDestiny.onCreate(vocationId)
             modIcon:setVisible(true)
           else
             widget:setImageSource("/images/game/wheel/icons-skillwheel-mediumperks")
-            widget:setImageClip(iconInfo.iconRect)
+            widget:setImageClip(WheelOfDestiny.nodeIconClip(index))
             widget:setSize(tosize("30 30"))
             modIcon:setVisible(false)
           end
         else
           widget:setImageSource("/images/game/wheel/icons-skillwheel-mediumperks")
-          widget:setImageClip(iconInfo.iconRect)
+          widget:setImageClip(WheelOfDestiny.nodeIconClip(index))
           widget:setSize(tosize("30 30"))
           if modIcon then
             modIcon:setVisible(false)
           end
         end
       else
-        widget:setImageClip(iconInfo.iconRect)
+        widget:setImageClip(WheelOfDestiny.nodeIconClip(index))
       end
     end
 		
     local widget = wheelPanel:recursiveGetChildById("smallicon"..id)
     if widget then
-      widget:setImageClip(iconInfo.miniIconRect)
+      widget:setImageClip(WheelOfDestiny.nodeIconClip(index, 16))
     end
   end
 	
@@ -1273,7 +1303,7 @@ function resetWheel(ignoreprotocol)
       local modIcon = widget:recursiveGetChildById("modIcon"..index)
       local iconInfo = WheelIcons[WheelOfDestiny.vocationId][index]
       widget:setImageSource("/images/game/wheel/icons-skillwheel-mediumperks")
-      widget:setImageClip(iconInfo.iconRect)
+      widget:setImageClip(WheelOfDestiny.nodeIconClip(index))
       widget:setSize(tosize("30 30"))
       if modIcon then
         modIcon:setVisible(false)

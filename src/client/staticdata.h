@@ -1037,6 +1037,7 @@ struct GemData {
 // the Lua side.
 struct CustomWheelNode {
     uint16_t wireId = 0;
+    uint16_t iconId = 0;
     std::string dedication;
     std::string conviction;
 };
@@ -1050,6 +1051,7 @@ struct CustomWheelRevelationTier {
 // Server-defined revelation perk for one of the four wheel slices (sliceId 1..4), with its tiered bonuses.
 struct CustomWheelRevelation {
     uint8_t sliceId = 0;
+    uint16_t iconId = 0;
     std::string name;
     std::vector<CustomWheelRevelationTier> tiers;
 };

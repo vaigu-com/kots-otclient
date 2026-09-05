@@ -7462,6 +7462,7 @@ void ProtocolGame::parseOpenWheelWindow(const InputMessagePtr& msg)
         for (uint16_t i = 0; i < customCount; ++i) {
             CustomWheelNode node;
             node.wireId = msg->getU16();
+            node.iconId = msg->getU16();
             node.dedication = msg->getString();
             node.conviction = msg->getString();
             customNodes.push_back(std::move(node));
@@ -7478,6 +7479,7 @@ void ProtocolGame::parseOpenWheelWindow(const InputMessagePtr& msg)
         for (uint8_t i = 0; i < revelationCount; ++i) {
             CustomWheelRevelation revelation;
             revelation.sliceId = msg->getU8();
+            revelation.iconId = msg->getU16();
             revelation.name = msg->getString();
             const uint8_t tierCount = msg->getU8();
             revelation.tiers.reserve(tierCount);
