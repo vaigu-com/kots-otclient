@@ -1035,12 +1035,18 @@ struct GemData {
 // the wheel window keyed by wireId (the wheel node/slot id, 1..36). dedication = per-point bonus text, conviction =
 // max-allocation perk text. Missing nodes fall back to unknown_dedication_<wireId> / unknown_conviction_<wireId> on
 // the Lua side.
+// One typed dedication bonus a node grants per point. The client renders points*perPoint per formatType (0 =
+// integer "+N name", 1 = two-decimal percent "N.NN% name"); lines are sorted alphabetically by name.
+struct CustomWheelDedication {
+    uint8_t formatType = 0;
+    uint32_t perPointMilli = 0;
+    std::string name;
+};
+
 struct CustomWheelNode {
     uint16_t wireId = 0;
     uint16_t iconId = 0;
-    // Per-point dedication value x1000 (thousandths); the client shows points*value in the {value} template slot.
-    uint32_t dedicationPerPointMilli = 0;
-    std::string dedication;
+    std::vector<CustomWheelDedication> dedications;
     std::string conviction;
 };
 

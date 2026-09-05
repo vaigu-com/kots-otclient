@@ -7463,8 +7463,15 @@ void ProtocolGame::parseOpenWheelWindow(const InputMessagePtr& msg)
             CustomWheelNode node;
             node.wireId = msg->getU16();
             node.iconId = msg->getU16();
-            node.dedicationPerPointMilli = msg->getU32();
-            node.dedication = msg->getString();
+            const uint8_t dedicationCount = msg->getU8();
+            node.dedications.reserve(dedicationCount);
+            for (uint8_t d = 0; d < dedicationCount; ++d) {
+                CustomWheelDedication dedication;
+                dedication.formatType = msg->getU8();
+                dedication.perPointMilli = msg->getU32();
+                dedication.name = msg->getString();
+                node.dedications.push_back(std::move(dedication));
+            }
             node.conviction = msg->getString();
             customNodes.push_back(std::move(node));
         }

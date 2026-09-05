@@ -2165,9 +2165,25 @@ bool luavalue_cast(int index, GemData& gem)
     return true;
 }
 
+int push_luavalue(const CustomWheelDedication& dedication)
+{
+    g_lua.createTable(0, 3);
+
+    g_lua.pushInteger(dedication.formatType);
+    g_lua.setField("formatType");
+
+    g_lua.pushInteger(dedication.perPointMilli);
+    g_lua.setField("perPointMilli");
+
+    g_lua.pushString(dedication.name);
+    g_lua.setField("name");
+
+    return 1;
+}
+
 int push_luavalue(const CustomWheelNode& node)
 {
-    g_lua.createTable(0, 5);
+    g_lua.createTable(0, 4);
 
     g_lua.pushInteger(node.wireId);
     g_lua.setField("wireId");
@@ -2175,11 +2191,8 @@ int push_luavalue(const CustomWheelNode& node)
     g_lua.pushInteger(node.iconId);
     g_lua.setField("iconId");
 
-    g_lua.pushInteger(node.dedicationPerPointMilli);
-    g_lua.setField("dedicationPerPointMilli");
-
-    g_lua.pushString(node.dedication);
-    g_lua.setField("dedication");
+    push_luavalue(node.dedications);
+    g_lua.setField("dedications");
 
     g_lua.pushString(node.conviction);
     g_lua.setField("conviction");

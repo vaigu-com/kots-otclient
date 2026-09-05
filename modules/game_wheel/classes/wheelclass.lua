@@ -699,31 +699,43 @@ function WheelOfDestiny.applyWheelIcons(text)
   return text
 end
 
--- Formats a dedication value: whole numbers without decimals, fractions trimmed of trailing zeros (7.5, 2.475, 33).
-local function formatDedicationValue(v)
-  if v == math.floor(v) then
-    return string.format("%d", v)
-  end
-  return (string.format("%.3f", v):gsub("0+$", ""):gsub("%.$", ""))
+-- Formats an integer dedication value (whole numbers, no decimals).
+local function formatDedicationInteger(v)
+  return string.format("%d", math.floor(v + 0.5))
 end
 
--- Returns the server-defined dedication text for a node. The stored string is a template with a {value} token,
--- which is filled with the *accumulated* value = points spent on the node x per-point (so the player sees the final
--- value, e.g. "+2.475% Mitigation Multiplier" at 33 points, not a per-point rate). Falls back to
+-- Builds a single dedication line for a bonus. formatType 1 = two-decimal percent ("7.50% Mitigation Multiplier"),
+-- anything else = integer with a plus sign ("+33 Mana"). value is the accumulated amount (points x per-point).
+local function formatDedicationLine(dedication, value)
+  local name = dedication.name or ""
+  if dedication.formatType == 1 then
+    return string.format("%.2f%% %s", value, name)
+  end
+  return "+" .. formatDedicationInteger(value) .. " " .. name
+end
+
+-- Returns the server-defined dedication text for a node. The text is *generated* from the node's typed bonuses:
+-- each bonus's accumulated value (points spent on the node x per-point) is formatted and named, and the lines are
+-- sorted alphabetically by name and joined. A node may have several bonuses (e.g. hit points + mana). Falls back to
 -- unknown_dedication_<wireId> when the server sent no entry.
 function WheelOfDestiny.getNodeDedication(wireId)
   local node = WheelOfDestiny.customNodes and WheelOfDestiny.customNodes[wireId]
-  if not node then
+  if not node or not node.dedications or #node.dedications == 0 then
     return WheelOfDestiny.applyWheelIcons("unknown_dedication_" .. wireId)
   end
-  local text = node.dedication or ""
-  local perPointMilli = node.dedicationPerPointMilli or 0
-  if perPointMilli > 0 then
-    local points = WheelOfDestiny.pointInvested[wireId] or 0
-    local value = points * perPointMilli / 1000
-    text = text:gsub("{value}", formatDedicationValue(value))
+  local points = WheelOfDestiny.pointInvested[wireId] or 0
+  -- Sort the bonuses alphabetically by name, then render each accumulated value.
+  local ordered = {}
+  for _, dedication in ipairs(node.dedications) do
+    ordered[#ordered + 1] = dedication
   end
-  return WheelOfDestiny.applyWheelIcons(text)
+  table.sort(ordered, function(a, b) return (a.name or "") < (b.name or "") end)
+  local lines = {}
+  for _, dedication in ipairs(ordered) do
+    local value = points * (dedication.perPointMilli or 0) / 1000
+    lines[#lines + 1] = formatDedicationLine(dedication, value)
+  end
+  return WheelOfDestiny.applyWheelIcons(table.concat(lines, "\n"))
 end
 
 -- Returns the server-defined conviction (max-allocation) text for a node, or unknown_conviction_<wireId> if none.
@@ -833,10 +845,9 @@ function WheelOfDestiny.onDestinyWheel(playerId, canView, changeState, vocationI
   if customNodes then
     for _, node in ipairs(customNodes) do
       WheelOfDestiny.customNodes[node.wireId] = {
-        dedication = node.dedication,
+        dedications = node.dedications or {},
         conviction = node.conviction,
         iconId = node.iconId or 0,
-        dedicationPerPointMilli = node.dedicationPerPointMilli or 0,
       }
     end
   end

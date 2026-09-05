@@ -131,7 +131,8 @@ int push_luavalue(const PartyMemberName& data);
 int push_luavalue(const GemData& gem);
 bool luavalue_cast(int index, GemData& gem);
 
-// wheel custom node presentation (server-defined dedication/conviction) and revelation perks
+// wheel custom node presentation (server-defined dedications/conviction) and revelation perks
+int push_luavalue(const CustomWheelDedication& dedication);
 int push_luavalue(const CustomWheelNode& node);
 int push_luavalue(const CustomWheelRevelationTier& tier);
 int push_luavalue(const CustomWheelRevelation& revelation);
