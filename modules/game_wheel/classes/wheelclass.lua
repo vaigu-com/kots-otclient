@@ -2136,14 +2136,13 @@ function WheelOfDestiny.onWheelPassiveClick(domain)
   wheelOfDestinyWindow:recursiveGetChildById('rmvMax'):setVisible(false)
   wheelOfDestinyWindow:recursiveGetChildById('rmvOne'):setVisible(false)
 
-  local m1, m2 = getPassiveInfo(domain)
-
+  -- Clicking a slice shows its revelation perk; name/tier text is server-defined (not the old hardcoded tables).
   local panelHeight = WheelDedicationHeight[WheelOfDestiny.vocationId] or {}
   local height = panelHeight[domain] or 0
 
   wheelOfDestinyWindow.selection.tabContent.dedication:setHeight(height)
-  wheelOfDestinyWindow.selection.tabContent.dedication:setText(m1)
-  wheelOfDestinyWindow.selection.tabContent.information1:setTooltip(m2)
+  wheelOfDestinyWindow.selection.tabContent.dedication:setText(WheelOfDestiny.revelationName(domain))
+  wheelOfDestinyWindow.selection.tabContent.information1:setTooltip(WheelOfDestiny.revelationTooltip(domain))
 
   if passive == 1000 then
     wheelOfDestinyWindow.selection.tabContent.dedication:setColor("#c0c0c0")
@@ -2182,12 +2181,11 @@ function WheelOfDestiny.configureRevelationPerks()
   if damage > 0 then
     wheelOfDestinyWindow.revelationPerks.tabContent.damage.value:setText("+"..damage)
   end
-
-  local m1, m2 = getPassiveInfo(1)
   local passive = WheelOfDestiny.passivePoints[1]
   local extraPoints = WheelOfDestiny.extraPassivePoints[1] or 0
   passive = passive + extraPoints
 
+  wheelOfDestinyWindow.revelationPerks.tabContent.spell2.perk3:setText(WheelOfDestiny.revelationName(1))
   wheelOfDestinyWindow.revelationPerks.tabContent.spell2.value:setText("Locked")
   if passive >= 1000 then
     wheelOfDestinyWindow.revelationPerks.tabContent.spell2.value:setText("Stage 3")
@@ -2201,8 +2199,6 @@ function WheelOfDestiny.configureRevelationPerks()
 
 
   -- Revelation names/tooltips are server-defined now (see WheelOfDestiny.revelationName/revelationTooltip).
-
-  local m1, m2 = getPassiveInfo(4)
   local passive = WheelOfDestiny.passivePoints[4]
   local extraPoints = WheelOfDestiny.extraPassivePoints[4] or 0
   passive = passive + extraPoints
@@ -2218,8 +2214,6 @@ function WheelOfDestiny.configureRevelationPerks()
   end
 
   wheelOfDestinyWindow.revelationPerks.tabContent.infoAvatar:setTooltip(WheelOfDestiny.revelationTooltip(4))
-
-  local m1, m2 = getPassiveInfo(2)
   local passive = WheelOfDestiny.passivePoints[2]
   local extraPoints = WheelOfDestiny.extraPassivePoints[2] or 0
   passive = passive + extraPoints
@@ -2236,8 +2230,6 @@ function WheelOfDestiny.configureRevelationPerks()
   end
 
   wheelOfDestinyWindow.revelationPerks.tabContent.infoSpell1:setTooltip(WheelOfDestiny.revelationTooltip(2))
-
-  local m1, m2 = getPassiveInfo(3)
   local passive = WheelOfDestiny.passivePoints[3]
   local extraPoints = WheelOfDestiny.extraPassivePoints[3] or 0
   passive = passive + extraPoints

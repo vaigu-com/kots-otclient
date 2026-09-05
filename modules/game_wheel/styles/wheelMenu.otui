@@ -1034,7 +1034,7 @@ Panel
         size: 200 16
         Label
           id: perk1
-          !text: tr('Avatar Of Nature')
+          !text: ''
           width: 135
           anchors.top: parent.top
           anchors.left: parent.left
@@ -1069,7 +1069,7 @@ Panel
         margin-top: 2
         Label
           id: perk2
-          !text: tr('Blessing of the...')
+          !text: ''
           width: 135
           anchors.top: parent.top
           anchors.left: parent.left
@@ -1104,7 +1104,7 @@ Panel
         margin-top: 2
         Label
           id: perk3
-          !text: tr('Gift Of Life')
+          !text: ''
           width: 135
           anchors.top: parent.top
           anchors.left: parent.left
@@ -1139,7 +1139,7 @@ Panel
         margin-top: 2
         Label
           id: perk4
-          !text: tr('Twin Bursts')
+          !text: ''
           width: 135
           anchors.top: parent.top
           anchors.left: parent.left
