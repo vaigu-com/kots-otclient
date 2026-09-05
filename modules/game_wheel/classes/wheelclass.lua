@@ -723,7 +723,9 @@ function WheelOfDestiny.getNodeDedication(wireId)
   if not node or not node.dedications or #node.dedications == 0 then
     return WheelOfDestiny.applyWheelIcons("unknown_dedication_" .. wireId)
   end
-  local points = WheelOfDestiny.pointInvested[wireId] or 0
+  -- With nothing allocated yet, preview the value of a single point so the player can see what each point is worth
+  -- before spending; once at least one point is in, show the real accumulated value.
+  local points = math.max(WheelOfDestiny.pointInvested[wireId] or 0, 1)
   -- Sort the bonuses alphabetically by name, then render each accumulated value.
   local ordered = {}
   for _, dedication in ipairs(node.dedications) do
