@@ -7317,7 +7317,8 @@ void ProtocolGame::parseOpenWheelWindow(const InputMessagePtr& msg)
             playerId, canView, 0, 0, 0, 0,
             std::vector<uint16_t>(), std::vector<uint16_t>(),
             std::vector<uint16_t>(), std::vector<GemData>(),
-            std::map<uint8_t, uint8_t>(), std::map<uint8_t, uint8_t>(), 0);
+            std::map<uint8_t, uint8_t>(), std::map<uint8_t, uint8_t>(), 0,
+            std::vector<CustomWheelNode>());
         return;
     }
 
@@ -7452,6 +7453,22 @@ void ProtocolGame::parseOpenWheelWindow(const InputMessagePtr& msg)
         g_logger.debug(fmt::format("[Wheel C++ Parse] earnedFromAchievements={}", static_cast<int>(earnedFromAchievements)));
     }
 
+    // Custom wheel node definitions (server extension): u16 count, then per node { u16 wireId, string name,
+    // string description }. The server owns node presentation now; the client no longer hardcodes it.
+    std::vector<CustomWheelNode> customNodes;
+    if (msg->getUnreadSize() >= 2) {
+        const uint16_t customCount = msg->getU16();
+        customNodes.reserve(customCount);
+        for (uint16_t i = 0; i < customCount; ++i) {
+            CustomWheelNode node;
+            node.wireId = msg->getU16();
+            node.name = msg->getString();
+            node.description = msg->getString();
+            customNodes.push_back(std::move(node));
+        }
+        g_logger.debug(fmt::format("[Wheel C++ Parse] customNodes count={}", static_cast<int>(customNodes.size())));
+    }
+
     // Verifica se sobraram bytes após o parse
     const uint16_t unread = msg->getUnreadSize();
     if (unread > 0) {
@@ -7476,7 +7493,8 @@ void ProtocolGame::parseOpenWheelWindow(const InputMessagePtr& msg)
         playerId, canView, changeState, vocationId,
         points, extraPoints, pointInvested,
         usedPromotionScrolls, equipedGems, atelierGems,
-        basicUpgraded, supremeUpgraded, 0 // earnedFromAchievements placeholder
+        basicUpgraded, supremeUpgraded, 0, // earnedFromAchievements placeholder
+        customNodes
     );
 }
 

@@ -5,6 +5,9 @@ WheelOfDestiny.clickIndex = {}
 
 WheelOfDestiny.equipedGems = {}
 WheelOfDestiny.atelierGems = {}
+-- Server-defined node presentation, keyed by wireId (wheel node id). Replaces the client's hardcoded node
+-- names/descriptions; see WheelOfDestiny.getNodeName / getNodeDescription.
+WheelOfDestiny.customNodes = {}
 WheelOfDestiny.basicModsUpgrade =  {}
 WheelOfDestiny.supremeModsUpgrade =  {}
 WheelOfDestiny.vocationId = 0
@@ -445,23 +448,19 @@ function WheelOfDestiny.onMouseMove(widget, position, offset)
   bar:setImageSource("/game_cyclopedia/images/ui/mosnter-bar")
   bar:setPercent((pointInvested * 100 / bonus.maxPoints))
 
-  wheelOfDestinyWindow.info.tabContent.information.tabContent.dedication2:setText(getDedicationBonus(index))
+  -- Node presentation now comes from the server: name on the dedication line, description on the conviction line.
+  wheelOfDestinyWindow.info.tabContent.information.tabContent.dedication2:setText(WheelOfDestiny.getNodeName(index))
   if WheelOfDestiny.pointInvested[index] > 0 then
     wheelOfDestinyWindow.info.tabContent.information.tabContent.dedication2:setColor("#c0c0c0")
   else
     wheelOfDestinyWindow.info.tabContent.information.tabContent.dedication2:setColor("#707070")
   end
 
-  local conviction = getConvictionBonus(index, true)
-  if type(conviction) == "string" then
-    wheelOfDestinyWindow.info.tabContent.information.tabContent.conviction2:setText(conviction)
-    if WheelOfDestiny.pointInvested[index] >= bonus.maxPoints then
-      wheelOfDestinyWindow.info.tabContent.information.tabContent.conviction2:setColor("#c0c0c0")
-    else
-      wheelOfDestinyWindow.info.tabContent.information.tabContent.conviction2:setColor("#707070")
-    end
-  elseif type(conviction) == "table" then
-    wheelOfDestinyWindow.info.tabContent.information.tabContent.conviction2:setColoredText(conviction)
+  wheelOfDestinyWindow.info.tabContent.information.tabContent.conviction2:setText(WheelOfDestiny.getNodeDescription(index))
+  if WheelOfDestiny.pointInvested[index] >= bonus.maxPoints then
+    wheelOfDestinyWindow.info.tabContent.information.tabContent.conviction2:setColor("#c0c0c0")
+  else
+    wheelOfDestinyWindow.info.tabContent.information.tabContent.conviction2:setColor("#707070")
   end
 
   wheelPanel.focusSelectedWheel:setVisible(true)
@@ -679,7 +678,28 @@ function WheelOfDestiny.removePoint(index, points)
   end
 end
 
-function WheelOfDestiny.onDestinyWheel(playerId, canView, changeState, vocationId, points, scrollPoints, pointInvested, usedPromotionScrolls, equipedGems, atelierGems, basicUpgraded, supremeUpgraded, earnedFromAchievements)
+-- Returns the server-defined name for a wheel node, or unknown_name_<wireId> when the server sent no entry.
+function WheelOfDestiny.getNodeName(wireId)
+  local node = WheelOfDestiny.customNodes and WheelOfDestiny.customNodes[wireId]
+  return (node and node.name) or ("unknown_name_" .. wireId)
+end
+
+-- Returns the server-defined description for a wheel node, or unknown_description_<wireId> when none was sent.
+function WheelOfDestiny.getNodeDescription(wireId)
+  local node = WheelOfDestiny.customNodes and WheelOfDestiny.customNodes[wireId]
+  return (node and node.description) or ("unknown_description_" .. wireId)
+end
+
+function WheelOfDestiny.onDestinyWheel(playerId, canView, changeState, vocationId, points, scrollPoints, pointInvested, usedPromotionScrolls, equipedGems, atelierGems, basicUpgraded, supremeUpgraded, earnedFromAchievements, customNodes)
+  -- Store the server-defined node presentation (name/description) before the wheel is built; node text is read
+  -- from here via getNodeName/getNodeDescription instead of the old hardcoded tables.
+  WheelOfDestiny.customNodes = {}
+  if customNodes then
+    for _, node in ipairs(customNodes) do
+      WheelOfDestiny.customNodes[node.wireId] = { name = node.name, description = node.description }
+    end
+  end
+
   if not table.isIn({1, 2, 3, 4, 5}, vocationId) then
     local cancelFunc = function()
       if openWheel then
@@ -1208,8 +1228,9 @@ end
 function WheelOfDestiny.configureDedication(index)
   wheelOfDestinyWindow.selection.tabContent.dedication:setWidth("185")
   wheelOfDestinyWindow.selection.tabContent.dedication:setHeight("29")
-  wheelOfDestinyWindow.selection.tabContent.dedication:setText(getDedicationBonus(index))
-  wheelOfDestinyWindow.selection.tabContent.information:setTooltip(getDedicationTooltip(index))
+  -- Node name + description now come from the server (see getNodeName/getNodeDescription).
+  wheelOfDestinyWindow.selection.tabContent.dedication:setText(WheelOfDestiny.getNodeName(index))
+  wheelOfDestinyWindow.selection.tabContent.information:setTooltip(WheelOfDestiny.getNodeDescription(index))
   if WheelOfDestiny.pointInvested[index] > 0 then
     wheelOfDestinyWindow.selection.tabContent.dedication:setColor("#c0c0c0")
   else
@@ -1219,23 +1240,15 @@ end
 
 function WheelOfDestiny.configureConviction(index)
   local bonus = WheelBonus[index - 1]
-  local conviction = getConvictionBonus(index)
+  local description = WheelOfDestiny.getNodeDescription(index)
+  wheelOfDestinyWindow.selection.tabContent.conviction:setTooltip(description)
+  wheelOfDestinyWindow.selection.tabContent.conviction:setText(description)
 
-  local tooltip = getConvictionBonusTooltip(index)
-  if type(conviction) == "string" then
-    wheelOfDestinyWindow.selection.tabContent.conviction:setTooltip(tooltip)
-    wheelOfDestinyWindow.selection.tabContent.conviction:setText(conviction)
-
-    if WheelOfDestiny.pointInvested[index] >= bonus.maxPoints then
-      wheelOfDestinyWindow.selection.tabContent.conviction:setColor("#c0c0c0")
-    else
-      wheelOfDestinyWindow.selection.tabContent.conviction:setColor("#707070")
-    end
-  elseif type(conviction) == "table" then
-    wheelOfDestinyWindow.selection.tabContent.conviction:setTooltip(tooltip)
-    wheelOfDestinyWindow.selection.tabContent.conviction:setColoredText(conviction)
+  if WheelOfDestiny.pointInvested[index] >= bonus.maxPoints then
+    wheelOfDestinyWindow.selection.tabContent.conviction:setColor("#c0c0c0")
+  else
+    wheelOfDestinyWindow.selection.tabContent.conviction:setColor("#707070")
   end
-
 end
 
 function WheelOfDestiny.configureDedicationPerk()

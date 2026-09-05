@@ -2164,3 +2164,19 @@ bool luavalue_cast(int index, GemData& gem)
 
     return true;
 }
+
+int push_luavalue(const CustomWheelNode& node)
+{
+    g_lua.createTable(0, 3);
+
+    g_lua.pushInteger(node.wireId);
+    g_lua.setField("wireId");
+
+    g_lua.pushString(node.name);
+    g_lua.setField("name");
+
+    g_lua.pushString(node.description);
+    g_lua.setField("description");
+
+    return 1;
+}

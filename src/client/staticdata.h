@@ -1031,6 +1031,15 @@ struct GemData {
     uint8_t supremeBonus = 0;
 };
 
+// Server-defined presentation for a wheel node (perk). The client no longer hardcodes wheel node names/descriptions;
+// they arrive with the wheel window keyed by wireId (the wheel node/slot id, 1..36). Missing nodes fall back to
+// unknown_name_<wireId> / unknown_description_<wireId> on the Lua side.
+struct CustomWheelNode {
+    uint16_t wireId = 0;
+    std::string name;
+    std::string description;
+};
+
 struct WheelData
 {
     uint32_t ownerId;
