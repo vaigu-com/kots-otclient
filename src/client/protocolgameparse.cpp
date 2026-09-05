@@ -7318,7 +7318,7 @@ void ProtocolGame::parseOpenWheelWindow(const InputMessagePtr& msg)
             std::vector<uint16_t>(), std::vector<uint16_t>(),
             std::vector<uint16_t>(), std::vector<GemData>(),
             std::map<uint8_t, uint8_t>(), std::map<uint8_t, uint8_t>(), 0,
-            std::vector<CustomWheelNode>());
+            std::vector<CustomWheelNode>(), std::vector<CustomWheelRevelation>());
         return;
     }
 
@@ -7453,8 +7453,8 @@ void ProtocolGame::parseOpenWheelWindow(const InputMessagePtr& msg)
         g_logger.debug(fmt::format("[Wheel C++ Parse] earnedFromAchievements={}", static_cast<int>(earnedFromAchievements)));
     }
 
-    // Custom wheel node definitions (server extension): u16 count, then per node { u16 wireId, string name,
-    // string description }. The server owns node presentation now; the client no longer hardcodes it.
+    // Custom wheel node definitions (server extension): u16 count, then per node { u16 wireId, string dedication,
+    // string conviction }. The server owns node presentation now; the client no longer hardcodes it.
     std::vector<CustomWheelNode> customNodes;
     if (msg->getUnreadSize() >= 2) {
         const uint16_t customCount = msg->getU16();
@@ -7462,11 +7462,34 @@ void ProtocolGame::parseOpenWheelWindow(const InputMessagePtr& msg)
         for (uint16_t i = 0; i < customCount; ++i) {
             CustomWheelNode node;
             node.wireId = msg->getU16();
-            node.name = msg->getString();
-            node.description = msg->getString();
+            node.dedication = msg->getString();
+            node.conviction = msg->getString();
             customNodes.push_back(std::move(node));
         }
         g_logger.debug(fmt::format("[Wheel C++ Parse] customNodes count={}", static_cast<int>(customNodes.size())));
+    }
+
+    // Custom revelation perks (server extension): u8 count, then per slice { u8 sliceId, string name, u8 tierCount,
+    // (u16 pointsRequired, string description) per tier }.
+    std::vector<CustomWheelRevelation> customRevelations;
+    if (msg->getUnreadSize() >= 1) {
+        const uint8_t revelationCount = msg->getU8();
+        customRevelations.reserve(revelationCount);
+        for (uint8_t i = 0; i < revelationCount; ++i) {
+            CustomWheelRevelation revelation;
+            revelation.sliceId = msg->getU8();
+            revelation.name = msg->getString();
+            const uint8_t tierCount = msg->getU8();
+            revelation.tiers.reserve(tierCount);
+            for (uint8_t t = 0; t < tierCount; ++t) {
+                CustomWheelRevelationTier tier;
+                tier.pointsRequired = msg->getU16();
+                tier.description = msg->getString();
+                revelation.tiers.push_back(std::move(tier));
+            }
+            customRevelations.push_back(std::move(revelation));
+        }
+        g_logger.debug(fmt::format("[Wheel C++ Parse] customRevelations count={}", static_cast<int>(customRevelations.size())));
     }
 
     // Verifica se sobraram bytes após o parse
@@ -7494,7 +7517,7 @@ void ProtocolGame::parseOpenWheelWindow(const InputMessagePtr& msg)
         points, extraPoints, pointInvested,
         usedPromotionScrolls, equipedGems, atelierGems,
         basicUpgraded, supremeUpgraded, 0, // earnedFromAchievements placeholder
-        customNodes
+        customNodes, customRevelations
     );
 }
 
