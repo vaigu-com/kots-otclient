@@ -740,10 +740,48 @@ function WheelOfDestiny.getNodeDedication(wireId)
   return WheelOfDestiny.applyWheelIcons(table.concat(lines, "\n"))
 end
 
+-- A spell-augment conviction sits on two nodes; each maxed node unlocks one tier (I then II). The server bakes the
+-- tier state from *saved* points, but while the player is previewing an allocation we want the tiers to reflect the
+-- *current* (unsaved) points — so both tiers can preview as gold once two nodes for the same conviction are maxed.
+-- The augment's nodes share an identical conviction string, so we group by it and count how many are maxed now.
+function WheelOfDestiny.previewUnlockedStages(wireId)
+  local nodes = WheelOfDestiny.customNodes
+  local node = nodes and nodes[wireId]
+  local conviction = node and node.conviction
+  -- Only spell augments carry tier numerals ({i}/{I}/{ii}/{II}); other convictions have nothing to preview.
+  if not conviction or not conviction:find("{[iI]") then
+    return 0
+  end
+  local count = 0
+  for otherId, otherNode in pairs(nodes) do
+    local bonus = WheelBonus[otherId - 1]
+    local invested = WheelOfDestiny.pointInvested[otherId] or 0
+    if otherNode.conviction == conviction and bonus and invested >= bonus.maxPoints then
+      count = count + 1
+    end
+  end
+  return count
+end
+
+-- Recolours the tier numerals for a preview: reset both to grey, then light up stage I (and II) as unlocked allows.
+function WheelOfDestiny.applyPreviewTiers(text, unlockedStages)
+  text = text:gsub("{I}", "{i}"):gsub("{II}", "{ii}")
+  if unlockedStages >= 1 then
+    text = text:gsub("{i}", "{I}")
+  end
+  if unlockedStages >= 2 then
+    text = text:gsub("{ii}", "{II}")
+  end
+  return text
+end
+
 -- Returns the server-defined conviction (max-allocation) text for a node, or unknown_conviction_<wireId> if none.
+-- Tier numerals are recoloured to reflect the player's current (preview) allocation, not just the saved state.
 function WheelOfDestiny.getNodeConviction(wireId)
   local node = WheelOfDestiny.customNodes and WheelOfDestiny.customNodes[wireId]
-  return WheelOfDestiny.applyWheelIcons((node and node.conviction) or ("unknown_conviction_" .. wireId))
+  local text = (node and node.conviction) or ("unknown_conviction_" .. wireId)
+  text = WheelOfDestiny.applyPreviewTiers(text, WheelOfDestiny.previewUnlockedStages(wireId))
+  return WheelOfDestiny.applyWheelIcons(text)
 end
 
 -- Server-defined icon id for a node (column index into the medium-perks sheet), or 0 when unspecified.
