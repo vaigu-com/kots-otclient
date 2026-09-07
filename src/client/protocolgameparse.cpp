@@ -5114,7 +5114,7 @@ void ProtocolGame::parseLootContainers(const InputMessagePtr& msg)
 }
 
 void ProtocolGame::parseMonkData(const InputMessagePtr& msg) {
-    const auto subtype = static_cast<Otc::VocationMonkTypes_t>(msg->getU8());
+    const auto subtype = static_cast<Otc::VocationStances_t>(msg->getU8());
     switch (subtype) {
         case Otc::TYPES_MONK_HARMONY: {
             const uint8_t harmonyValue = msg->getU8();
@@ -5127,8 +5127,15 @@ void ProtocolGame::parseMonkData(const InputMessagePtr& msg) {
             break;
         }
         case Otc::TYPES_MONK_VIRTUE: {
-            const uint8_t virtueValue = msg->getU8();
-            g_logger.debug("unused {} TO-DO L4381", virtueValue);
+            // Active stance: count (u8) then one u16 stance id per entry (stance id = server
+            // spell id). Only one stance can be active, so the last id read wins; a count of 0
+            // means no stance is active. We must read every entry to keep the stream aligned.
+            const uint8_t stanceCount = msg->getU8();
+            uint16_t activeStance = 0;
+            for (uint8_t i = 0; i < stanceCount; ++i) {
+                activeStance = msg->getU16();
+            }
+            m_localPlayer->setActiveStance(activeStance);
             break;
         }
         default:
