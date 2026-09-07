@@ -249,7 +249,7 @@ function WheelOfDestiny.insertUnlockedThe(index)
   for _, id in pairs(iconInfo.connections) do
     local widgetFull = wheelPanel:recursiveGetChildById('fullColorWheel_'..id)
     widgetFull:setVisible(true)
-    widgetFull:setOpacity(0.2)
+    widgetFull:setOpacity(0.4)
   end
 end
 
@@ -270,7 +270,7 @@ function WheelOfDestiny.removeUnlockedThe(index)
     if not table.isIn(skipUnlock, unlocked_point) then
       local widgetFull = wheelPanel:recursiveGetChildById('fullColorWheel_'..unlocked_point)
       widgetFull:setVisible(false)
-      widgetFull:setOpacity(0.2)
+      widgetFull:setOpacity(0.4)
     end
   end
 
@@ -473,7 +473,7 @@ function WheelOfDestiny.insertPoint(index, points)
   local bonus = WheelBonus[index - 1]
   if points > 0 then
     wheelPanel:recursiveGetChildById('fullColorWheel_'..index):setVisible(true)
-    wheelPanel:recursiveGetChildById('fullColorWheel_'..index):setOpacity(0.2)
+    wheelPanel:recursiveGetChildById('fullColorWheel_'..index):setOpacity(0.4)
     wheelPanel:recursiveGetChildById('colorWheel_'..index):setVisible(true)
     local button = WheelButtons[index]
     if points >= bonus.maxPoints then
@@ -490,7 +490,7 @@ function WheelOfDestiny.insertPoint(index, points)
         maxcolor = 5
       end
       wheelPanel:recursiveGetChildById('colorWheel_'..index):setImageSource(button.colorImageBase .. maxcolor)
-      wheelPanel:recursiveGetChildById('colorWheel_'..index):setOpacity(0.6)
+      wheelPanel:recursiveGetChildById('colorWheel_'..index):setOpacity(1.0)
       WheelOfDestiny.insertUnlockedThe(index)
 
       local widget = wheelPanel:recursiveGetChildById("icon"..index)
@@ -533,7 +533,7 @@ function WheelOfDestiny.insertPoint(index, points)
       local maxcolor = math.floor(points / 10) + 1
       if maxcolor > 0 then
         wheelPanel:recursiveGetChildById('colorWheel_'..index):setImageSource(button.colorImageBase .. maxcolor)
-        wheelPanel:recursiveGetChildById('colorWheel_'..index):setOpacity(0.6)
+        wheelPanel:recursiveGetChildById('colorWheel_'..index):setOpacity(1.0)
       end
     end
   elseif index ~= 15 and index ~= 16 and index ~= 21 and index ~= 22 then
@@ -608,7 +608,7 @@ function WheelOfDestiny.removePoint(index, points)
   local bonus = WheelBonus[index - 1]
   if points > 0 then
     wheelPanel:recursiveGetChildById('fullColorWheel_'..index):setVisible(true)
-    wheelPanel:recursiveGetChildById('fullColorWheel_'..index):setOpacity(0.2)
+    wheelPanel:recursiveGetChildById('fullColorWheel_'..index):setOpacity(0.4)
     wheelPanel:recursiveGetChildById('colorWheel_'..index):setVisible(true)
     local button = WheelButtons[index]
     if points >= bonus.maxPoints then
@@ -626,7 +626,7 @@ function WheelOfDestiny.removePoint(index, points)
       end
 
       wheelPanel:recursiveGetChildById('colorWheel_'..index):setImageSource(button.colorImageBase .. maxcolor)
-      wheelPanel:recursiveGetChildById('colorWheel_'..index):setOpacity(0.6)
+      wheelPanel:recursiveGetChildById('colorWheel_'..index):setOpacity(1.0)
       WheelOfDestiny.insertUnlockedThe(index)
     else
       if table.contains(VesselIndex[bonus.domain - 1], index - 1) then
@@ -651,7 +651,7 @@ function WheelOfDestiny.removePoint(index, points)
       local maxcolor = math.floor(points / 10) + 1
       if maxcolor > 0 then
         wheelPanel:recursiveGetChildById('colorWheel_'..index):setImageSource(button.colorImageBase .. maxcolor)
-        wheelPanel:recursiveGetChildById('colorWheel_'..index):setOpacity(0.6)
+        wheelPanel:recursiveGetChildById('colorWheel_'..index):setOpacity(1.0)
       end
     end
   else
