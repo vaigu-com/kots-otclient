@@ -1047,7 +1047,12 @@ namespace Otc
         PARTYANALYZERACTION_PRICEVALUE = 2,
     };
 
-    enum VocationMonkTypes_t : uint8_t
+    // Subtypes of the MonkData packet. TYPES_MONK_VIRTUE is repurposed as the generic
+    // "active stance" channel: its payload is a count (0 = no stance, 1 = one active) followed
+    // by one u16 stance id per entry. A stance id is simply the server spell id of the stance
+    // spell, so stance numbers are identical on client and server by construction (no separate
+    // per-stance enum values are needed here).
+    enum VocationStances_t : uint8_t
     {
         TYPES_MONK_HARMONY = 0,
         TYPES_MONK_SERENE = 1,

@@ -737,3 +737,14 @@ void LocalPlayer::setSerene(const bool serene)
 
     callLuaField("onSereneChange", serene, oldSerene);
 }
+
+void LocalPlayer::setActiveStance(const uint16_t stanceId)
+{
+    if (m_activeStance == stanceId)
+        return;
+
+    const uint16_t oldStance = m_activeStance;
+    m_activeStance = stanceId;
+
+    callLuaField("onStanceChange", stanceId, oldStance);
+}
