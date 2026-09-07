@@ -5127,15 +5127,16 @@ void ProtocolGame::parseMonkData(const InputMessagePtr& msg) {
             break;
         }
         case Otc::TYPES_MONK_VIRTUE: {
-            // Active stance: count (u8) then one u16 stance id per entry (stance id = server
-            // spell id). Only one stance can be active, so the last id read wins; a count of 0
-            // means no stance is active. We must read every entry to keep the stream aligned.
+            // Active stances: count (u8) then one u16 stance id per entry (stance id = server spell
+            // id). A player can have more than one active stance at once (e.g. a sorcerer's Aura +
+            // Master), so we collect them all; a count of 0 means no stance is active.
             const uint8_t stanceCount = msg->getU8();
-            uint16_t activeStance = 0;
+            std::vector<uint16_t> stances;
+            stances.reserve(stanceCount);
             for (uint8_t i = 0; i < stanceCount; ++i) {
-                activeStance = msg->getU16();
+                stances.push_back(msg->getU16());
             }
-            m_localPlayer->setActiveStance(activeStance);
+            m_localPlayer->setActiveStances(stances);
             break;
         }
         default:

@@ -74,7 +74,7 @@ public:
     void setStoreExpBoostTime(uint16_t value);
     void setHarmony(uint8_t harmony);
     void setSerene(bool serene);
-    void setActiveStance(uint16_t stanceId);
+    void setActiveStances(const std::vector<uint16_t>& stances);
 
     uint32_t getFreeCapacity() { return m_freeCapacity; }
     uint32_t getTotalCapacity() { return m_totalCapacity; }
@@ -86,7 +86,13 @@ public:
     uint8_t getSoul() { return m_soul; }
     uint16_t getLevelPercent();
     uint8_t getHarmony() { return m_harmony; }
-    uint16_t getActiveStance() { return m_activeStance; }
+    bool isStanceActive(const uint16_t stanceId)
+    {
+        for (const uint16_t id : m_activeStances)
+            if (id == stanceId)
+                return true;
+        return false;
+    }
 
     uint16_t getLevel() { return m_level; }
     uint16_t getSkillLevel(const Otc::Skill skill) { return m_skills[skill].level; }
@@ -186,7 +192,7 @@ private:
     bool m_pending{ false };
     bool m_serverWalk{ false };
     bool m_serene{ false };
-    uint16_t m_activeStance{ 0 };
+    std::vector<uint16_t> m_activeStances;
 
     bool m_isSupplyStashAvailable{ false };
 
