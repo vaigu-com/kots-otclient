@@ -6133,10 +6133,10 @@ void ProtocolGame::parseCyclopediaCharacterInfo(const InputMessagePtr& msg)
             }
 
             data.defense = msg->getU16();
-            data.defenseEquipment = msg->getU16();
+            data.defenseEquipment = static_cast<int16_t>(msg->getU16()); // signed: may be negative
             data.defenseSkillType = msg->getU8();
-            data.shieldingSkill = msg->getU16();
-            data.defenseWheel = msg->getU16();
+            data.shieldingSkill = static_cast<int16_t>(msg->getU16()); // signed: final - equipment, may be negative
+            data.defenseWheel = static_cast<int16_t>(msg->getU16()); // signed
             msg->getU16(); // unused
 
             data.mitigation = msg->getDouble();

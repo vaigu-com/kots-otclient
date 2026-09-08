@@ -880,10 +880,10 @@ struct CyclopediaCharacterDefenceStats
     uint16_t armor;
 
     uint16_t defense;
-    uint16_t defenseEquipment;
+    int16_t defenseEquipment;
     uint8_t defenseSkillType;
-    uint16_t shieldingSkill;
-    uint16_t defenseWheel;
+    int16_t shieldingSkill; // the defense skill's contribution (final - equipment); may be negative
+    int16_t defenseWheel;
 
     double mitigation;
     double mitigationBase;

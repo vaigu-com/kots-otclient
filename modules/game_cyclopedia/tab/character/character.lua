@@ -1417,10 +1417,18 @@ local function renderCharacterStat(stat, leftPanel, rightPanel, combatTable)
 end
 
 local function renderAndSkipZeroStats(stats, leftPanel, rightPanel, combatTable)
+    -- Headers are non-centered rows; their component breakdown are the following "center"-aligned rows.
+    -- Skip any zero-value row, AND when a header is skipped, skip its (now orphaned) component rows too.
+    local sectionSkipped = false
     for _, stat in ipairs(stats) do
-        if stat.align ~= "center" and type(stat.value) == "number" and stat.value == 0 then
-            -- Skip stats with zero values (headers use "" which won't match)
-        else
+        local isHeader = stat.align ~= "center"
+        local isZero = type(stat.value) == "number" and stat.value == 0
+        if isHeader then
+            sectionSkipped = isZero
+            if not isZero then
+                renderCharacterStat(stat, leftPanel, rightPanel, combatTable)
+            end
+        elseif not sectionSkipped and not isZero then
             renderCharacterStat(stat, leftPanel, rightPanel, combatTable)
         end
     end
