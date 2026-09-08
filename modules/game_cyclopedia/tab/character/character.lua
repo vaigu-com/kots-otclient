@@ -1635,7 +1635,7 @@ end
             {name = "Defence Value", value = data.defense or 0, icon = false, percent = false},
             {name = "From Equipment", value = data.defenseEquipment or 0, align = "center", icon = false},
             {name = "From Wheel", value = data.defenseWheel or 0, align = "center", icon = false},
-            {name = getWeaponSkillName(data.defenseSkillType), value = data.shieldingSkill or 0, align = "center", icon = false},
+            {name = "From Shielding", value = data.shieldingSkill or 0, align = "center", icon = false},
             
             {name = "Armor Value", value = data.armor or 0, icon = false, percent = false},
             
@@ -1647,7 +1647,7 @@ end
             {name = "From Wheel", value = data.mitigationWheel or 0, align = "center", percent = true, icon = false},
             
             {name = "Dodge", value = data.dodgeTotal or 0, icon = false, percent = true},
-            {name = "From Base", value = data.dodgeBase or 0, align = "center", percent = true, icon = false},
+            {name = "From Gear", value = data.dodgeBase or 0, align = "center", percent = true, icon = false},
             {name = "From Amplification", value = data.dodgeBonus or 0, align = "center", percent = true, icon = false},
             {name = "From Wheel", value = data.dodgeWheel or 0, align = "center", percent = true, icon = false},
             
