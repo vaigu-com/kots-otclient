@@ -5,6 +5,11 @@ WheelOfDestiny.clickIndex = {}
 
 WheelOfDestiny.equipedGems = {}
 WheelOfDestiny.atelierGems = {}
+-- Server-defined node presentation, keyed by wireId (wheel node id). Replaces the client's hardcoded node
+-- dedication/conviction text; see WheelOfDestiny.getNodeDedication / getNodeConviction.
+WheelOfDestiny.customNodes = {}
+-- Server-defined revelation perks, keyed by sliceId (1..4). See WheelOfDestiny.getRevelation.
+WheelOfDestiny.customRevelations = {}
 WheelOfDestiny.basicModsUpgrade =  {}
 WheelOfDestiny.supremeModsUpgrade =  {}
 WheelOfDestiny.vocationId = 0
@@ -445,23 +450,19 @@ function WheelOfDestiny.onMouseMove(widget, position, offset)
   bar:setImageSource("/game_cyclopedia/images/ui/mosnter-bar")
   bar:setPercent((pointInvested * 100 / bonus.maxPoints))
 
-  wheelOfDestinyWindow.info.tabContent.information.tabContent.dedication2:setText(getDedicationBonus(index))
+  -- Node presentation now comes from the server: name on the dedication line, description on the conviction line.
+  wheelOfDestinyWindow.info.tabContent.information.tabContent.dedication2:setText(WheelOfDestiny.getNodeDedication(index))
   if WheelOfDestiny.pointInvested[index] > 0 then
     wheelOfDestinyWindow.info.tabContent.information.tabContent.dedication2:setColor("#c0c0c0")
   else
     wheelOfDestinyWindow.info.tabContent.information.tabContent.dedication2:setColor("#707070")
   end
 
-  local conviction = getConvictionBonus(index, true)
-  if type(conviction) == "string" then
-    wheelOfDestinyWindow.info.tabContent.information.tabContent.conviction2:setText(conviction)
-    if WheelOfDestiny.pointInvested[index] >= bonus.maxPoints then
-      wheelOfDestinyWindow.info.tabContent.information.tabContent.conviction2:setColor("#c0c0c0")
-    else
-      wheelOfDestinyWindow.info.tabContent.information.tabContent.conviction2:setColor("#707070")
-    end
-  elseif type(conviction) == "table" then
-    wheelOfDestinyWindow.info.tabContent.information.tabContent.conviction2:setColoredText(conviction)
+  wheelOfDestinyWindow.info.tabContent.information.tabContent.conviction2:setText(WheelOfDestiny.getNodeConviction(index))
+  if WheelOfDestiny.pointInvested[index] >= bonus.maxPoints then
+    wheelOfDestinyWindow.info.tabContent.information.tabContent.conviction2:setColor("#c0c0c0")
+  else
+    wheelOfDestinyWindow.info.tabContent.information.tabContent.conviction2:setColor("#707070")
   end
 
   wheelPanel.focusSelectedWheel:setVisible(true)
@@ -523,11 +524,11 @@ function WheelOfDestiny.insertPoint(index, points)
           end
         else
           widget:setImageSource("/images/game/wheel/icons-skillwheel-mediumperks")
-          widget:setImageClip(iconInfo.iconRect)
+          widget:setImageClip(WheelOfDestiny.nodeIconClip(index))
           modIcon:setVisible(false)
         end
       else
-        widget:setImageClip(iconInfo.iconRect)
+        widget:setImageClip(WheelOfDestiny.nodeIconClip(index))
       end
     else
       local maxcolor = math.floor(points / 10) + 1
@@ -577,7 +578,7 @@ function WheelOfDestiny.checkFilledVessels(originalIndex)
 		end
 
 		widget:setImageSource("/images/game/wheel/icons-skillwheel-mediumperks")
-		widget:setImageClip(iconInfo.iconRect)
+		widget:setImageClip(WheelOfDestiny.nodeIconClip(id))
 		widget:setSize(tosize("30 30"))
 
 		if lastModInserted == 0 and gem.lesserBonus > -1 then
@@ -634,7 +635,7 @@ function WheelOfDestiny.removePoint(index, points)
         local modIcon = widget:recursiveGetChildById("modIcon"..index)
         local iconInfo = WheelIcons[WheelOfDestiny.vocationId][index]
         widget:setImageSource("/images/game/wheel/icons-skillwheel-mediumperks")
-        widget:setImageClip(iconInfo.iconRect)
+        widget:setImageClip(WheelOfDestiny.nodeIconClip(index))
         widget:setSize(tosize("30 30"))
         modIcon:setVisible(false)
         WheelOfDestiny.equipedGemBonuses[index] = {bonusID = -1, supreme = false, gemID = 0}
@@ -660,7 +661,7 @@ function WheelOfDestiny.removePoint(index, points)
       local modIcon = widget:recursiveGetChildById("modIcon"..index)
       local iconInfo = WheelIcons[WheelOfDestiny.vocationId][index]
       widget:setImageSource("/images/game/wheel/icons-skillwheel-mediumperks")
-      widget:setImageClip(iconInfo.iconRect)
+      widget:setImageClip(WheelOfDestiny.nodeIconClip(index))
       widget:setSize(tosize("30 30"))
       modIcon:setVisible(false)
       WheelOfDestiny.equipedGemBonuses[index] = {bonusID = -1, supreme = false, gemID = 0}
@@ -679,7 +680,224 @@ function WheelOfDestiny.removePoint(index, points)
   end
 end
 
-function WheelOfDestiny.onDestinyWheel(playerId, canView, changeState, vocationId, points, scrollPoints, pointInvested, usedPromotionScrolls, equipedGems, atelierGems, basicUpgraded, supremeUpgraded, earnedFromAchievements)
+-- The wheel bitmap font ("Verdana Bold-11px-wheel") is byte-indexed (glyphs 32..255) and rendered byte-by-byte, so
+-- the circled tier numerals are single bytes, not multi-byte UTF-8. Server text references them with ASCII tokens
+-- (kept valid on the wire); we substitute the raw font bytes here. {I}/{II} = unlocked (gold), {i}/{ii} = locked
+-- (grey). Widgets showing this text must use the wheel font for the glyphs to render.
+local WHEEL_ICON_TOKENS = {
+  ["{I}"] = string.char(0xB9),  -- gold circled I  (tier unlocked)
+  ["{II}"] = string.char(0xBA), -- gold circled II (tier unlocked)
+  ["{i}"] = string.char(0xB2),  -- grey circled I  (tier locked)
+  ["{ii}"] = string.char(0xB3), -- grey circled II (tier locked)
+}
+
+function WheelOfDestiny.applyWheelIcons(text)
+  if not text then return text end
+  for token, glyph in pairs(WHEEL_ICON_TOKENS) do
+    text = text:gsub(token:gsub("([%(%)%.%%%+%-%*%?%[%]%^%$])", "%%%1"), glyph)
+  end
+  return text
+end
+
+-- Formats an integer dedication value (whole numbers, no decimals).
+local function formatDedicationInteger(v)
+  return string.format("%d", math.floor(v + 0.5))
+end
+
+-- Builds a single dedication line for a bonus. formatType 1 = two-decimal percent ("7.50% Mitigation Multiplier"),
+-- anything else = integer with a plus sign ("+33 Mana"). value is the accumulated amount (points x per-point).
+local function formatDedicationLine(dedication, value)
+  local name = dedication.name or ""
+  if dedication.formatType == 1 then
+    return string.format("%.2f%% %s", value, name)
+  end
+  return "+" .. formatDedicationInteger(value) .. " " .. name
+end
+
+-- Returns the server-defined dedication text for a node. The text is *generated* from the node's typed bonuses:
+-- each bonus's accumulated value (points spent on the node x per-point) is formatted and named, and the lines are
+-- sorted alphabetically by name and joined. A node may have several bonuses (e.g. hit points + mana). Falls back to
+-- unknown_dedication_<wireId> when the server sent no entry.
+function WheelOfDestiny.getNodeDedication(wireId)
+  local node = WheelOfDestiny.customNodes and WheelOfDestiny.customNodes[wireId]
+  if not node or not node.dedications or #node.dedications == 0 then
+    return WheelOfDestiny.applyWheelIcons("unknown_dedication_" .. wireId)
+  end
+  -- With nothing allocated yet, preview the value of a single point so the player can see what each point is worth
+  -- before spending; once at least one point is in, show the real accumulated value.
+  local points = math.max(WheelOfDestiny.pointInvested[wireId] or 0, 1)
+  -- Sort the bonuses alphabetically by name, then render each accumulated value.
+  local ordered = {}
+  for _, dedication in ipairs(node.dedications) do
+    ordered[#ordered + 1] = dedication
+  end
+  table.sort(ordered, function(a, b) return (a.name or "") < (b.name or "") end)
+  local lines = {}
+  for _, dedication in ipairs(ordered) do
+    local value = points * (dedication.perPointMilli or 0) / 1000
+    lines[#lines + 1] = formatDedicationLine(dedication, value)
+  end
+  return WheelOfDestiny.applyWheelIcons(table.concat(lines, "\n"))
+end
+
+-- A spell-augment conviction sits on two nodes; each maxed node unlocks one tier (I then II). The server bakes the
+-- tier state from *saved* points, but while the player is previewing an allocation we want the tiers to reflect the
+-- *current* (unsaved) points — so both tiers can preview as gold once two nodes for the same conviction are maxed.
+-- The augment's nodes share an identical conviction string, so we group by it and count how many are maxed now.
+function WheelOfDestiny.previewUnlockedStages(wireId)
+  local nodes = WheelOfDestiny.customNodes
+  local node = nodes and nodes[wireId]
+  local conviction = node and node.conviction
+  -- Only spell augments carry tier numerals ({i}/{I}/{ii}/{II}); other convictions have nothing to preview.
+  if not conviction or not conviction:find("{[iI]") then
+    return 0
+  end
+  local count = 0
+  for otherId, otherNode in pairs(nodes) do
+    local bonus = WheelBonus[otherId - 1]
+    local invested = WheelOfDestiny.pointInvested[otherId] or 0
+    if otherNode.conviction == conviction and bonus and invested >= bonus.maxPoints then
+      count = count + 1
+    end
+  end
+  return count
+end
+
+-- Recolours the tier numerals for a preview: reset both to grey, then light up stage I (and II) as unlocked allows.
+function WheelOfDestiny.applyPreviewTiers(text, unlockedStages)
+  text = text:gsub("{I}", "{i}"):gsub("{II}", "{ii}")
+  if unlockedStages >= 1 then
+    text = text:gsub("{i}", "{I}")
+  end
+  if unlockedStages >= 2 then
+    text = text:gsub("{ii}", "{II}")
+  end
+  return text
+end
+
+-- Returns the server-defined conviction (max-allocation) text for a node, or unknown_conviction_<wireId> if none.
+-- Tier numerals are recoloured to reflect the player's current (preview) allocation, not just the saved state.
+function WheelOfDestiny.getNodeConviction(wireId)
+  local node = WheelOfDestiny.customNodes and WheelOfDestiny.customNodes[wireId]
+  local text = (node and node.conviction) or ("unknown_conviction_" .. wireId)
+  text = WheelOfDestiny.applyPreviewTiers(text, WheelOfDestiny.previewUnlockedStages(wireId))
+  return WheelOfDestiny.applyWheelIcons(text)
+end
+
+-- Server-defined icon id for a node (column index into the medium-perks sheet), or 0 when unspecified.
+function WheelOfDestiny.getNodeIconId(wireId)
+  local node = WheelOfDestiny.customNodes and WheelOfDestiny.customNodes[wireId]
+  return (node and node.iconId) or 0
+end
+
+-- Image clip for a node's icon at the given glyph size (30 for the main icon, 16 for the mini icon). Uses the
+-- server-defined icon id when present; otherwise falls back to the hardcoded per-vocation icon, and finally to the
+-- first icon in the sheet (a default of the correct size) so an unknown node never renders a broken/oversized clip.
+function WheelOfDestiny.nodeIconClip(wireId, size)
+  size = size or 30
+  local iconId = WheelOfDestiny.getNodeIconId(wireId)
+  if iconId and iconId > 0 then
+    return (size * iconId) .. " 0 " .. size .. " " .. size
+  end
+  local voc = WheelIcons[WheelOfDestiny.vocationId]
+  local info = voc and voc[wireId]
+  if info then
+    return (size == 16) and info.miniIconRect or info.iconRect
+  end
+  return "0 0 " .. size .. " " .. size
+end
+
+-- Returns the server-defined revelation perk for a slice (1..4), or nil when the server sent none.
+function WheelOfDestiny.getRevelation(sliceId)
+  return WheelOfDestiny.customRevelations and WheelOfDestiny.customRevelations[sliceId]
+end
+
+-- Server-defined icon id for a slice's revelation perk, or 0 when unspecified.
+function WheelOfDestiny.getRevelationIconId(sliceId)
+  local rev = WheelOfDestiny.getRevelation(sliceId)
+  return (rev and rev.iconId) or 0
+end
+
+-- Sets a wheel-corner revelation icon (perkIcon{TopLeft,TopRight,BottomLeft,BottomRight}) from the server icon id
+-- for its slice (a column index into the 34px perk-corner sheet). 0 falls back to the first column (a default of
+-- the correct size) instead of a hardcoded per-vocation clip.
+function WheelOfDestiny.setRevelationCornerIcon(childId, sliceId)
+  local w = wheelPanel:recursiveGetChildById(childId)
+  if not w then return end
+  w:setImageClip((34 * WheelOfDestiny.getRevelationIconId(sliceId)) .. " 0 34 34")
+end
+
+-- Server-defined revelation name for a slice (with tier icons applied), or unknown_revelation_<sliceId>.
+function WheelOfDestiny.revelationName(sliceId)
+  local rev = WheelOfDestiny.getRevelation(sliceId)
+  return WheelOfDestiny.applyWheelIcons((rev and rev.name) or ("unknown_revelation_" .. sliceId))
+end
+
+-- Server-defined revelation tooltip for a slice: its tier descriptions joined, or unknown_revelation_<sliceId>.
+function WheelOfDestiny.revelationTooltip(sliceId)
+  local rev = WheelOfDestiny.getRevelation(sliceId)
+  if not rev or not rev.tiers or #rev.tiers == 0 then
+    return "unknown_revelation_" .. sliceId
+  end
+  local lines = {}
+  for _, tier in ipairs(rev.tiers) do
+    lines[#lines + 1] = WheelOfDestiny.applyWheelIcons(tier.description or "")
+  end
+  return table.concat(lines, "\n")
+end
+
+-- Appends one revelation summary row for a slice, driven entirely by server data. The stage is computed from the
+-- points already spent in the slice (WheelOfDestiny.passivePoints[sliceId]) against the tier thresholds; name and
+-- tier descriptions come from the server (falling back to unknown_revelation_<sliceId> when none was sent).
+function WheelOfDestiny.addRevelationSummary(sliceId)
+  local rev = WheelOfDestiny.getRevelation(sliceId)
+  local name = (rev and rev.name) or ("unknown_revelation_" .. sliceId)
+  local points = WheelOfDestiny.passivePoints[sliceId] or 0
+
+  local widget = g_ui.createWidget("PerksPanel", wheelOfDestinyWindow.summary.tabContent)
+  widget.perk:setText(WheelOfDestiny.applyWheelIcons(name))
+  if points >= 1000 then
+    widget.value:setText("Stage 3")
+  elseif points >= 500 then
+    widget.value:setText("Stage 2")
+  elseif points >= 250 then
+    widget.value:setText("Stage 1")
+  else
+    widget.value:setText("Locked")
+  end
+
+  if rev and rev.tiers and #rev.tiers > 0 then
+    local lines = {}
+    for _, tier in ipairs(rev.tiers) do
+      lines[#lines + 1] = WheelOfDestiny.applyWheelIcons(tier.description or "")
+    end
+    widget.info:setVisible(true)
+    widget.info:setTooltip(table.concat(lines, "\n"))
+  else
+    widget.info:setVisible(false)
+  end
+end
+
+function WheelOfDestiny.onDestinyWheel(playerId, canView, changeState, vocationId, points, scrollPoints, pointInvested, usedPromotionScrolls, equipedGems, atelierGems, basicUpgraded, supremeUpgraded, earnedFromAchievements, customNodes, customRevelations)
+  -- Store the server-defined node presentation (dedication/conviction) and revelation perks before the wheel is
+  -- built; text is read from here via the getNode*/getRevelation accessors instead of the old hardcoded tables.
+  WheelOfDestiny.customNodes = {}
+  if customNodes then
+    for _, node in ipairs(customNodes) do
+      WheelOfDestiny.customNodes[node.wireId] = {
+        dedications = node.dedications or {},
+        conviction = node.conviction,
+        iconId = node.iconId or 0,
+      }
+    end
+  end
+  WheelOfDestiny.customRevelations = {}
+  if customRevelations then
+    for _, rev in ipairs(customRevelations) do
+      WheelOfDestiny.customRevelations[rev.sliceId] = { name = rev.name, tiers = rev.tiers or {}, iconId = rev.iconId or 0 }
+    end
+  end
+
   if not table.isIn({1, 2, 3, 4, 5}, vocationId) then
     local cancelFunc = function()
       if openWheel then
@@ -736,37 +954,22 @@ function WheelOfDestiny.onDestinyWheel(playerId, canView, changeState, vocationI
 
   managePresetsButton:setEnabled(presetEnabled)
 
-  if vocationId == 1 then
-    wheelPanel.vocationWheel:setImageSource('/images/game/wheel/wheel-vocations/backdrop_skillwheel_knight')
-    wheelPanel:recursiveGetChildById("perkIconTopLeft"):setImageClip("0 0 34 34")
-    wheelPanel:recursiveGetChildById("perkIconTopRight"):setImageClip("34 0 34 34")
-    wheelPanel:recursiveGetChildById("perkIconBottomLeft"):setImageClip("68 0 34 34")
-    wheelPanel:recursiveGetChildById("perkIconBottomRight"):setImageClip("102 0 34 34")
-  elseif vocationId == 2 then
-    wheelPanel.vocationWheel:setImageSource('/images/game/wheel/wheel-vocations/backdrop_skillwheel_paladin')
-    wheelPanel:recursiveGetChildById("perkIconTopLeft"):setImageClip("0 0 34 34")
-    wheelPanel:recursiveGetChildById("perkIconTopRight"):setImageClip("136 0 34 34")
-    wheelPanel:recursiveGetChildById("perkIconBottomLeft"):setImageClip("170 0 34 34")
-    wheelPanel:recursiveGetChildById("perkIconBottomRight"):setImageClip("204 0 34 34")
-  elseif vocationId == 3 then
-    wheelPanel.vocationWheel:setImageSource('/images/game/wheel/wheel-vocations/backdrop_skillwheel_sorcerer')
-    wheelPanel:recursiveGetChildById("perkIconTopLeft"):setImageClip("0 0 34 34")
-    wheelPanel:recursiveGetChildById("perkIconTopRight"):setImageClip("238 0 34 34")
-    wheelPanel:recursiveGetChildById("perkIconBottomLeft"):setImageClip("272 0 34 34")
-    wheelPanel:recursiveGetChildById("perkIconBottomRight"):setImageClip("306 0 34 34")
-  elseif vocationId == 4 then
-    wheelPanel.vocationWheel:setImageSource('/images/game/wheel/wheel-vocations/backdrop_skillwheel_druid')
-    wheelPanel:recursiveGetChildById("perkIconTopLeft"):setImageClip("0 0 34 34")
-    wheelPanel:recursiveGetChildById("perkIconTopRight"):setImageClip("374 0 34 34")
-    wheelPanel:recursiveGetChildById("perkIconBottomLeft"):setImageClip("340 0 34 34")
-    wheelPanel:recursiveGetChildById("perkIconBottomRight"):setImageClip("408 0 34 34")
-  elseif vocationId == 5 then
-    wheelPanel.vocationWheel:setImageSource('/images/game/wheel/wheel-vocations/backdrop_skillwheel_monk')
-    wheelPanel:recursiveGetChildById("perkIconTopLeft"):setImageClip("0 0 34 34")
-    wheelPanel:recursiveGetChildById("perkIconTopRight"):setImageClip("442 0 34 34")
-    wheelPanel:recursiveGetChildById("perkIconBottomLeft"):setImageClip("476 0 34 34")
-    wheelPanel:recursiveGetChildById("perkIconBottomRight"):setImageClip("510 0 34 34")
+  -- The big wheel backdrop stays a per-vocation image; the four corner revelation icons are server-defined.
+  local backdrops = {
+    [1] = 'backdrop_skillwheel_knight',
+    [2] = 'backdrop_skillwheel_paladin',
+    [3] = 'backdrop_skillwheel_sorcerer',
+    [4] = 'backdrop_skillwheel_druid',
+    [5] = 'backdrop_skillwheel_monk',
+  }
+  if backdrops[vocationId] then
+    wheelPanel.vocationWheel:setImageSource('/images/game/wheel/wheel-vocations/' .. backdrops[vocationId])
   end
+  -- Corners map to slices 1..4 (top-left, top-right, bottom-left, bottom-right).
+  WheelOfDestiny.setRevelationCornerIcon("perkIconTopLeft", 1)
+  WheelOfDestiny.setRevelationCornerIcon("perkIconTopRight", 2)
+  WheelOfDestiny.setRevelationCornerIcon("perkIconBottomLeft", 3)
+  WheelOfDestiny.setRevelationCornerIcon("perkIconBottomRight", 4)
 	
   if WheelOfDestiny.changeState == 1 then
     wheelWindow.reset:setEnabled(true)
@@ -816,26 +1019,26 @@ function WheelOfDestiny.onCreate(vocationId)
             modIcon:setVisible(true)
           else
             widget:setImageSource("/images/game/wheel/icons-skillwheel-mediumperks")
-            widget:setImageClip(iconInfo.iconRect)
+            widget:setImageClip(WheelOfDestiny.nodeIconClip(id))
             widget:setSize(tosize("30 30"))
             modIcon:setVisible(false)
           end
         else
           widget:setImageSource("/images/game/wheel/icons-skillwheel-mediumperks")
-          widget:setImageClip(iconInfo.iconRect)
+          widget:setImageClip(WheelOfDestiny.nodeIconClip(id))
           widget:setSize(tosize("30 30"))
           if modIcon then
             modIcon:setVisible(false)
           end
         end
       else
-        widget:setImageClip(iconInfo.iconRect)
+        widget:setImageClip(WheelOfDestiny.nodeIconClip(id))
       end
     end
 		
     local widget = wheelPanel:recursiveGetChildById("smallicon"..id)
     if widget then
-      widget:setImageClip(iconInfo.miniIconRect)
+      widget:setImageClip(WheelOfDestiny.nodeIconClip(id, 16))
     end
   end
 	
@@ -1170,7 +1373,7 @@ function resetWheel(ignoreprotocol)
       local modIcon = widget:recursiveGetChildById("modIcon"..index)
       local iconInfo = WheelIcons[WheelOfDestiny.vocationId][index]
       widget:setImageSource("/images/game/wheel/icons-skillwheel-mediumperks")
-      widget:setImageClip(iconInfo.iconRect)
+      widget:setImageClip(WheelOfDestiny.nodeIconClip(index))
       widget:setSize(tosize("30 30"))
       if modIcon then
         modIcon:setVisible(false)
@@ -1208,8 +1411,9 @@ end
 function WheelOfDestiny.configureDedication(index)
   wheelOfDestinyWindow.selection.tabContent.dedication:setWidth("185")
   wheelOfDestinyWindow.selection.tabContent.dedication:setHeight("29")
-  wheelOfDestinyWindow.selection.tabContent.dedication:setText(getDedicationBonus(index))
-  wheelOfDestinyWindow.selection.tabContent.information:setTooltip(getDedicationTooltip(index))
+  -- Node dedication/conviction now come from the server (see getNodeDedication/getNodeConviction).
+  wheelOfDestinyWindow.selection.tabContent.dedication:setText(WheelOfDestiny.getNodeDedication(index))
+  wheelOfDestinyWindow.selection.tabContent.information:setTooltip(WheelOfDestiny.getNodeConviction(index))
   if WheelOfDestiny.pointInvested[index] > 0 then
     wheelOfDestinyWindow.selection.tabContent.dedication:setColor("#c0c0c0")
   else
@@ -1219,23 +1423,15 @@ end
 
 function WheelOfDestiny.configureConviction(index)
   local bonus = WheelBonus[index - 1]
-  local conviction = getConvictionBonus(index)
+  local description = WheelOfDestiny.getNodeConviction(index)
+  wheelOfDestinyWindow.selection.tabContent.conviction:setTooltip(description)
+  wheelOfDestinyWindow.selection.tabContent.conviction:setText(description)
 
-  local tooltip = getConvictionBonusTooltip(index)
-  if type(conviction) == "string" then
-    wheelOfDestinyWindow.selection.tabContent.conviction:setTooltip(tooltip)
-    wheelOfDestinyWindow.selection.tabContent.conviction:setText(conviction)
-
-    if WheelOfDestiny.pointInvested[index] >= bonus.maxPoints then
-      wheelOfDestinyWindow.selection.tabContent.conviction:setColor("#c0c0c0")
-    else
-      wheelOfDestinyWindow.selection.tabContent.conviction:setColor("#707070")
-    end
-  elseif type(conviction) == "table" then
-    wheelOfDestinyWindow.selection.tabContent.conviction:setTooltip(tooltip)
-    wheelOfDestinyWindow.selection.tabContent.conviction:setColoredText(conviction)
+  if WheelOfDestiny.pointInvested[index] >= bonus.maxPoints then
+    wheelOfDestinyWindow.selection.tabContent.conviction:setColor("#c0c0c0")
+  else
+    wheelOfDestinyWindow.selection.tabContent.conviction:setColor("#707070")
   end
-
 end
 
 function WheelOfDestiny.configureDedicationPerk()
@@ -1619,107 +1815,12 @@ function WheelOfDestiny.configureSummary()
   end
 
 
-  local avatarName = "Avatar Of Nature"
-  local spell1, tooltip1 = "Blessing of the Gr...", "Blessing of the Grave"
-  local spell2, tooltip2 = "Blessing of the Gr...", "Blessing of the Grave"
-  local vocation = WheelOfDestiny.vocationId
-  if vocation == KNIGHT then
-    avatarName = "Avatar of Steel"
-    spell1 = "Executioner's T..."
-    tooltip1 = "Executioner's Throw"
-    spell2 = "Combat Mastery"
-    tooltip2 = "Combat Mastery"
-  elseif vocation == PALADIN then
-    avatarName = "Avatar of Light"
-    spell1 = "Divine Grenade"
-    tooltip1 = "Divine Grenade"
-    spell2 = "Divine Empowerment"
-    tooltip2 = "Divine Empowerment"
-  elseif vocation == SORCERER then
-    avatarName = "Avatar of Storm"
-    spell1 = "Beam Mastery"
-    tooltip1 = "Beam Mastery"
-    spell2 = "Drain Body"
-    tooltip2 = "Drain Body"
-  elseif vocation == DRUID then
-    avatarName = "Avatar of Nature"
-    spell1 = "Blessing of the Gr..."
-    tooltip1 = "Blessing of the Grave"
-    spell2 = "Twin Bursts"
-    tooltip2 = "Twin Bursts"
-  elseif vocation == MONK then
-    avatarName = "Avatar of Balance"
-    spell1 = "Spiritual Outburst"
-    tooltip1 = "Spiritual Outburst"
-    spell2 = "Ascetic"
-    tooltip2 = "Ascetic"
-  end
-
-  local m1, m2 = getPassiveInfo(4)
-  local passive = WheelOfDestiny.passivePoints[4]
-
-  local widget = g_ui.createWidget("PerksPanel", wheelOfDestinyWindow.summary.tabContent)
-  widget.perk:setText(avatarName)
-  if passive >= 1000 then
-    widget.value:setText("Stage 3")
-  elseif passive >= 500 then
-    widget.value:setText("Stage 2")
-  elseif passive >= 250 then
-    widget.value:setText("Stage 1")
-  else
-    widget.value:setText("Locked")
-  end
-  widget.info:setTooltip(m2)
-
-  local m1, m2 = getPassiveInfo(2)
-  local passive = WheelOfDestiny.passivePoints[2]
-
-  local widget = g_ui.createWidget("PerksPanel", wheelOfDestinyWindow.summary.tabContent)
-  widget.perk:setText(spell1)
-  widget.perk:setTooltip(tooltip1)
-  if passive >= 1000 then
-    widget.value:setText("Stage 3")
-  elseif passive >= 500 then
-    widget.value:setText("Stage 2")
-  elseif passive >= 250 then
-    widget.value:setText("Stage 1")
-  else
-    widget.value:setText("Locked")
-  end
-  widget.info:setTooltip(m2)
-  ------------------
-  local m1, m2 = getPassiveInfo(1)
-  local passive = WheelOfDestiny.passivePoints[1]
-
-  local widget = g_ui.createWidget("PerksPanel", wheelOfDestinyWindow.summary.tabContent)
-  widget.perk:setText("Gift of Life")
-  if passive >= 1000 then
-    widget.value:setText("Stage 3")
-  elseif passive >= 500 then
-    widget.value:setText("Stage 2")
-  elseif passive >= 250 then
-    widget.value:setText("Stage 1")
-  else
-    widget.value:setText("Locked")
-  end
-  widget.info:setTooltip(m2)
-  ------------------
-  local m1, m2 = getPassiveInfo(3)
-  local passive = WheelOfDestiny.passivePoints[3]
-
-  local widget = g_ui.createWidget("PerksPanel", wheelOfDestinyWindow.summary.tabContent)
-  widget.perk:setText(spell2)
-  widget.perk:setTooltip(tooltip2)
-  if passive >= 1000 then
-    widget.value:setText("Stage 3")
-  elseif passive >= 500 then
-    widget.value:setText("Stage 2")
-  elseif passive >= 250 then
-    widget.value:setText("Stage 1")
-  else
-    widget.value:setText("Locked")
-  end
-  widget.info:setTooltip(m2)
+  -- Revelation perks are server-defined now (see WheelOfDestiny.getRevelation). One summary row per slice, in the
+  -- original display order (slices 4, 2, 1, 3). Names/tier descriptions and tier icons come from the server.
+  WheelOfDestiny.addRevelationSummary(4)
+  WheelOfDestiny.addRevelationSummary(2)
+  WheelOfDestiny.addRevelationSummary(1)
+  WheelOfDestiny.addRevelationSummary(3)
 
   local bonus = getVesselBonus()
   for _, data in pairs(bonus) do
@@ -2135,14 +2236,13 @@ function WheelOfDestiny.onWheelPassiveClick(domain)
   wheelOfDestinyWindow:recursiveGetChildById('rmvMax'):setVisible(false)
   wheelOfDestinyWindow:recursiveGetChildById('rmvOne'):setVisible(false)
 
-  local m1, m2 = getPassiveInfo(domain)
-
+  -- Clicking a slice shows its revelation perk; name/tier text is server-defined (not the old hardcoded tables).
   local panelHeight = WheelDedicationHeight[WheelOfDestiny.vocationId] or {}
   local height = panelHeight[domain] or 0
 
   wheelOfDestinyWindow.selection.tabContent.dedication:setHeight(height)
-  wheelOfDestinyWindow.selection.tabContent.dedication:setText(m1)
-  wheelOfDestinyWindow.selection.tabContent.information1:setTooltip(m2)
+  wheelOfDestinyWindow.selection.tabContent.dedication:setText(WheelOfDestiny.revelationName(domain))
+  wheelOfDestinyWindow.selection.tabContent.information1:setTooltip(WheelOfDestiny.revelationTooltip(domain))
 
   if passive == 1000 then
     wheelOfDestinyWindow.selection.tabContent.dedication:setColor("#c0c0c0")
@@ -2181,12 +2281,11 @@ function WheelOfDestiny.configureRevelationPerks()
   if damage > 0 then
     wheelOfDestinyWindow.revelationPerks.tabContent.damage.value:setText("+"..damage)
   end
-
-  local m1, m2 = getPassiveInfo(1)
   local passive = WheelOfDestiny.passivePoints[1]
   local extraPoints = WheelOfDestiny.extraPassivePoints[1] or 0
   passive = passive + extraPoints
 
+  wheelOfDestinyWindow.revelationPerks.tabContent.spell2.perk3:setText(WheelOfDestiny.revelationName(1))
   wheelOfDestinyWindow.revelationPerks.tabContent.spell2.value:setText("Locked")
   if passive >= 1000 then
     wheelOfDestinyWindow.revelationPerks.tabContent.spell2.value:setText("Stage 3")
@@ -2196,51 +2295,15 @@ function WheelOfDestiny.configureRevelationPerks()
     wheelOfDestinyWindow.revelationPerks.tabContent.spell2.value:setText("Stage 1")
   end
 
-  wheelOfDestinyWindow.revelationPerks.tabContent.infoSpell2:setTooltip(m1)
+  wheelOfDestinyWindow.revelationPerks.tabContent.infoSpell2:setTooltip(WheelOfDestiny.revelationTooltip(1))
 
 
-  local avatarName = "Avatar Of Nature"
-  local spell1, tooltip1 = "Blessing of the Gr...", "Blessing of the Grave"
-  local spell2, tooltip2 = "Blessing of the Gr...", "Blessing of the Grave"
-  local vocation = WheelOfDestiny.vocationId
-  if vocation == KNIGHT then
-    avatarName = "Avatar of Steel"
-    spell1 = "Executioner's Throw"
-    tooltip1 = "Executioner's Throw"
-    spell2 = "Combat Mastery"
-    tooltip2 = "Combat Mastery"
-  elseif vocation == PALADIN then
-    avatarName = "Avatar of Light"
-    spell1 = "Divine Grenade"
-    tooltip1 = "Divine Grenade"
-    spell2 = "Divine Empowerment"
-    tooltip2 = "Divine Empowerment"
-  elseif vocation == SORCERER then
-    avatarName = "Avatar of Storm"
-    spell1 = "Beam Mastery"
-    tooltip1 = "Beam Mastery"
-    spell2 = "Drain Body"
-    tooltip2 = "Drain Body"
-  elseif vocation == DRUID then
-    avatarName = "Avatar of Nature"
-    spell1 = "Blessing of the Gr..."
-    tooltip1 = "Blessing of the Grave"
-    spell2 = "Twin Bursts"
-    tooltip2 = "Twin Bursts"
-  elseif vocation == MONK then
-    avatarName = "Avatar of Balance"
-    spell1 = "Spiritual Outburst"
-    tooltip1 = "Spiritual Outburst"
-    spell2 = "Ascetic"
-    tooltip2 = "Ascetic"
-  end
-
-  local m1, m2 = getPassiveInfo(4)
+  -- Revelation names/tooltips are server-defined now (see WheelOfDestiny.revelationName/revelationTooltip).
   local passive = WheelOfDestiny.passivePoints[4]
   local extraPoints = WheelOfDestiny.extraPassivePoints[4] or 0
   passive = passive + extraPoints
 
-  wheelOfDestinyWindow.revelationPerks.tabContent.avatar.perk1:setText(avatarName)
+  wheelOfDestinyWindow.revelationPerks.tabContent.avatar.perk1:setText(WheelOfDestiny.revelationName(4))
   wheelOfDestinyWindow.revelationPerks.tabContent.avatar.value:setText("Locked")
   if passive >= 1000 then
     wheelOfDestinyWindow.revelationPerks.tabContent.avatar.value:setText("Stage 3")
@@ -2250,15 +2313,13 @@ function WheelOfDestiny.configureRevelationPerks()
     wheelOfDestinyWindow.revelationPerks.tabContent.avatar.value:setText("Stage 1")
   end
 
-  wheelOfDestinyWindow.revelationPerks.tabContent.infoAvatar:setTooltip(m1)
-
-  local m1, m2 = getPassiveInfo(2)
+  wheelOfDestinyWindow.revelationPerks.tabContent.infoAvatar:setTooltip(WheelOfDestiny.revelationTooltip(4))
   local passive = WheelOfDestiny.passivePoints[2]
   local extraPoints = WheelOfDestiny.extraPassivePoints[2] or 0
   passive = passive + extraPoints
 
-  wheelOfDestinyWindow.revelationPerks.tabContent.spell1.perk2:setText(spell1)
-  wheelOfDestinyWindow.revelationPerks.tabContent.spell1.perk2:setTooltip(tooltip1)
+  wheelOfDestinyWindow.revelationPerks.tabContent.spell1.perk2:setText(WheelOfDestiny.revelationName(2))
+  wheelOfDestinyWindow.revelationPerks.tabContent.spell1.perk2:setTooltip(WheelOfDestiny.revelationTooltip(2))
   wheelOfDestinyWindow.revelationPerks.tabContent.spell1.value:setText("Locked")
   if passive >= 1000 then
     wheelOfDestinyWindow.revelationPerks.tabContent.spell1.value:setText("Stage 3")
@@ -2268,15 +2329,13 @@ function WheelOfDestiny.configureRevelationPerks()
     wheelOfDestinyWindow.revelationPerks.tabContent.spell1.value:setText("Stage 1")
   end
 
-  wheelOfDestinyWindow.revelationPerks.tabContent.infoSpell1:setTooltip(m1)
-
-  local m1, m2 = getPassiveInfo(3)
+  wheelOfDestinyWindow.revelationPerks.tabContent.infoSpell1:setTooltip(WheelOfDestiny.revelationTooltip(2))
   local passive = WheelOfDestiny.passivePoints[3]
   local extraPoints = WheelOfDestiny.extraPassivePoints[3] or 0
   passive = passive + extraPoints
 
-  wheelOfDestinyWindow.revelationPerks.tabContent.spell3.perk4:setText(spell2)
-  wheelOfDestinyWindow.revelationPerks.tabContent.spell3.perk4:setTooltip(tooltip2)
+  wheelOfDestinyWindow.revelationPerks.tabContent.spell3.perk4:setText(WheelOfDestiny.revelationName(3))
+  wheelOfDestinyWindow.revelationPerks.tabContent.spell3.perk4:setTooltip(WheelOfDestiny.revelationTooltip(3))
   wheelOfDestinyWindow.revelationPerks.tabContent.spell3.value:setText("Locked")
   if passive >= 1000 then
     wheelOfDestinyWindow.revelationPerks.tabContent.spell3.value:setText("Stage 3")
@@ -2286,7 +2345,7 @@ function WheelOfDestiny.configureRevelationPerks()
     wheelOfDestinyWindow.revelationPerks.tabContent.spell3.value:setText("Stage 1")
   end
 
-  wheelOfDestinyWindow.revelationPerks.tabContent.infoSpell3:setTooltip(m1)
+  wheelOfDestinyWindow.revelationPerks.tabContent.infoSpell3:setTooltip(WheelOfDestiny.revelationTooltip(3))
 end
 
 local function checkValidName(text)

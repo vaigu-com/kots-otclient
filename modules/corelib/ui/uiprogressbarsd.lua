@@ -59,14 +59,29 @@ function UIProgressBarSD:getProgress()
   return (self.value - self.minimum) / (self.maximum - self.minimum)
 end
 
-function UIProgressBarSD:updateBackground()  
-  if self:isOn() then  
-    local width = math.round(math.max((self:getProgress() * (self:getWidth() - self.bgBorderLeft - self.bgBorderRight)), 1))  
-    local height = self:getHeight() - self.bgBorderTop - self.bgBorderBottom  
-    local rect = { x = self.bgBorderLeft, y = self.bgBorderTop, width = width, height = height }  
+function UIProgressBarSD:updateBackground()
+  if self:isOn() then
+    -- Remember the fill colour once so we can restore it (some bars set a custom image-color).
+    if self.baseImageColor == nil then
+      self.baseImageColor = self:getImageColor()
+    end
+
+    local fill = self:getProgress() * (self:getWidth() - self.bgBorderLeft - self.bgBorderRight)
+    -- A zero-width imageRect is treated as invalid by the renderer, which then draws the FULL image (so an empty
+    -- bar looked full). Keep a valid 1px rect but hide the fill by making it transparent when there is nothing to
+    -- show; a positive fill is clamped up to 1px so a tiny non-zero value stays visible.
+    if fill <= 0 then
+      self:setImageColor('alpha')
+    else
+      self:setImageColor(self.baseImageColor)
+    end
+
+    local width = math.round(math.max(fill, 1))
+    local height = self:getHeight() - self.bgBorderTop - self.bgBorderBottom
+    local rect = { x = self.bgBorderLeft, y = self.bgBorderTop, width = width, height = height }
 
     self:setImageRect(rect)
-  end  
+  end
 end
 
 function UIProgressBarSD:onSetup()
