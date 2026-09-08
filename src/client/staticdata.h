@@ -1031,6 +1031,39 @@ struct GemData {
     uint8_t supremeBonus = 0;
 };
 
+// Server-defined presentation for a wheel node. The client no longer hardcodes wheel node perk text; it arrives with
+// the wheel window keyed by wireId (the wheel node/slot id, 1..36). dedication = per-point bonus text, conviction =
+// max-allocation perk text. Missing nodes fall back to unknown_dedication_<wireId> / unknown_conviction_<wireId> on
+// the Lua side.
+// One typed dedication bonus a node grants per point. The client renders points*perPoint per formatType (0 =
+// integer "+N name", 1 = two-decimal percent "N.NN% name"); lines are sorted alphabetically by name.
+struct CustomWheelDedication {
+    uint8_t formatType = 0;
+    uint32_t perPointMilli = 0;
+    std::string name;
+};
+
+struct CustomWheelNode {
+    uint16_t wireId = 0;
+    uint16_t iconId = 0;
+    std::vector<CustomWheelDedication> dedications;
+    std::string conviction;
+};
+
+// One unlock tier of a server-defined revelation perk (threshold + description).
+struct CustomWheelRevelationTier {
+    uint16_t pointsRequired = 0;
+    std::string description;
+};
+
+// Server-defined revelation perk for one of the four wheel slices (sliceId 1..4), with its tiered bonuses.
+struct CustomWheelRevelation {
+    uint8_t sliceId = 0;
+    uint16_t iconId = 0;
+    std::string name;
+    std::vector<CustomWheelRevelationTier> tiers;
+};
+
 struct WheelData
 {
     uint32_t ownerId;

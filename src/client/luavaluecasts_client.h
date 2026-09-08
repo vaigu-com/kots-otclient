@@ -127,6 +127,12 @@ int push_luavalue(const BossCooldownData& data);
 int push_luavalue(const PartyMemberData& data);
 int push_luavalue(const PartyMemberName& data);
 
-// whell gem atelier  
-int push_luavalue(const GemData& gem);  
+// whell gem atelier
+int push_luavalue(const GemData& gem);
 bool luavalue_cast(int index, GemData& gem);
+
+// wheel custom node presentation (server-defined dedications/conviction) and revelation perks
+int push_luavalue(const CustomWheelDedication& dedication);
+int push_luavalue(const CustomWheelNode& node);
+int push_luavalue(const CustomWheelRevelationTier& tier);
+int push_luavalue(const CustomWheelRevelation& revelation);
