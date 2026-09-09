@@ -1417,10 +1417,18 @@ local function renderCharacterStat(stat, leftPanel, rightPanel, combatTable)
 end
 
 local function renderAndSkipZeroStats(stats, leftPanel, rightPanel, combatTable)
+    -- Headers are non-centered rows; their component breakdown are the following "center"-aligned rows.
+    -- Skip any zero-value row, AND when a header is skipped, skip its (now orphaned) component rows too.
+    local sectionSkipped = false
     for _, stat in ipairs(stats) do
-        if stat.align ~= "center" and type(stat.value) == "number" and stat.value == 0 then
-            -- Skip stats with zero values (headers use "" which won't match)
-        else
+        local isHeader = stat.align ~= "center"
+        local isZero = type(stat.value) == "number" and stat.value == 0
+        if isHeader then
+            sectionSkipped = isZero
+            if not isZero then
+                renderCharacterStat(stat, leftPanel, rightPanel, combatTable)
+            end
+        elseif not sectionSkipped and not isZero then
             renderCharacterStat(stat, leftPanel, rightPanel, combatTable)
         end
     end
@@ -1627,7 +1635,7 @@ end
             {name = "Defence Value", value = data.defense or 0, icon = false, percent = false},
             {name = "From Equipment", value = data.defenseEquipment or 0, align = "center", icon = false},
             {name = "From Wheel", value = data.defenseWheel or 0, align = "center", icon = false},
-            {name = getWeaponSkillName(data.defenseSkillType), value = data.shieldingSkill or 0, align = "center", icon = false},
+            {name = "From Shielding", value = data.shieldingSkill or 0, align = "center", icon = false},
             
             {name = "Armor Value", value = data.armor or 0, icon = false, percent = false},
             
@@ -1639,7 +1647,7 @@ end
             {name = "From Wheel", value = data.mitigationWheel or 0, align = "center", percent = true, icon = false},
             
             {name = "Dodge", value = data.dodgeTotal or 0, icon = false, percent = true},
-            {name = "From Base", value = data.dodgeBase or 0, align = "center", percent = true, icon = false},
+            {name = "From Gear", value = data.dodgeBase or 0, align = "center", percent = true, icon = false},
             {name = "From Amplification", value = data.dodgeBonus or 0, align = "center", percent = true, icon = false},
             {name = "From Wheel", value = data.dodgeWheel or 0, align = "center", percent = true, icon = false},
             

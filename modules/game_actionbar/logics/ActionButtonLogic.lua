@@ -449,8 +449,11 @@ function updateButtonState(button)
     if button.cache.isSpell then
         setupButtonTooltip(button, false)
         button.item.text.gray:setVisible(not playerCanUseSpell(button.cache.spellData))
-        local spellId = 0
-        button:recursiveGetChildById('activeSpell'):setVisible(button.cache.spellData.id == spellId)
+        -- Highlight the golden active border on the slot of every currently active stance.
+        -- Stance id == server spell id, and only real stance spells are ever reported active, so a
+        -- matching id uniquely identifies an active stance; non-stance spells are untouched.
+        button:recursiveGetChildById('activeSpell'):setVisible(
+            player:isStanceActive(button.cache.spellData.id))
     elseif button.cache.itemId ~= 0 then
         local tier = 0
         if g_game.getFeature(GameThingUpgradeClassification) then

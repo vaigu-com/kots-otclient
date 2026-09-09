@@ -5114,7 +5114,7 @@ void ProtocolGame::parseLootContainers(const InputMessagePtr& msg)
 }
 
 void ProtocolGame::parseMonkData(const InputMessagePtr& msg) {
-    const auto subtype = static_cast<Otc::VocationMonkTypes_t>(msg->getU8());
+    const auto subtype = static_cast<Otc::VocationStances_t>(msg->getU8());
     switch (subtype) {
         case Otc::TYPES_MONK_HARMONY: {
             const uint8_t harmonyValue = msg->getU8();
@@ -5127,8 +5127,16 @@ void ProtocolGame::parseMonkData(const InputMessagePtr& msg) {
             break;
         }
         case Otc::TYPES_MONK_VIRTUE: {
-            const uint8_t virtueValue = msg->getU8();
-            g_logger.debug("unused {} TO-DO L4381", virtueValue);
+            // Active stances: count (u8) then one u16 stance id per entry (stance id = server spell
+            // id). A player can have more than one active stance at once (e.g. a sorcerer's Aura +
+            // Master), so we collect them all; a count of 0 means no stance is active.
+            const uint8_t stanceCount = msg->getU8();
+            std::vector<uint16_t> stances;
+            stances.reserve(stanceCount);
+            for (uint8_t i = 0; i < stanceCount; ++i) {
+                stances.push_back(msg->getU16());
+            }
+            m_localPlayer->setActiveStances(stances);
             break;
         }
         default:
@@ -6125,10 +6133,10 @@ void ProtocolGame::parseCyclopediaCharacterInfo(const InputMessagePtr& msg)
             }
 
             data.defense = msg->getU16();
-            data.defenseEquipment = msg->getU16();
+            data.defenseEquipment = static_cast<int16_t>(msg->getU16()); // signed: may be negative
             data.defenseSkillType = msg->getU8();
-            data.shieldingSkill = msg->getU16();
-            data.defenseWheel = msg->getU16();
+            data.shieldingSkill = static_cast<int16_t>(msg->getU16()); // signed: final - equipment, may be negative
+            data.defenseWheel = static_cast<int16_t>(msg->getU16()); // signed
             msg->getU16(); // unused
 
             data.mitigation = msg->getDouble();

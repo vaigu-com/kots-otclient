@@ -269,7 +269,8 @@ local function connecting()
         onManaChange = onUpdateActionBarStatus,
         onSoulChange = onUpdateActionBarStatus,
         onLevelChange = onUpdateLevel,
-        onSpellsChange = onSpellsChange
+        onSpellsChange = onSpellsChange,
+        onStanceChange = onUpdateActionBarStatus
     })
     connect(g_game, {
         onItemInfo = onHotkeyItems,
@@ -293,7 +294,8 @@ local function disconnecting()
         onManaChange = onUpdateActionBarStatus,
         onSoulChange = onUpdateActionBarStatus,
         onLevelChange = onUpdateLevel,
-        onSpellsChange = onSpellsChange
+        onSpellsChange = onSpellsChange,
+        onStanceChange = onUpdateActionBarStatus
     })
     disconnect(g_game, {
         onItemInfo = onHotkeyItems,
