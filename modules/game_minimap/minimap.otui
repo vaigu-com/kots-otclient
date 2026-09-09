@@ -6,10 +6,21 @@ PhantomMiniWindow
   height: 115
 
   UIWidget
-    id: minimapBorder
+    id: topSilverStrip
     anchors.top: parent.top
     anchors.left: parent.left
-    margin-top: 2
+    anchors.right: parent.right
+    margin-left: 3
+    margin-right: 3
+    height: 1
+    background-color: #666666
+    phantom: true
+
+  UIWidget
+    id: minimapBorder
+    anchors.top: topSilverStrip.bottom
+    anchors.left: parent.left
+    margin-top: 3
     margin-left: 8
     size: 108 111
     image-source: /images/ui/1pixel_down_frame

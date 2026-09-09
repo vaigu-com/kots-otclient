@@ -53,7 +53,7 @@ PhantomMiniWindow
       anchors.top: parent.top
       anchors.left: parent.left
       margin-left: 8
-      margin-top: 5
+      margin-top: 2
       size: 12 12
       @onClick: changeInventorySize()
 
@@ -98,7 +98,7 @@ PhantomMiniWindow
       image-clip: 0 0 20 20
       anchors.right: parent.right
       anchors.top: changeSize.top
-      margin-right: 8
+      margin-right: 31
       size: 20 20
       @onClick: |
         selectPosture('stand')
@@ -187,8 +187,13 @@ PhantomMiniWindow
       margin-right: 0
       margin-top: 4
 
+    // Fight-stance buttons (offensive / balanced / defensive) hidden per the
+    // cip layout; their column is now occupied by the stand/follow/expert
+    // buttons. Kept (hidden) so inventory.lua's selectCombat() references stay
+    // valid.
     TopToggleButton
       id: attack
+      visible: false
       image-source: /images/inventory/buttons_general
       image-clip: 0 40 20 20
       anchors.right: standPosture.left
@@ -206,6 +211,7 @@ PhantomMiniWindow
 
     TopToggleButton
       id: balanced
+      visible: false
       image-source: /images/inventory/buttons_general
       image-clip: 0 80 20 20
       anchors.right: attack.right
@@ -223,6 +229,7 @@ PhantomMiniWindow
 
     TopToggleButton
       id: defense
+      visible: false
       image-source: /images/inventory/buttons_general
       image-clip: 0 60 20 20
       anchors.right: attack.right

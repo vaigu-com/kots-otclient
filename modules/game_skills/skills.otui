@@ -118,7 +118,9 @@ MiniWindow
   MiniWindowContents
     padding-left: 5
     padding-right: 5
+    padding-top: 3
     layout: verticalBox
+    always-show-vertical-scrollbar: false
 
     SkillButton
       margin-top: 5

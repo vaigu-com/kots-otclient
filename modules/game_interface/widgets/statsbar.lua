@@ -340,8 +340,10 @@ local function loadIcon(bitChanged, content, topmenu)
     icon:setMarginRight(-1)
     if topmenu then
         icon:setMarginTop(5)
-        icon:setMarginLeft(2)
-        icon:setMarginRight(-2)
+        -- 1px inset from the west border, 1px gap between icons
+        -- (gap = prev.marginRight + cur.marginLeft = 0 + 1).
+        icon:setMarginLeft(1)
+        icon:setMarginRight(0)
     end
     return icon
 end
@@ -836,15 +838,11 @@ function StatsBar.onHungryChange(regenerationTime, alert)
         for _, contentData in ipairs(contents) do
             local icon = contentData.content:getChildById(info.id)
             if not icon then
-                icon = g_ui.createWidget('ConditionWidget', contentData.content)
-                icon:setId(info.id)
-                icon:setImageSource("/images/game/states/player-state-flags")
-                icon:setImageClip(((info.clip - 1) * 9) .. ' 0 9 9')
-                icon:setTooltip(info.tooltip)
-                icon:setImageSize(tosize("9 9"))
-                if contentData.loadIconTransparent then
-                    icon:setMarginTop(5)
-                end
+                -- Build the hunger icon through the shared loadIcon() so its
+                -- margins match every other status icon (otherwise it sits 1px
+                -- off and skews the spacing of the whole bar).
+                icon = loadIcon(PlayerStates.Hungry, contentData.content, contentData.loadIconTransparent)
+                icon:setParent(contentData.content)
             end
         end
     else

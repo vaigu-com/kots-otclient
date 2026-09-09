@@ -18,6 +18,17 @@ healthManaController = Controller:new()
 healthManaController:setUI('healthinfo', modules.game_interface.getMainRightPanel())
 
 function healthManaController:onInit()
+    -- The dedicated health/mana pane on the right panel has been removed;
+    -- health and mana are shown in the top stats bar instead. Detach and
+    -- destroy the widget so it takes no space in the right panel.
+    if healthManaController.ui then
+        local parent = healthManaController.ui:getParent()
+        if parent then
+            parent:removeChild(healthManaController.ui)
+        end
+        healthManaController.ui:destroy()
+        healthManaController.ui = nil
+    end
 end
 
 function healthManaController:onTerminate()
@@ -28,43 +39,14 @@ function healthManaController:onTerminate()
 end
 
 function healthManaController:onGameStart()
-    healthManaController:registerEvents(LocalPlayer, {
-        onHealthChange = healthManaEvent,
-        onManaChange = healthManaEvent
-    }):execute()
+    -- Right-panel health/mana pane removed; nothing to update here.
 end
 
 function extendedView(extendedView)
-    if extendedView then
-        if not iconTopMenu then
-            iconTopMenu = modules.client_topmenu.addTopRightToggleButton('healthMana', tr('Show health'),
-                '/images/topbuttons/healthinfo', toggle)
-            iconTopMenu:setOn(healthManaController.ui:isVisible())
-            healthManaController.ui:setBorderColor('black')
-            healthManaController.ui:setBorderWidth(2)
-        end
-    else
-        if iconTopMenu then
-            iconTopMenu:destroy()
-            iconTopMenu = nil
-        end
-        healthManaController.ui:setBorderColor('alpha')
-        healthManaController.ui:setBorderWidth(0)
-        local mainRightPanel = modules.game_interface.getMainRightPanel()
-        if not mainRightPanel:hasChild(healthManaController.ui) then
-            mainRightPanel:insertChild(2, healthManaController.ui)
-        end
-        healthManaController.ui:show()
-    end
-    healthManaController.ui.moveOnlyToMain = not extendedView
+    -- The health/mana pane has been removed from the right panel, so there is
+    -- nothing to toggle here. Kept as a no-op so game_interface's extended-view
+    -- switch still has a valid entry point.
 end
 
 function toggle()
-    if iconTopMenu:isOn() then
-        healthManaController.ui:hide()
-        iconTopMenu:setOn(false)
-    else
-        healthManaController.ui:show()
-        iconTopMenu:setOn(true)
-    end
 end

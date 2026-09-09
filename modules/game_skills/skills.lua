@@ -901,7 +901,7 @@ function loadSkillsVisibilitySettings()
 end
 
 function updateHeight()
-    local maximumHeight = 8 -- margin top and bottom
+    local maximumHeight = 11 -- margin top and bottom (incl. 3px content padding-top)
     local minimumHeight = 80 -- ensure minimum height is maintained
 
     if g_game.isOnline() then
