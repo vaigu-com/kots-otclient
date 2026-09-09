@@ -107,7 +107,7 @@ MiniWindow
     anchors.top: miniwindowHeader.top
     anchors.left: miniwindowHeader.left
     anchors.right: miniwindowHeader.right
-    margin-top: 2
+    margin-top: 1
     margin-left: 20
     margin-right: 50
     font: verdana-11px-monochrome
