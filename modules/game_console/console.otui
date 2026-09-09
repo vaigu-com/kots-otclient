@@ -168,7 +168,7 @@ ConsoleTabBarButton < UIButton
   tab-spacing: 0
   padding-left: 20
   padding-right: 20
-  &tabWidth: 95
+  &tabWidth: 96
 
   $checked:
     image-clip: 0 0 96 18
@@ -245,7 +245,7 @@ Panel
     anchors.bottom: consoleContentPanel.top
     anchors.right: closeChannelButton.left
     margin-right: 22
-    margin-left: 21
+    margin-left: 18
     margin-bottom: -8
     padding-bottom: -5
     tab-spacing: 0
