@@ -36,7 +36,8 @@ enum class CompositionMode
     ADD,
     REPLACE,
     DESTINATION_BLENDING,
-    LIGHT
+    LIGHT,
+    ADDITIVE
 };
 
 enum class DrawMode

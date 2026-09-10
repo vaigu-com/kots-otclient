@@ -57,6 +57,7 @@
 #include "uiminimap.h"
 #include "uiprogressrect.h"
 #include "uisprite.h"
+#include "uiwheelcanvas.h"
 #include "paperdoll.h"
 #include "paperdollmanager.h"
 
@@ -1249,6 +1250,14 @@ void Client::registerLuaFunctions()
     g_lua.bindClassMemberFunction<UIProgressRect>("showProgress", &UIProgressRect::showProgress);
     g_lua.bindClassMemberFunction<UIProgressRect>("getTimeElapsed", &UIProgressRect::getTimeElapsed);
     g_lua.bindClassMemberFunction<UIProgressRect>("getDuration", &UIProgressRect::getDuration);
+
+    g_lua.registerClass<UIWheelCanvas, UIWidget>();
+    g_lua.bindClassStaticFunction<UIWheelCanvas>("create", [] { return std::make_shared<UIWheelCanvas>(); });
+    g_lua.bindClassMemberFunction<UIWheelCanvas>("setUnlocked", &UIWheelCanvas::setUnlocked);
+    g_lua.bindClassMemberFunction<UIWheelCanvas>("setFill", &UIWheelCanvas::setFill);
+    g_lua.bindClassMemberFunction<UIWheelCanvas>("clearSlices", &UIWheelCanvas::clearSlices);
+    g_lua.bindClassMemberFunction<UIWheelCanvas>("setAdditive", &UIWheelCanvas::setAdditive);
+    g_lua.bindClassMemberFunction<UIWheelCanvas>("isAdditive", &UIWheelCanvas::isAdditive);
 
 #ifndef __EMSCRIPTEN__
     g_lua.registerClass<UIGraph, UIWidget>();

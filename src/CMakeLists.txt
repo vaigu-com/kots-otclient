@@ -415,6 +415,7 @@ set(SOURCE_FILES
         client/uiminimap.cpp
         client/uiprogressrect.cpp
         client/uisprite.cpp
+        client/uiwheelcanvas.cpp
         tools/datdump.cpp
 )
 
