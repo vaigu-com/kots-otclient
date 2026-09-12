@@ -17,7 +17,7 @@ MiniWindow < UIMiniWindow
     anchors.top: parent.top
     anchors.right: parent.right
     anchors.left: parent.left
-    height: 15
+    height: 14
     image-source: /images/ui/miniwindow_header
     image-border: 4
     image-border-top: 4

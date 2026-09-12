@@ -1,13 +1,13 @@
 PhantomMiniWindow
   id: mainoptionspanel
-  height: 17
-  &panelHeight: 17
+  height: 19
+  &panelHeight: 19
   on: true
 
   UIWidget
     id: offPanel
     anchors.fill: parent
-    margin-top: 2
+    margin-top: 4
     phantom: true
 
     Button
@@ -25,7 +25,7 @@ PhantomMiniWindow
   UIWidget
     id: onPanel
     anchors.fill: parent
-    margin-top: 2
+    margin-top: 4
     phantom: true
 
     UIWidget

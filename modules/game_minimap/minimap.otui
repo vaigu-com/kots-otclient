@@ -5,9 +5,33 @@ PhantomMiniWindow
   &panelHeight: 115
   height: 115
 
+  // 2px header bevel, matching every MiniWindow's miniwindowHeaderBevel
+  // (silver highlight row over a darker shadow row).
+  UIWidget
+    id: topSilverStrip
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-left: 3
+    margin-right: 3
+    height: 1
+    background-color: #66666640
+    phantom: true
+
+  UIWidget
+    id: topSilverStripShadow
+    anchors.top: topSilverStrip.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-left: 3
+    margin-right: 3
+    height: 1
+    background-color: #31313160
+    phantom: true
+
   UIWidget
     id: minimapBorder
-    anchors.top: parent.top
+    anchors.top: topSilverStripShadow.bottom
     anchors.left: parent.left
     margin-top: 2
     margin-left: 8

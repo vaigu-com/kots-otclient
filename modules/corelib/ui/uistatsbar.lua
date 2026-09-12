@@ -115,6 +115,19 @@ function UIStatsBar:setValue(value, total)
     self.currentValue = value
     self.currentTotal = total
 
+    -- The mana bar fills east->west (from the right edge), mirroring the
+    -- health bar. Re-anchor the fill widget to the right once.
+    if self.statsType == 'mana' and self.statsOrientation == 'horizontal' and not self.fillFromRight then
+        self.bar:breakAnchors()
+        self.bar:addAnchor(AnchorTop, 'parent', AnchorTop)
+        self.bar:addAnchor(AnchorBottom, 'parent', AnchorBottom)
+        self.bar:addAnchor(AnchorRight, 'parent', AnchorRight)
+        self.bar:setMarginTop(1)
+        self.bar:setMarginBottom(1)
+        self.bar:setMarginRight(1)
+        self.fillFromRight = true
+    end
+
     -- Bar dimension
     if self.statsOrientation == 'horizontal' then
         self.bar:setWidth(((self:getWidth() - 2) * value) / total)

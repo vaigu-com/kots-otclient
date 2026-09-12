@@ -154,8 +154,6 @@ BottomSliders < Panel
     size: 17 17
     anchors.top: parent.top
     anchors.left: parent.left
-    anchors.right: parent.horizontalCenter
-    margin-right: 1
     @onClick: modules.game_actionbar.moveActionButtons(self)
     image-source: /images/game/actionbar/arrow-down
     image-clip: 0 0 17 17
@@ -175,7 +173,6 @@ BottomSliders < Panel
     id: last
     size: 17 17
     anchors.top: parent.top
-    anchors.left: parent.horizontalCenter
     anchors.right: parent.right
     @onClick: modules.game_actionbar.moveActionButtons(self)
     image-source: /images/game/actionbar/double-arrow-down
@@ -195,6 +192,8 @@ BottomSliders < Panel
 Panel
   id: actionBar
   focusable: false
+  padding-top: 2
+  padding-bottom: 3
 
   $on:
     width: 34

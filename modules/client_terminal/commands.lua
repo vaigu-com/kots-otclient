@@ -88,3 +88,77 @@ function about_modules()
         end
     end
 end
+
+-- Widget inspector: hover any UI element to see its id, class, geometry and
+-- parent chain in a small box next to the cursor. Toggle from the terminal:
+--   inspect_widgets()
+local widgetInspector = { overlay = nil, event = nil }
+
+local function widgetInspectorLabel(w)
+    local id = w:getId()
+    if id == nil or id == '' then id = '<no-id>' end
+    return id .. '  (' .. w:getClassName() .. ')'
+end
+
+function inspect_widgets()
+    if widgetInspector.event then
+        widgetInspector.event:cancel()
+        widgetInspector.event = nil
+        if widgetInspector.overlay then
+            widgetInspector.overlay:destroy()
+            widgetInspector.overlay = nil
+        end
+        pcolored('Widget inspector: OFF')
+        return
+    end
+
+    local overlay = g_ui.createWidget('UILabel', rootWidget)
+    overlay:setId('widgetInspectorOverlay')
+    overlay:mergeStyle({
+        ['background-color'] = '#000000dd',
+        ['border-width'] = 1,
+        ['border-color'] = '#00ff00',
+        ['color'] = '#00ff00',
+        ['font'] = 'verdana-11px-monochrome',
+        ['text-align'] = 'left',
+        ['text-auto-resize'] = true,
+        ['padding'] = 3,
+        ['phantom'] = true
+    })
+    widgetInspector.overlay = overlay
+
+    widgetInspector.event = cycleEvent(function()
+        local pos = g_window.getMousePosition()
+        local w = rootWidget:recursiveGetChildByPos(pos, true)
+        if not w or w == overlay then
+            overlay:hide()
+            return
+        end
+
+        local lines = { widgetInspectorLabel(w) }
+        local rect = w:getRect()
+        lines[#lines + 1] = string.format('rect: %d,%d  %dx%d', rect.x, rect.y, rect.width, rect.height)
+
+        local cur = w:getParent()
+        local depth = 0
+        while cur and cur ~= rootWidget and depth < 4 do
+            lines[#lines + 1] = '^ ' .. widgetInspectorLabel(cur)
+            cur = cur:getParent()
+            depth = depth + 1
+        end
+
+        overlay:setText(table.concat(lines, '\n'))
+        overlay:show()
+        overlay:raise()
+
+        local sz = overlay:getSize()
+        local scr = rootWidget:getSize()
+        local x = pos.x + 14
+        local y = pos.y + 14
+        if x + sz.width > scr.width then x = pos.x - sz.width - 6 end
+        if y + sz.height > scr.height then y = pos.y - sz.height - 6 end
+        overlay:setPosition({ x = math.max(0, x), y = math.max(0, y) })
+    end, 50)
+
+    pcolored('Widget inspector: ON — hover elements; run inspect_widgets() again to stop.', 'green')
+end

@@ -124,6 +124,14 @@ local function updateTabs(tabBar)
 end
 
 local function hideTabs(tabBar, fromBack, toArray, width)
+    -- Don't shuffle tabs into pre/post storage before the bar has a real
+    -- width (e.g. while tabs are being added at module load, before layout).
+    -- Otherwise the current/front tab gets pushed out and later restored at
+    -- the end, silently reversing the tab order.
+    if tabBar:getWidth() <= 0 then
+        return
+    end
+
     while #tabBar.tabs > 0 and getMaxMargin(tabBar) + width > tabBar:getWidth() do
         local index = fromBack and #tabBar.tabs or 1
         local tab = tabBar.tabs[index]

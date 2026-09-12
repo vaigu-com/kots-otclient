@@ -211,6 +211,7 @@ TopStatsSkillElement < UIWidget
     anchors.verticalCenter: parent.verticalCenter
     margin-left: -3
     margin-top: -2
+    text-offset: 0 1
 
   UIWidget
     id: icon
